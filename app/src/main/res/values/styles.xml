@@ -1,0 +1,41 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.Design.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <!-- 设置未浮动窗口 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 设置无边框 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 设置无标题 -->
+        <item name="android:windowBackground">@color/transparent</item>
+        <!-- 设置完全透明 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 设置屏幕变暗 -->
+    </style>
+
+    <style name="button_primary_dark">
+        <item name="android:background">@drawable/btn_background_primary_dark</item>
+        <item name="android:textColor">@drawable/btn_text_primary_dark</item>
+        <item name="elevation">5dp</item>
+    </style>
+
+
+    <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Light">
+        <!--<item name="android:colorBackground">#000000</item>--> <!--这里可以改变菜单的背景色-->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item> <!--新增一个item，用于控制menu-->
+        <item name="android:actionMenuTextColor">@color/white</item>
+        <item name="android:colorControlNormal">@color/white</item>
+    </style>
+
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>  <!--把该属性改为false即可使menu位置位于toolbar之下-->
+    </style>
+</resources>

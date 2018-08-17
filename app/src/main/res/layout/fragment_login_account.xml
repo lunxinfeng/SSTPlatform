@@ -1,0 +1,61 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.fintech.lxf.ui.fragment.login.account.LoginAccountFragment">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/et_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@mipmap/icon_account"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="请输入您的登录账号"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@mipmap/icon_password"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="请输入您的登录密码"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_account" />
+
+        <Button
+            android:id="@+id/btnBind"
+            style="@style/button_primary_dark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:text="登陆"
+            android:textSize="18sp"
+            android:transitionName="login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/et_password"
+            app:layout_constraintStart_toStartOf="@+id/et_password"
+            app:layout_constraintTop_toBottomOf="@+id/et_password" />
+    </android.support.constraint.ConstraintLayout>
+</FrameLayout>

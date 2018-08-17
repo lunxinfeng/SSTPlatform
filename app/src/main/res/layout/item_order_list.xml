@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:elevation="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="8dp"
+     >
+    <android.support.constraint.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/tv_zishanghu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="子商户："
+            android:textColor="#F39800"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_order_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="订单编号："
+            app:layout_constraintStart_toStartOf="@+id/tv_zishanghu"
+            app:layout_constraintTop_toBottomOf="@+id/tv_zishanghu" />
+
+        <TextView
+            android:id="@+id/tv_order_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:text="订单时间："
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_order_money"
+            app:layout_constraintTop_toBottomOf="@+id/tv_order_money" />
+
+        <TextView
+            android:id="@+id/tv_order_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="订单金额："
+            app:layout_constraintStart_toStartOf="@+id/tv_order_num"
+            app:layout_constraintTop_toBottomOf="@+id/tv_order_num" />
+
+        <TextView
+            android:id="@+id/tv_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="收款金额："
+            app:layout_constraintStart_toEndOf="@+id/tv_order_money"
+            app:layout_constraintTop_toTopOf="@+id/tv_order_money" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
