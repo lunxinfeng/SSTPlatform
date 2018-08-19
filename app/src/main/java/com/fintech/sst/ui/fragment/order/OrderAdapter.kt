@@ -1,15 +1,15 @@
 package com.fintech.sst.ui.fragment.order
 
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
 import com.fintech.sst.R
 import com.fintech.sst.net.bean.OrderList
+import com.lxf.recyclerhelper.BaseQuickAdapter
+import com.lxf.recyclerhelper.BaseViewHolder
 
 
 class OrderAdapter(layoutId:Int,
                    orderList: List<OrderList>? = null): BaseQuickAdapter<OrderList, BaseViewHolder>(layoutId,orderList) {
     init {
-        openLoadAnimation(SCALEIN)
+        showWithAnimation(true)
     }
     override fun convert(helper: BaseViewHolder?, item: OrderList?) {
         helper?.setText(R.id.tv_zishanghu,"商户：${item?.mchName}(${item?.mchId})")
