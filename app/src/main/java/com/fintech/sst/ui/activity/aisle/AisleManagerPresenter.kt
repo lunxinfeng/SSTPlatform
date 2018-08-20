@@ -3,15 +3,20 @@ package com.fintech.sst.ui.activity.aisle
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.OnLifecycleEvent
+import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.PermissionUtil
+import com.fintech.sst.helper.RxBus
+import com.fintech.sst.helper.debug
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.bean.UserInfoDetail
+import io.reactivex.Observer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
@@ -28,6 +33,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         } else {
             Constants.baseUrl = Configuration.getUserInfoByKey(Constants.KEY_ADDRESS)
         }
+        subscribeNotice()
         userInfo()
     }
 
@@ -59,6 +65,10 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         view.toOrderList()
     }
 
+    override fun toSetting() {
+        view.toSetting()
+    }
+
     override fun toNoticeList() {
         if (++clickNum >= 7) {
             view.toNoticeList()
@@ -71,5 +81,36 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         val d = Single.timer(1000, TimeUnit.MILLISECONDS)
                 .subscribe { _ -> clickNum = 0 }
         compositeDisposable.add(d)
+    }
+
+    private fun subscribeNotice(){
+        RxBus.getDefault().toObservable(Notice::class.java)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<Notice> {
+                    var d:Disposable? = null
+                    override fun onSubscribe(d: Disposable) {
+                        this.d = d
+                    }
+
+                    override fun onNext(t: Notice) {
+                        view.updateNoticeList(t)
+                    }
+
+                    override fun onComplete() {
+                        debug("subscribeNotice","onComplete")
+                        d?.dispose()
+                        subscribeNotice()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        debug("subscribeNotice","onError")
+                        d?.dispose()
+                        subscribeNotice()
+                    }
+                })
+    }
+
+    override fun unsubscribe() {
+
     }
 }

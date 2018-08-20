@@ -7,8 +7,8 @@ import com.fintech.sst.net.bean.OrderList
 interface OrderContract {
     interface View: BaseView<Presenter> {
         fun loadError(error:String)
-        fun loadMore(orders:List<OrderList>)
-        fun refreshData(orders:List<OrderList>)
+        fun loadMore(orders:List<OrderList>?)
+        fun refreshData(orders:List<OrderList>?)
     }
 
     interface Presenter: BasePresenter {

@@ -2,9 +2,11 @@ package com.fintech.sst.ui.activity.aisle
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.MotionEvent
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
+import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.PermissionUtil
 import com.fintech.sst.net.bean.UserInfoDetail
 import com.fintech.sst.ui.activity.login.LoginActivity
@@ -13,6 +15,13 @@ import com.fintech.sst.ui.activity.order.OrderListActivity
 import kotlinx.android.synthetic.main.activity_aisle_manager.*
 
 class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), AisleManagerContract.View {
+    private val adapter = NoticeAdapter(R.layout.item_notice_manager,null)
+
+    override fun updateNoticeList(notice: Notice) {
+        adapter.data.add(0,notice)
+        adapter.notifyItemInserted(0)
+        adapter.notifyDataSetChanged()
+    }
 
     override fun updateUserInfo(userInfo: UserInfoDetail?) {
         tvUser.text = "当前用户：${userInfo?.nickName?:""}"
@@ -30,6 +39,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
     }
 
     override fun toSetting() {
+        toNotifactionSetting()
     }
 
     override fun toNotifactionSetting() {
@@ -48,11 +58,17 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         lifecycle.addObserver(presenter)
 
         btnOrder.setOnClickListener { presenter.toOrder() }
+        btnSetting.setOnClickListener { presenter.toSetting() }
         tv_refresh.setOnClickListener { presenter.userInfo() }
-        recyclerView.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN)
-                presenter.toNoticeList()
-            true
+        recyclerView.apply {
+            setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_DOWN)
+                    presenter.toNoticeList()
+                false
+            }
+
+            layoutManager = LinearLayoutManager(this@AisleManagerActivity)
+            adapter = this@AisleManagerActivity.adapter
         }
     }
 

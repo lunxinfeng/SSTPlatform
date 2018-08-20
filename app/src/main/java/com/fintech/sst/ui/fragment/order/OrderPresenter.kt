@@ -19,11 +19,11 @@ class OrderPresenter(val view: OrderContract.View,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : ProgressObserver<ResultEntity<PageList<OrderList>>, OrderContract.View>(view,false) {
-                    override fun onNext_(t: ResultEntity<PageList<OrderList>>) {
+                    override fun onNext_(t: ResultEntity<PageList<OrderList>>?) {
                         if (append)
-                            view.loadMore(t.result.list)
+                            view.loadMore(t?.result?.list)
                         else
-                            view.refreshData(t.result.list)
+                            view.refreshData(t?.result?.list)
                     }
 
                     override fun onError(error: String) {

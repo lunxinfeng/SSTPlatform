@@ -26,10 +26,12 @@ public interface NoticeDao {
   @Update
   void updateAll(Notice... notices);
 
-  @Query("SELECT * FROM Notice WHERE type = :type  ORDER BY `offset` DESC,pos_curr DESC LIMIT 1")
-  Notice queryLast(int type);
+  @Query("SELECT * FROM Notice")
+  List<Notice> queryAll();
 
-  @Query("SELECT * FROM Notice WHERE type = :type")
-  List<Notice> queryAll(int type);
+  @Query("SELECT * FROM Notice ORDER BY id DESC LIMIT :pageSize OFFSET (:pageIndex -1) * :pageSize")
+  List<Notice> queryAll(int pageIndex,int pageSize);
 
+  @Query("SELECT * FROM Notice WHERE status = :status ORDER BY id DESC LIMIT :pageSize OFFSET (:pageIndex -1) * :pageSize")
+  List<Notice> queryAll(int status,int pageIndex,int pageSize);
 }

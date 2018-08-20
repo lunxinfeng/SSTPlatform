@@ -37,18 +37,11 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter.apply {
-//            isUpFetchEnable = true
-//            setUpFetchListener {
-//                println("NoticeFragment.onViewCreated:上拉刷新")
-//                presenter.noticeList(type)
-//            }
-//            setOnLoadMoreListener({ presenter.noticeList(type) },recyclerView)
-//            disableLoadMoreIfNotFullPage()
-        }
         recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = this@OrderFragment.adapter
+            adapter = this@OrderFragment.adapter.apply {
+                setEmptyView(R.layout.empty_view_recycler,recyclerView)
+            }
         }
 
         easyRefreshLayout.addEasyEvent(object : EasyRefreshLayout.EasyEvent {
@@ -66,13 +59,17 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
         presenter.orderList(type)
     }
 
-    override fun loadMore(orders: List<OrderList>) {
+    override fun loadMore(orders: List<OrderList>?) {
         easyRefreshLayout.loadMoreComplete()
+        if (orders == null || orders.isEmpty()){
+            showToast("没有更多数据了")
+            return
+        }
         adapter.data.addAll(orders)
         adapter.notifyDataSetChanged()
     }
 
-    override fun refreshData(orders: List<OrderList>) {
+    override fun refreshData(orders: List<OrderList>?) {
         easyRefreshLayout.refreshComplete()
         adapter.setNewData(orders)
     }

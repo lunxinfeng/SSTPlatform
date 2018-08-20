@@ -23,10 +23,10 @@ class NoticeListActivity : AppCompatActivity(), NoticeFragment.OnFragmentInterac
 
         val fragmentList = mutableListOf<NoticeFragment>()
         fragmentList.add(NoticeFragment.newInstance())
-        fragmentList.add(NoticeFragment.newInstance(10))
-        fragmentList.add(NoticeFragment.newInstance(20))
-        fragmentList.add(NoticeFragment.newInstance(30))
-        fragmentList.add(NoticeFragment.newInstance(40))
+        fragmentList.add(NoticeFragment.newInstance(1))
+        fragmentList.add(NoticeFragment.newInstance(2))
+        fragmentList.add(NoticeFragment.newInstance(3))
+        fragmentList.add(NoticeFragment.newInstance(4))
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragmentList)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 

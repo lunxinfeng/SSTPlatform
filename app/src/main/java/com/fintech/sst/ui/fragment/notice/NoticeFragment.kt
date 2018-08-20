@@ -10,15 +10,14 @@ import android.view.ViewGroup
 import com.ajguan.library.EasyRefreshLayout
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseFragment
-import com.fintech.sst.net.bean.OrderList
-import com.fintech.sst.ui.fragment.order.OrderAdapter
+import com.fintech.sst.data.db.Notice
 import kotlinx.android.synthetic.main.fragment_notice.*
 
 class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.View {
     override val presenter: NoticeContract.Presenter = NoticePresenter(this)
 
-    private var type: Int = 0
-    private val adapter = OrderAdapter(R.layout.item_order_list)
+    private var status: Int = 0
+    private val adapter = NoticeAdapter(R.layout.item_notice_list)
     private var pageIndex = 1
 
     private var mListener: OnFragmentInteractionListener? = null
@@ -26,7 +25,7 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            type = arguments!!.getInt(PARAM_TYPE)
+            status = arguments!!.getInt(PARAM_TYPE)
         }
     }
 
@@ -38,44 +37,41 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter.apply {
-//            isUpFetchEnable = true
-//            setUpFetchListener {
-//                println("NoticeFragment.onViewCreated:上拉刷新")
-//                presenter.noticeList(type)
-//            }
-//            setOnLoadMoreListener({ presenter.noticeList(type) },recyclerView)
-//            disableLoadMoreIfNotFullPage()
-        }
         recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = this@NoticeFragment.adapter
+            adapter = this@NoticeFragment.adapter.apply {
+                setEmptyView(R.layout.empty_view_recycler,recyclerView)
+            }
         }
 
         easyRefreshLayout.addEasyEvent(object : EasyRefreshLayout.EasyEvent {
             override fun onLoadMore() {
                 pageIndex++
-                presenter.noticeList(type,pageNow = pageIndex,append = true)
+                presenter.noticeList(status,pageNow = pageIndex,append = true)
             }
 
             override fun onRefreshing() {
                 pageIndex = 1
-                presenter.noticeList(type,pageNow = pageIndex)
+                presenter.noticeList(status,pageNow = pageIndex)
             }
         })
 
-        presenter.noticeList(type)
+        presenter.noticeList(status)
     }
 
-    override fun loadMore(orders: List<OrderList>) {
+    override fun loadMore(notices: List<Notice>?) {
         easyRefreshLayout.loadMoreComplete()
-        adapter.data.addAll(orders)
+        if (notices == null || notices.isEmpty()){
+            showToast("没有更多数据了")
+            return
+        }
+        adapter.data.addAll(notices)
         adapter.notifyDataSetChanged()
     }
 
-    override fun refreshData(orders: List<OrderList>) {
+    override fun refreshData(notices: List<Notice>?) {
         easyRefreshLayout.refreshComplete()
-        adapter.setNewData(orders)
+        adapter.setNewData(notices)
     }
 
     override fun loadError(error: String) {
@@ -115,17 +111,17 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
      * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
     interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument status and name
         fun onFragmentInteraction(uri: Uri)
     }
 
     companion object {
-        private val PARAM_TYPE = "type"
+        private val PARAM_TYPE = "status"
 
-        fun newInstance(type: Int = 0): NoticeFragment {
+        fun newInstance(status: Int = 0): NoticeFragment {
             val fragment = NoticeFragment()
             val args = Bundle()
-            args.putInt(PARAM_TYPE, type)
+            args.putInt(PARAM_TYPE, status)
             fragment.arguments = args
             return fragment
         }

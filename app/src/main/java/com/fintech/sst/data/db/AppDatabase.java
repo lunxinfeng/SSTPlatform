@@ -10,12 +10,12 @@ public abstract class AppDatabase extends RoomDatabase {
   private static AppDatabase INSTANCE;
   private static final Object sLock = new Object();
 
-  public abstract NoticeDao userDao();
+  public abstract NoticeDao noticeDao();
 
   public static AppDatabase getInstance(Context context) {
     synchronized (sLock) {
       if (INSTANCE == null) {
-        INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "user.db")
+        INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "notice.db")
 //                        .addMigrations(MIGRATION_1_2)
                 .build();
       }

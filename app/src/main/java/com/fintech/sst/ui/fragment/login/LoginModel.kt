@@ -1,6 +1,5 @@
 package com.fintech.sst.ui.fragment.login
 
-import android.content.Context
 import com.fintech.sst.data.DataSource
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.*
@@ -41,7 +40,7 @@ class LoginModel: DataSource {
         return service.bindAli(SignRequestBody(request))
     }
 
-    fun delLocalData(context: Context) {
+    fun delLocalData() {
         Single.just(1)
                 .subscribeOn(Schedulers.io())
                 .subscribe(Consumer {

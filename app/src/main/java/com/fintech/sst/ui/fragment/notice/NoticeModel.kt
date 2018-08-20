@@ -1,20 +1,23 @@
 package com.fintech.sst.ui.fragment.notice
 
+import com.fintech.sst.App
 import com.fintech.sst.data.DataSource
-import com.fintech.sst.net.ResultEntity
-import com.fintech.sst.net.SignRequestBody
-import com.fintech.sst.net.bean.OrderList
-import com.fintech.sst.net.bean.PageList
+import com.fintech.sst.data.db.DB
+import com.fintech.sst.data.db.Notice
 import io.reactivex.Observable
 
 class NoticeModel : DataSource {
-    fun aisleList(tradeStatus: Int = 0, pageNow: Int = 1, pageSize:Int = 10): Observable<ResultEntity<PageList<OrderList>>> {
-        val body = SignRequestBody()
-        if (tradeStatus!=0)
-            body.put("tradeStatus", tradeStatus)
-        body.put("pageSize", pageSize)
-        body.put("pageNow", pageNow)
-        return service.orders(SignRequestBody(body.sign()))
+    fun noticeList(status: Int = 0, pageNow: Int = 1, pageSize:Int = 10): Observable<List<Notice>?> {
+
+        return Observable.create { emitter ->
+            val noticeList = if (status == 0)
+                DB.queryAll(App.getAppContext(),pageNow,pageSize)
+            else
+                DB.queryAll(App.getAppContext(),status,pageNow,pageSize)
+
+            emitter.onNext(noticeList)
+            emitter.onComplete()
+        }
     }
 
 }
