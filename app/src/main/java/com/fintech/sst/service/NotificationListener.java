@@ -36,6 +36,7 @@ public final class NotificationListener extends NotificationListenerService {
     private static final Set<String> PACKAGES_LOWER_CASE;
     private static final Lock sLock = new ReentrantLock();
     private LinkedList<Notice> notices = new LinkedList<>();
+    public static Disposable disposable;
 
     static {
         HashSet<String> localHashSet = new HashSet<>();
@@ -129,10 +130,9 @@ public final class NotificationListener extends NotificationListenerService {
     private void db(){
         Observable.interval(100, TimeUnit.MILLISECONDS)
                 .subscribe(new Observer<Long>() {
-                    Disposable d;
                     @Override
                     public void onSubscribe(Disposable d) {
-                        this.d = d;
+                        disposable = d;
                     }
 
                     @Override
@@ -150,18 +150,21 @@ public final class NotificationListener extends NotificationListenerService {
 
                     @Override
                     public void onError(Throwable e) {
-                        d.dispose();
+                        disposable.dispose();
                         db();
                     }
 
                     @Override
                     public void onComplete() {
-                        d.dispose();
+                        disposable.dispose();
                         db();
                     }
                 });
     }
 
+    public static boolean isActive(){
+        return disposable!=null && !disposable.isDisposed();
+    }
 }
 
 

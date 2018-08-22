@@ -12,6 +12,7 @@ import com.fintech.sst.net.Constants
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.bean.UserInfoDetail
+import com.fintech.sst.service.JobServiceCompact
 import io.reactivex.Observer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,6 +36,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         }
         subscribeNotice()
         userInfo()
+        JobServiceCompact.startJob(1000)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

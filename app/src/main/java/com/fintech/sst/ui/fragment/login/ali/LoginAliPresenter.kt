@@ -59,7 +59,7 @@ class LoginAliPresenter(val view: LoginAliContract.View) : LoginAliContract.Pres
                                                     override fun onNext_(resultEntity: ResultEntity<Map<String, String>>) {
                                                         val result = resultEntity.result
                                                         if (result == null){
-                                                            view.loginFail(resultEntity.subMsg)
+                                                            view.loginFail(resultEntity.subMsg?:resultEntity.msg)
                                                             return
                                                         }
                                                         model.saveData(result)

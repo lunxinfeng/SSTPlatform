@@ -7,10 +7,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ajguan.library.EasyRefreshLayout
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseFragment
 import com.fintech.sst.data.db.Notice
+import com.scwang.smartrefresh.layout.api.RefreshLayout
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter
+import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_notice.*
 
 class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.View {
@@ -44,40 +47,46 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
             }
         }
 
-        easyRefreshLayout.addEasyEvent(object : EasyRefreshLayout.EasyEvent {
-            override fun onLoadMore() {
-                pageIndex++
-                presenter.noticeList(status,pageNow = pageIndex,append = true)
-            }
+        refreshLayout.apply {
+            setRefreshHeader(ClassicsHeader(context))
+            setRefreshFooter(ClassicsFooter(context))
+            setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
+                override fun onLoadMore(refreshLayout: RefreshLayout) {
+                    pageIndex++
+                    presenter.noticeList(status,pageNow = pageIndex,append = true)
+                }
 
-            override fun onRefreshing() {
-                pageIndex = 1
-                presenter.noticeList(status,pageNow = pageIndex)
-            }
-        })
+                override fun onRefresh(refreshLayout: RefreshLayout) {
+                    pageIndex = 1
+                    presenter.noticeList(status,pageNow = pageIndex)
+                }
+
+            })
+        }
 
         presenter.noticeList(status)
     }
 
     override fun loadMore(notices: List<Notice>?) {
-        easyRefreshLayout.loadMoreComplete()
         if (notices == null || notices.isEmpty()){
             showToast("没有更多数据了")
+            refreshLayout.finishLoadMoreWithNoMoreData()
             return
         }
+        refreshLayout.finishLoadMore()
         adapter.data.addAll(notices)
         adapter.notifyDataSetChanged()
     }
 
     override fun refreshData(notices: List<Notice>?) {
-        easyRefreshLayout.refreshComplete()
+        refreshLayout.finishRefresh()
         adapter.setNewData(notices)
     }
 
     override fun loadError(error: String) {
         showToast(error)
-        easyRefreshLayout.loadMoreFail()
-        easyRefreshLayout.refreshComplete()
+        refreshLayout.finishLoadMore(false)
+        refreshLayout.finishRefresh()
     }
 
     // TODO: Rename method, update argument and hook method into UI event

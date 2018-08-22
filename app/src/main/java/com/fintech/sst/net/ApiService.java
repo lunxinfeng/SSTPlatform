@@ -31,6 +31,11 @@ public interface ApiService {
             @Body SignRequestBody body
     );
 
+    @POST("/api/terminal/v1/trade/notify")
+    Observable<ResultEntity> notifyLog(
+            @Body SignRequestBody body
+    );
+
     @POST("/api/terminal/v1/merchant/info")
     Observable<ResultEntity<UserInfoDetail>> userInfo(
             @Body SignRequestBody body

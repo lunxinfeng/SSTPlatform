@@ -7,10 +7,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ajguan.library.EasyRefreshLayout
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseFragment
 import com.fintech.sst.net.bean.OrderList
+import com.scwang.smartrefresh.layout.api.RefreshLayout
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter
+import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_order.*
 
 class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View {
@@ -44,23 +47,26 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
             }
         }
 
-        easyRefreshLayout.addEasyEvent(object : EasyRefreshLayout.EasyEvent {
-            override fun onLoadMore() {
-                pageIndex++
-                presenter.orderList(type,pageNow = pageIndex,append = true)
-            }
+        refreshLayout.apply {
+            setRefreshHeader(ClassicsHeader(context))
+            setRefreshFooter(ClassicsFooter(context))
+            setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
+                override fun onLoadMore(refreshLayout: RefreshLayout) {
+                    pageIndex++
+                    presenter.orderList(type,pageNow = pageIndex,append = true)
+                }
 
-            override fun onRefreshing() {
-                pageIndex = 1
-                presenter.orderList(type,pageNow = pageIndex)
-            }
-        })
-
+                override fun onRefresh(refreshLayout: RefreshLayout) {
+                    pageIndex = 1
+                    presenter.orderList(type,pageNow = pageIndex)
+                }
+            })
+        }
         presenter.orderList(type)
     }
 
     override fun loadMore(orders: List<OrderList>?) {
-        easyRefreshLayout.loadMoreComplete()
+        refreshLayout.finishLoadMore()
         if (orders == null || orders.isEmpty()){
             showToast("没有更多数据了")
             return
@@ -70,14 +76,14 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
     }
 
     override fun refreshData(orders: List<OrderList>?) {
-        easyRefreshLayout.refreshComplete()
+        refreshLayout.finishRefresh()
         adapter.setNewData(orders)
     }
 
     override fun loadError(error: String) {
         showToast(error)
-        easyRefreshLayout.loadMoreFail()
-        easyRefreshLayout.refreshComplete()
+        refreshLayout.finishLoadMore(false)
+        refreshLayout.finishRefresh()
     }
 
     // TODO: Rename method, update argument and hook method into UI event

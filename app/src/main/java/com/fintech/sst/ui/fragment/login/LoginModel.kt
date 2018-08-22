@@ -1,5 +1,6 @@
 package com.fintech.sst.ui.fragment.login
 
+import com.fintech.sst.App
 import com.fintech.sst.data.DataSource
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.*
@@ -17,7 +18,8 @@ class LoginModel: DataSource {
         val request = HashMap<String, String>()
         request.put("userName", name)
         request.put("password", password)
-        request.put("payMethod", "2001")
+        request.put("app_version", App.getAppContext().packageManager
+                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString())
         return service.login(SignRequestBody(request))
     }
 
