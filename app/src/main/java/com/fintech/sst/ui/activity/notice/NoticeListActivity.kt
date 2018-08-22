@@ -26,7 +26,6 @@ class NoticeListActivity : AppCompatActivity(), NoticeFragment.OnFragmentInterac
         fragmentList.add(NoticeFragment.newInstance(1))
         fragmentList.add(NoticeFragment.newInstance(2))
         fragmentList.add(NoticeFragment.newInstance(3))
-        fragmentList.add(NoticeFragment.newInstance(4))
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragmentList)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
