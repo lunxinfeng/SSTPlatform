@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseFragment
 import com.fintech.sst.data.db.Notice
+import com.fintech.sst.ui.dialog.SendNoticeDialog
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
@@ -44,10 +45,11 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
             layoutManager = LinearLayoutManager(activity)
             adapter = this@NoticeFragment.adapter.apply {
                 setEmptyView(R.layout.empty_view_recycler,recyclerView)
+                setOnItemChildClickListener { _, _, i -> presenter.sendNotice(data[i]) }
             }
         }
 
-        refreshLayout.apply {
+        refreshLayout?.apply {
             setRefreshHeader(ClassicsHeader(context))
             setRefreshFooter(ClassicsFooter(context))
             setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
@@ -66,9 +68,7 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
 
         floatbutton.apply {
             visibility = if (status == 2) View.VISIBLE else View.GONE
-            setOnClickListener {
-
-            }
+            setOnClickListener { SendNoticeDialog(context){ presenter.sendNotice(it) }.show() }
         }
 
         presenter.noticeList(status)
@@ -77,23 +77,28 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
     override fun loadMore(notices: List<Notice>?) {
         if (notices == null || notices.isEmpty()){
             showToast("没有更多数据了")
-            refreshLayout.finishLoadMoreWithNoMoreData()
+            refreshLayout?.finishLoadMoreWithNoMoreData()
             return
         }
-        refreshLayout.finishLoadMore()
+        refreshLayout?.finishLoadMore()
         adapter.data.addAll(notices)
         adapter.notifyDataSetChanged()
     }
 
     override fun refreshData(notices: List<Notice>?) {
-        refreshLayout.finishRefresh()
+        refreshLayout?.finishRefresh()
         adapter.setNewData(notices)
     }
 
     override fun loadError(error: String) {
         showToast(error)
-        refreshLayout.finishLoadMore(false)
-        refreshLayout.finishRefresh()
+        refreshLayout?.finishLoadMore(false)
+        refreshLayout?.finishRefresh()
+    }
+
+    override fun sendNoticeComplete() {
+        showToast("操作成功")
+        presenter.noticeList(status)
     }
 
     // TODO: Rename method, update argument and hook method into UI event

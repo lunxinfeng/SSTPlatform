@@ -11,6 +11,7 @@ interface SettingContract {
     }
 
     interface Presenter: BasePresenter {
+        fun cleatLocalDB()
         fun exitAccount()
     }
 }

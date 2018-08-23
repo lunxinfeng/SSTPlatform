@@ -27,7 +27,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
     private var clickNum = 0
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate(){
+    fun onCreate() {
         if (Configuration.noLogin()) {
             view.toLogin()
             return
@@ -145,27 +145,31 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         compositeDisposable.add(d)
     }
 
-    private fun subscribeNotice(){
+    private fun subscribeNotice() {
         RxBus.getDefault().toObservable(Notice::class.java)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<Notice> {
-                    var d:Disposable? = null
+                    var d: Disposable? = null
                     override fun onSubscribe(d: Disposable) {
                         this.d = d
                     }
 
                     override fun onNext(t: Notice) {
-                        view.updateNoticeList(t)
+                        if (t.type == 1) {
+                            aisleRefresh()
+                        } else {
+                            view.updateNoticeList(t)
+                        }
                     }
 
                     override fun onComplete() {
-                        debug("subscribeNotice","onComplete")
+                        debug("subscribeNotice", "onComplete")
                         d?.dispose()
                         subscribeNotice()
                     }
 
                     override fun onError(e: Throwable) {
-                        debug("subscribeNotice","onError")
+                        debug("subscribeNotice", "onError")
                         d?.dispose()
                         subscribeNotice()
                     }

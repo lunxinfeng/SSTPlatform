@@ -4,6 +4,8 @@ import com.fintech.sst.App
 import com.fintech.sst.data.DataSource
 import com.fintech.sst.data.db.DB
 import com.fintech.sst.data.db.Notice
+import com.fintech.sst.net.MessageRequestBody
+import com.fintech.sst.net.ResultEntity
 import io.reactivex.Observable
 
 class NoticeModel : DataSource {
@@ -20,4 +22,26 @@ class NoticeModel : DataSource {
         }
     }
 
+    fun sendNotice(notice: Notice): Observable<ResultEntity<Notice>> {
+        val body = MessageRequestBody()
+        body.put("uuid", notice.uuid)
+        body.put("amount", notice.amount)
+        body.put("title", notice.title)
+        body.put("content", notice.content)
+        body.put("time", notice.saveTime)
+        body.put("type", notice.type)
+        body.put("packageName", notice.packageName)
+        body.put("id", notice.noticeId)
+        body.put("tag", notice.tag)
+        body.sign()
+        return service.notifyLog(body)
+    }
+
+    fun insertDB(notice: Notice){
+        DB.insert(App.getAppContext(),notice)
+    }
+
+    fun updateDB(notice: Notice){
+        DB.updateAll(App.getAppContext(),notice)
+    }
 }

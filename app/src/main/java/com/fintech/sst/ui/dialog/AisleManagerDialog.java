@@ -43,10 +43,6 @@ public class AisleManagerDialog extends Dialog {
         CountDownButton btnDel = findViewById(R.id.btnDel);
 
         btnRefresh.setOnClickWithCountDownListener(new CountDownButton.OnClickWithCountDown() {
-            @Override
-            public void onPre() {
-                setCancelable(false);
-            }
 
             @Override
             public void onClick(View v) {
@@ -56,10 +52,6 @@ public class AisleManagerDialog extends Dialog {
             }
         });
         btnDel.setOnClickWithCountDownListener(new CountDownButton.OnClickWithCountDown() {
-            @Override
-            public void onPre() {
-                setCancelable(false);
-            }
             @Override
             public void onClick(View v) {
                 if (clickListener!=null)

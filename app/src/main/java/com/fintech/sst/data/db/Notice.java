@@ -25,7 +25,7 @@ public class Notice {
   /**
    * 金额
    */
-  public float amount;
+  public String amount;
 
   /**
    * 类型：0全部  100支付宝   200微信  300银行卡
@@ -41,6 +41,7 @@ public class Notice {
 
   public Notice() {
     uuid = UUID.randomUUID().toString().replaceAll("-","");
+    status = 2;
     saveTime = System.currentTimeMillis();
   }
 

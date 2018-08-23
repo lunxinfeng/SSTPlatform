@@ -10,13 +10,12 @@ import com.fintech.sst.net.Configuration;
 import com.fintech.sst.net.ResultEntity;
 import com.fintech.sst.net.SignRequestBody;
 
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
@@ -25,7 +24,7 @@ import static com.fintech.sst.helper.ExpansionKt.debug;
 
 public class HeartJobService extends JobService {
     private static final String TAG = "HeartJobService";
-    private Subscription subscription;
+    private Disposable disposable;
     @Override
     public boolean onStartJob(JobParameters params) {
         debug(TAG,"=======onStartJob======");
@@ -47,10 +46,9 @@ public class HeartJobService extends JobService {
     }
 
     private void heartBeat() {
-        if (subscription!=null)
-            subscription.cancel();
-        Flowable.interval(0,10*1000, TimeUnit.MILLISECONDS)
-                .onBackpressureLatest()
+        if (disposable!=null)
+            disposable.dispose();
+        Observable.interval(0,10*1000, TimeUnit.MILLISECONDS)
                 .filter(new Predicate<Long>() {
                     @Override
                     public boolean test(Long aLong) throws Exception {
@@ -62,16 +60,33 @@ public class HeartJobService extends JobService {
                         return alive;
                     }
                 })
-                .flatMap(new Function<Long, Publisher<ResultEntity<Boolean>>>() {
+                .flatMap(new Function<Long, ObservableSource<ResultEntity<Boolean>>>() {
                     @Override
-                    public Publisher<ResultEntity<Boolean>> apply(Long aLong) throws Exception {
+                    public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) throws Exception {
+//                        if (System.currentTimeMillis() - getLastNoticeTime() > 60 * 1000){
+//                            HashMap<String, String> request = new HashMap<>();
+//                            request.put("appLoginName", Configuration.getUserInfoByKey(KEY_USER_NAME));
+//                            request.put("loginUserId", Configuration.getUserInfoByKey(KEY_MCH_ID));
+//                            request.put("type", "2001");
+//                            request.put("enable", "0");
+//                            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign())
+//                                    .subscribe(new Consumer<ResultEntity<String>>() {
+//                                        @Override
+//                                        public void accept(ResultEntity<String> stringResultEntity) throws Exception {
+//                                            Notice notice = new Notice();
+//                                            notice.type = 1;
+//                                            RxBus.getDefault().send(notice);
+//                                        }
+//                                    });
+//                        }
                         return ApiProducerModule.create(ApiService.class).heartbeat(new SignRequestBody().sign());
                     }
                 })
-                .subscribe(new Subscriber<ResultEntity<Boolean>>() {
+                .subscribe(new Observer<ResultEntity<Boolean>>() {
                     @Override
-                    public void onSubscribe(Subscription s) {
-                        subscription = s;
+                    public void onSubscribe(Disposable d) {
+                        disposable = d;
+                        debug(TAG,"=======heartBeat onSubscribe======");
                     }
 
                     @Override
@@ -80,13 +95,16 @@ public class HeartJobService extends JobService {
                     }
 
                     @Override
-                    public void onError(Throwable t) {
-                        t.printStackTrace();
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        disposable.dispose();
+                        debug(TAG,"=======heartBeat onError======");
                         heartBeat();
                     }
 
                     @Override
                     public void onComplete() {
+                        disposable.dispose();
                         debug(TAG,"=======heartBeat onComplete======");
                         heartBeat();
                     }

@@ -5,7 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -14,6 +18,8 @@ import android.widget.RadioButton;
 
 import com.fintech.sst.R;
 import com.fintech.sst.data.db.Notice;
+
+import java.text.DecimalFormat;
 
 
 public class SendNoticeDialog extends Dialog {
@@ -43,47 +49,80 @@ public class SendNoticeDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dlg_send_notice);
 
-        RadioButton rb_ali = findViewById(R.id.rb_ali);
-        RadioButton rb_wechat = findViewById(R.id.rb_wechat);
-        EditText etAccount = findViewById(R.id.et_account);
-        Button btnY = findViewById(R.id.btnY);
+        final RadioButton rb_ali = findViewById(R.id.rb_ali);
+        final RadioButton rb_wechat = findViewById(R.id.rb_wechat);
+        final EditText etAccount = findViewById(R.id.et_amount);
+        final Button btnY = findViewById(R.id.btnY);
         Button btnN = findViewById(R.id.btnN);
+        btnY.setEnabled(false);
 
         rb_ali.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-//                    notice.status
+                    notice.title = "支付宝通知";
+                    notice.packageName = "com.eg.android.AlipayGphone";
+                    notice.type = 2001;
+                    if (TextUtils.isEmpty(etAccount.getText())) return;
+                    notice.amount = getAmount(etAccount.getText().toString());
+                    notice.content = "支付宝通知：xxx付款"+ notice.amount +"元";
                 }
             }
         });
 
-//        btnRefresh.setOnClickWithCountDownListener(new CountDownButton.OnClickWithCountDown() {
-//            @Override
-//            public void onPre() {
-//                setCancelable(false);
-//            }
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (clickListener!=null)
-//                    clickListener.onRefresh();
-//                dismiss();
-//            }
-//        });
-//        btnDel.setOnClickWithCountDownListener(new CountDownButton.OnClickWithCountDown() {
-//            @Override
-//            public void onPre() {
-//                setCancelable(false);
-//            }
-//            @Override
-//            public void onClick(View v) {
-//                if (clickListener!=null)
-//                    clickListener.onDel();
-//                dismiss();
-//            }
-//        });
+        rb_wechat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    notice.title = "微信支付";
+                    notice.packageName = "com.tencent.mm";
+                    notice.type = 1001;
+                    if (TextUtils.isEmpty(etAccount.getText())) return;
+                    notice.amount = getAmount(etAccount.getText().toString());
+                    notice.content = "微信支付: 微信支付收款"+ notice.amount +"元";
+                }
+            }
+        });
 
+        etAccount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                notice.amount = getAmount(s.toString());
+                if (rb_ali.isChecked())
+                    notice.content = "支付宝通知：xxx付款"+ notice.amount +"元";
+
+                if (rb_wechat.isChecked())
+                    notice.content = "微信支付: 微信支付收款"+ notice.amount +"元";
+
+                btnY.setEnabled(!TextUtils.isEmpty(s));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        btnY.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clickListener!=null)
+                    clickListener.onSure(notice);
+                dismiss();
+            }
+        });
+
+        btnN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
@@ -105,8 +144,16 @@ public class SendNoticeDialog extends Dialog {
     }
 
     public interface ClickListener{
-        void onRefresh();
-        void onDel();
+        void onSure(Notice notice);
     }
 
+    private String getAmount(String amount){
+        try {
+            DecimalFormat format = new DecimalFormat("0.00");
+            return format.format(Float.parseFloat(amount));
+        }catch (Exception e){
+            e.printStackTrace();
+            return "0.00";
+        }
+    }
 }

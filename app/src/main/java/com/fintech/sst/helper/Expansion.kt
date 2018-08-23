@@ -10,8 +10,12 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import com.fintech.sst.App
+import java.text.SimpleDateFormat
+import java.util.*
 
 var DEBUG = true
+
+var lastNoticeTime:Long = 0
 
 fun Activity.toActivity(clazz: Class<*>) = startActivity(Intent(this,clazz))
 
@@ -36,3 +40,8 @@ fun EditText.onChange(onChange:(s: CharSequence?) -> Unit){
 }
 
 fun getColor(res:Int) = App.getAppContext().resources.getColor(res)
+
+fun getTime(time:Long): String? {
+    val format = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA)
+    return format.format(Date(time))
+}

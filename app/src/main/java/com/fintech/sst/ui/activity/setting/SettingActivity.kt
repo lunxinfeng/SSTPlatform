@@ -35,6 +35,18 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
 
         tv_notice_setting.setOnClickListener { toNotifactionSetting() }
         tv_permission_setting.setOnClickListener { toAppDetailActivity() }
+        tv_clear_data.setOnClickListener {
+            AlertDialog.Builder(this)
+                    .setMessage("是否清除本地数据库？")
+                    .setPositiveButton("确定"){dialog, _ ->
+                        dialog.dismiss()
+                        presenter.cleatLocalDB()
+                    }
+                    .setNegativeButton("取消"){dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+        }
         tv_exit_account.setOnClickListener {
             AlertDialog.Builder(this)
                     .setMessage("是否确定退出当前账号？")

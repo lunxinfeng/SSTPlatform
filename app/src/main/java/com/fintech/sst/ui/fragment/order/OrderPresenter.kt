@@ -3,6 +3,7 @@ package com.fintech.sst.ui.fragment.order
 import android.arch.lifecycle.LifecycleObserver
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
+import com.fintech.sst.net.bean.OrderCount
 import com.fintech.sst.net.bean.OrderList
 import com.fintech.sst.net.bean.PageList
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,6 +29,23 @@ class OrderPresenter(val view: OrderContract.View,
 
                     override fun onError(error: String) {
                          view.loadError(error)
+                    }
+                })
+    }
+
+    override fun orderCount(orderList: OrderList) {
+        model.orderCount(orderList.realAmount.toString(),orderList.createTime)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : ProgressObserver<ResultEntity<OrderCount>, OrderContract.View>(view,false) {
+                    override fun onNext_(t: ResultEntity<OrderCount>?) {
+                        t?.result?.let {
+                            view.showReOrderHint(it,orderList)
+                        }?:view.showToast("获取数据失败")
+                    }
+
+                    override fun onError(error: String) {
+                        view.loadError(error)
                     }
                 })
     }

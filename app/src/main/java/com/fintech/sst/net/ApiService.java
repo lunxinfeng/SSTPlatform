@@ -3,12 +3,12 @@ package com.fintech.sst.net;
 
 import com.fintech.sst.data.db.Notice;
 import com.fintech.sst.net.bean.AisleInfo;
+import com.fintech.sst.net.bean.OrderCount;
 import com.fintech.sst.net.bean.OrderList;
 import com.fintech.sst.net.bean.PageList;
 
 import java.util.Map;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -27,7 +27,7 @@ public interface ApiService {
     );
 
     @POST("/api/terminal/v1/heartbeat")
-    Flowable<ResultEntity<Boolean>> heartbeat(
+    Observable<ResultEntity<Boolean>> heartbeat(
             @Body SignRequestBody body
     );
 
@@ -53,7 +53,7 @@ public interface ApiService {
     Observable<ResultEntity<String>> aisleStatus(
             @Body SignRequestBody body
     );
-    @POST("/admin/u/redisMoney/removeAll")
+    @POST("/api/terminal/v1/redisMoney/removeAll")
     Observable<ResultEntity<String>> aisleRefresh(
             @Body SignRequestBody body
     );
@@ -64,6 +64,10 @@ public interface ApiService {
 
     @POST("/api/terminal/v1/merchant/ordersNew")
     Observable<ResultEntity<PageList<OrderList>>> orders(
+            @Body SignRequestBody body
+    );
+    @POST("/api/terminal/v1/getcount")
+    Observable<ResultEntity<OrderCount>> orderCount(
             @Body SignRequestBody body
     );
 

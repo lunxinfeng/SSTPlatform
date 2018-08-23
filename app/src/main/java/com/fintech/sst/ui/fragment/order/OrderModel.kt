@@ -3,8 +3,10 @@ package com.fintech.sst.ui.fragment.order
 import com.fintech.sst.data.DataSource
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.KEY_ACCOUNT
+import com.fintech.sst.net.Constants.KEY_MCH_ID
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.SignRequestBody
+import com.fintech.sst.net.bean.OrderCount
 import com.fintech.sst.net.bean.OrderList
 import com.fintech.sst.net.bean.PageList
 import io.reactivex.Observable
@@ -18,6 +20,15 @@ class OrderModel : DataSource {
         body.put("pageSize", pageSize)
         body.put("pageNow", pageNow)
         return service.orders(SignRequestBody(body.sign()))
+    }
+
+    fun orderCount(realAmount:String,beginTime:String): Observable<ResultEntity<OrderCount>> {
+        val body = SignRequestBody()
+        body.put("mchId", Configuration.getUserInfoByKey(KEY_MCH_ID))
+        body.put("realAmount", realAmount)
+        body.put("qrAccount", Configuration.getUserInfoByKey(KEY_ACCOUNT))
+        body.put("beginTime", beginTime)
+        return service.orderCount(body.sign())
     }
 
     fun reOrder(orderNo: String): Observable<ResultEntity<String>> {

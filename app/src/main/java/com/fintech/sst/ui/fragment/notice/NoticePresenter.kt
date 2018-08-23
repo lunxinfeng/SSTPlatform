@@ -3,6 +3,7 @@ package com.fintech.sst.ui.fragment.notice
 import android.arch.lifecycle.LifecycleObserver
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.net.ProgressObserver
+import com.fintech.sst.net.ResultEntity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,6 +27,34 @@ class NoticePresenter(val view: NoticeContract.View,
 
                     override fun onError(error: String) {
                          view.loadError(error)
+                    }
+                })
+    }
+
+    override fun sendNotice(notice: Notice) {
+        model.sendNotice(notice)
+                .doOnSubscribe {
+                    model.insertDB(notice)
+                }
+                .subscribeOn(Schedulers.io())
+                .doOnNext {
+                    val result = it.result
+                    if (it.msg == "success" && result != null) {
+                        result.status = 1
+                        model.updateDB(result)
+                    }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : ProgressObserver<ResultEntity<Notice>, NoticeContract.View>(view,false) {
+                    override fun onNext_(resultEntity: ResultEntity<Notice>) {
+                        val result = resultEntity.result
+                        if (resultEntity.msg == "success" && result != null) {
+                            view.sendNoticeComplete()
+                        }
+                    }
+
+                    override fun onError(error: String) {
+                        view.loadError(error)
                     }
                 })
     }

@@ -89,25 +89,25 @@ public final class NotificationListener extends NotificationListenerService {
         Notification notification = statusBarNotification.getNotification();
         if (notification == null) return;
         Notice notice = new Notice();
-//        notice.content = notification.tickerText.toString();
-        notice.content = "支付宝通知: 收款100.01元";
+        notice.content = notification.tickerText.toString();
+//        notice.content = "支付宝通知: 收款100.01元";
         notice.saveTime = notification.when;
         notice.status = 2;
         notice.tag = statusBarNotification.getTag();
         notice.noticeId = statusBarNotification.getId();
         notice.packageName = packageName;
         ParsedNotification parsedNotification = new ParsedNotification(notification);
-//        notice.title = parsedNotification.getmExtras().getString("android.title");
-        notice.title = "微信支付";
-        notice.title = "支付宝通知";
+        notice.title = parsedNotification.getmExtras().getString("android.title");
+//        notice.title = "微信支付";
+//        notice.title = "支付宝通知";
         switch (packageName) {
             case "com.tencent.mm":
                 notice.type = 2001;
-                notice.amount = parsedNotification.parseAmountWeChat();
+                notice.amount = parsedNotification.parseAmountWeChat() + "";
                 break;
             case "com.eg.android.AlipayGphone":
                 notice.type = 2001;
-                notice.amount = parsedNotification.parseAmountAli();
+                notice.amount = parsedNotification.parseAmountAli() + "";
                 break;
         }
         notices.offer(notice);

@@ -9,6 +9,7 @@ interface NoticeContract {
         fun loadError(error:String)
         fun loadMore(notices:List<Notice>?)
         fun refreshData(notices:List<Notice>?)
+        fun sendNoticeComplete()
     }
 
     interface Presenter: BasePresenter {
@@ -16,5 +17,7 @@ interface NoticeContract {
          * 通知列表
          */
         fun noticeList(status:Int, pageNow: Int = 1, pageSize:Int = 10, append:Boolean = false)
+
+        fun sendNotice(notice:Notice)
     }
 }

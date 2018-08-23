@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseFragment
+import com.fintech.sst.net.bean.OrderCount
 import com.fintech.sst.net.bean.OrderList
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
@@ -46,20 +47,12 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
             adapter = this@OrderFragment.adapter.apply {
                 setEmptyView(R.layout.empty_view_recycler,recyclerView)
                 setOnItemChildClickListener { _,_,position ->
-                    AlertDialog.Builder(activity)
-                            .setMessage("是否确定补单？")
-                            .setPositiveButton("确定"){_, _ ->
-                                presenter.reOrder(data[position].tradeNo)
-                            }
-                            .setNegativeButton("取消"){dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .show()
+                    presenter.orderCount(data[position])
                 }
             }
         }
 
-        refreshLayout.apply {
+        refreshLayout?.apply {
             setRefreshHeader(ClassicsHeader(context))
             setRefreshFooter(ClassicsFooter(context))
             setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
@@ -78,7 +71,7 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
     }
 
     override fun loadMore(orders: List<OrderList>?) {
-        refreshLayout.finishLoadMore()
+        refreshLayout?.finishLoadMore()
         if (orders == null || orders.isEmpty()){
             showToast("没有更多数据了")
             return
@@ -88,20 +81,32 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
     }
 
     override fun refreshData(orders: List<OrderList>?) {
-        refreshLayout.finishRefresh()
+        refreshLayout?.finishRefresh()
         adapter.setNewData(orders)
     }
 
     override fun loadError(error: String) {
         showToast(error)
-        refreshLayout.finishLoadMore(false)
-        refreshLayout.finishRefresh()
+        refreshLayout?.finishLoadMore(false)
+        refreshLayout?.finishRefresh()
     }
 
     override fun reOrderSuccess() {
         showToast("补单成功")
         pageIndex = 1
         presenter.orderList(type)
+    }
+
+    override fun showReOrderHint(orderCount: OrderCount,orderList: OrderList) {
+        AlertDialog.Builder(activity)
+                .setMessage("当前金额订单总数为${orderCount.orderCount}，收款单总数为${orderCount.noticeLogCount},是否确定补单?")
+                .setPositiveButton("确定"){_, _ ->
+                    presenter.reOrder(orderList.tradeNo)
+                }
+                .setNegativeButton("取消"){dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
     }
 
     // TODO: Rename method, update argument and hook method into UI event
