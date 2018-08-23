@@ -10,6 +10,14 @@ public class DB {
     return AppDatabase.getInstance(context).noticeDao().insertNotice(notice);
   }
 
+  public static void updateAll(Context context, Notice... notice){
+    AppDatabase.getInstance(context).noticeDao().updateAll(notice);
+  }
+
+  public static Notice query(Context context,String uuid){
+    return AppDatabase.getInstance(context).noticeDao().query(uuid);
+  }
+
   public static List<Notice> queryAll(Context context){
     return AppDatabase.getInstance(context).noticeDao().queryAll();
   }

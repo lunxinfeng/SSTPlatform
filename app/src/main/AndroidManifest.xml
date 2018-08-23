@@ -46,8 +46,9 @@
             android:name=".ui.activity.order.OrderListActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name="com.fintech.sst.ui.activity.notice.NoticeListActivity"
+            android:name=".ui.activity.notice.NoticeListActivity"
             android:launchMode="singleTask" />
+        <activity android:name=".ui.activity.setting.SettingActivity"></activity>
     </application>
 
 </manifest>

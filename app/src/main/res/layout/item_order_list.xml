@@ -10,11 +10,11 @@
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="8dp"
      >
+
     <android.support.constraint.ConstraintLayout
 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_zishanghu"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="订单编号："
+            android:text="外部订单号："
             app:layout_constraintStart_toStartOf="@+id/tv_zishanghu"
             app:layout_constraintTop_toBottomOf="@+id/tv_zishanghu" />
 
@@ -45,8 +45,8 @@
             android:layout_marginTop="16dp"
             android:text="订单时间："
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_order_money"
-            app:layout_constraintTop_toBottomOf="@+id/tv_order_money" />
+            app:layout_constraintStart_toStartOf="@+id/tvFeeRate"
+            app:layout_constraintTop_toBottomOf="@+id/tvFeeRate" />
 
         <TextView
             android:id="@+id/tv_order_money"
@@ -65,6 +65,35 @@
             android:text="收款金额："
             app:layout_constraintStart_toEndOf="@+id/tv_order_money"
             app:layout_constraintTop_toTopOf="@+id/tv_order_money" />
+
+        <TextView
+            android:id="@+id/tvFeeRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="费率："
+            app:layout_constraintStart_toStartOf="@+id/tv_order_money"
+            app:layout_constraintTop_toBottomOf="@+id/tv_order_money" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_zishanghu"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btnOrder"
+            style="@style/button_primary_dark"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="补单"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

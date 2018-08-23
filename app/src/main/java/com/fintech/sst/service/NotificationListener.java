@@ -11,22 +11,27 @@ import android.util.Log;
 
 import com.fintech.sst.data.db.DB;
 import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.helper.ParsedNotification;
 import com.fintech.sst.helper.RxBus;
+import com.fintech.sst.net.ApiProducerModule;
+import com.fintech.sst.net.ApiService;
+import com.fintech.sst.net.MessageRequestBody;
+import com.fintech.sst.net.ResultEntity;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 import static com.fintech.sst.helper.ExpansionKt.debug;
 
@@ -64,19 +69,15 @@ public final class NotificationListener extends NotificationListenerService {
             return;
         }
 
-        Log.d(TAG, "onNotificationPosted: " + statusBarNotification.getNotification().tickerText);
-        Log.d(TAG, "onNotificationPosted: " + statusBarNotification.getNotification().when);
-        Date date = new Date(statusBarNotification.getNotification().when);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
-        Log.d(TAG, "onNotificationPosted: " + sdf.format(date));
+        debug(TAG, "onNotificationPosted: " + statusBarNotification.getNotification().tickerText);
 
         if (PACKAGES_LOWER_CASE.contains(str.toLowerCase())) {//监控 微信 and 支付宝  Notification
             sLock.lock();
             try {
                 onPostedAsync(statusBarNotification);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 sLock.unlock();
             }
         }
@@ -88,15 +89,25 @@ public final class NotificationListener extends NotificationListenerService {
         Notification notification = statusBarNotification.getNotification();
         if (notification == null) return;
         Notice notice = new Notice();
-        notice.content = statusBarNotification.getNotification().tickerText.toString();
-        notice.saveTime = statusBarNotification.getNotification().when;
-        notice.status = 0;
-        switch (packageName){
+//        notice.content = notification.tickerText.toString();
+        notice.content = "支付宝通知: 收款100.01元";
+        notice.saveTime = notification.when;
+        notice.status = 2;
+        notice.tag = statusBarNotification.getTag();
+        notice.noticeId = statusBarNotification.getId();
+        notice.packageName = packageName;
+        ParsedNotification parsedNotification = new ParsedNotification(notification);
+//        notice.title = parsedNotification.getmExtras().getString("android.title");
+        notice.title = "微信支付";
+        notice.title = "支付宝通知";
+        switch (packageName) {
             case "com.tencent.mm":
-                notice.type = 200;
+                notice.type = 2001;
+                notice.amount = parsedNotification.parseAmountWeChat();
                 break;
             case "com.eg.android.AlipayGphone":
-                notice.type = 100;
+                notice.type = 2001;
+                notice.amount = parsedNotification.parseAmountAli();
                 break;
         }
         notices.offer(notice);
@@ -127,29 +138,58 @@ public final class NotificationListener extends NotificationListenerService {
         super.onDestroy();
     }
 
-    private void db(){
+    private void db() {
+        if (disposable != null)
+            disposable.dispose();
         Observable.interval(100, TimeUnit.MILLISECONDS)
-                .subscribe(new Observer<Long>() {
+                .filter(new Predicate<Long>() {
+                    @Override
+                    public boolean test(Long aLong) throws Exception {
+                        return notices.size() > 0;
+                    }
+                })
+                .flatMap(new Function<Long, ObservableSource<ResultEntity<Notice>>>() {
+                    @Override
+                    public ObservableSource<ResultEntity<Notice>> apply(Long aLong) throws Exception {
+                        Notice notice = notices.poll();
+                        RxBus.getDefault().send(notice);
+                        debug(TAG, "=========DB========: 发起请求" + notice.uuid);
+                        MessageRequestBody body = new MessageRequestBody();
+                        body.put("uuid", notice.uuid);
+                        body.put("amount", notice.amount);
+                        body.put("title", notice.title);
+                        body.put("content", notice.content);
+                        body.put("time", notice.saveTime);
+                        body.put("type", notice.type);
+                        body.put("packageName", notice.packageName);
+                        body.put("id", notice.noticeId);
+                        body.put("tag", notice.tag);
+                        body.sign();
+                        DB.insert(NotificationListener.this, notice);
+                        return ApiProducerModule
+                                .create(ApiService.class)
+                                .notifyLog(body);
+                    }
+                })
+                .subscribe(new Observer<ResultEntity<Notice>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposable = d;
                     }
 
                     @Override
-                    public void onNext(Long aLong) {
-                        if (notices.size()>0){
-                            Notice notice = notices.poll();
-                            RxBus.getDefault().send(notice);
-                            long id = DB.insert(NotificationListener.this,notice);
-                            debug(TAG,"=========DB========: " + id);
-                        }else{
-                            if (aLong%50 == 0)
-                                debug(TAG,"=========DB========: null");
+                    public void onNext(ResultEntity<Notice> resultEntity) {
+                        Notice notice = resultEntity.getResult();
+                        if (resultEntity.getMsg().equals("success") && notice!=null){
+                            notice.status = 1;
+                            DB.updateAll(NotificationListener.this, notice);
                         }
+                        debug(TAG, "=========DB========: " + resultEntity);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         disposable.dispose();
                         db();
                     }
@@ -162,8 +202,8 @@ public final class NotificationListener extends NotificationListenerService {
                 });
     }
 
-    public static boolean isActive(){
-        return disposable!=null && !disposable.isDisposed();
+    public static boolean isActive() {
+        return disposable != null && !disposable.isDisposed();
     }
 }
 

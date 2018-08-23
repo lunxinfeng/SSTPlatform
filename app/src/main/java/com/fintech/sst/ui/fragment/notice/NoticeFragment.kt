@@ -65,7 +65,7 @@ class NoticeFragment : BaseFragment<NoticeContract.Presenter>(), NoticeContract.
         }
 
         floatbutton.apply {
-            visibility = if (status == 3) View.VISIBLE else View.GONE
+            visibility = if (status == 2) View.VISIBLE else View.GONE
             setOnClickListener {
 
             }

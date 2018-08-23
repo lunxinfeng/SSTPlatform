@@ -48,12 +48,6 @@
             android:layout_height="wrap_content"
             android:text="@string/fail" />
 
-        <android.support.design.widget.TabItem
-            android:id="@+id/tab_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bu_aisle" />
-
     </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager

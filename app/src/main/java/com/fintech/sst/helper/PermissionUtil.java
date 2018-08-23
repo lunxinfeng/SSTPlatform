@@ -3,8 +3,10 @@ package com.fintech.sst.helper;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.support.v4.app.NotificationManagerCompat;
@@ -40,4 +42,11 @@ public class PermissionUtil {
         pm.setComponentEnabledSetting(new ComponentName(App.getAppContext(), cls),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
+
+    public static void toAppDetailActivity(Context context) {
+        context.startActivity(
+                new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        .setData(Uri.fromParts("package", context.getPackageName(), null)));
+    }
+
 }

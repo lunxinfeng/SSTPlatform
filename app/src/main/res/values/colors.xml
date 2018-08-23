@@ -7,4 +7,8 @@
     <color name="black_90">#90000000</color>
     <color name="white">#ffffff</color>
     <color name="transparent">#00ffffff</color>
+    <color name="textColorDark3">#333333</color>
+    <color name="success">#4daa01</color>
+    <color name="fail">#fb0802</color>
+    <color name="loading">#277ce6</color>
 </resources>

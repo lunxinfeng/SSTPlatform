@@ -1,9 +1,10 @@
 package com.fintech.sst.net;
 
 
+import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.net.bean.AisleInfo;
 import com.fintech.sst.net.bean.OrderList;
 import com.fintech.sst.net.bean.PageList;
-import com.fintech.sst.net.bean.UserInfoDetail;
 
 import java.util.Map;
 
@@ -25,24 +26,50 @@ public interface ApiService {
             @Body SignRequestBody body
     );
 
-    // alipays or wechats
     @POST("/api/terminal/v1/heartbeat")
     Flowable<ResultEntity<Boolean>> heartbeat(
             @Body SignRequestBody body
     );
 
     @POST("/api/terminal/v1/trade/notify")
-    Observable<ResultEntity> notifyLog(
+    Observable<ResultEntity<Notice>> notifyLog(
             @Body SignRequestBody body
     );
 
-    @POST("/api/terminal/v1/merchant/info")
-    Observable<ResultEntity<UserInfoDetail>> userInfo(
+    @POST("/api/terminal/v1/trade/reNotify")
+    Observable<ResultEntity<String>> reNotify(
             @Body SignRequestBody body
     );
 
-    @POST("/api/terminal/v1/merchant/orders")
+//    @POST("/api/terminal/v1/merchant/info")
+//    Observable<ResultEntity<UserInfoDetail>> userInfo(
+//            @Body SignRequestBody body
+//    );
+    @POST("/api/terminal/v1/account/info")
+    Observable<ResultEntity<AisleInfo>> userInfo(
+            @Body SignRequestBody body
+    );
+    @POST("/api/terminal/v1/account/status")
+    Observable<ResultEntity<String>> aisleStatus(
+            @Body SignRequestBody body
+    );
+    @POST("/admin/u/redisMoney/removeAll")
+    Observable<ResultEntity<String>> aisleRefresh(
+            @Body SignRequestBody body
+    );
+    @POST("/api/terminal/v1/delete/account")
+    Observable<ResultEntity<String>> aisleDelete(
+            @Body SignRequestBody body
+    );
+
+    @POST("/api/terminal/v1/merchant/ordersNew")
     Observable<ResultEntity<PageList<OrderList>>> orders(
+            @Body SignRequestBody body
+    );
+
+    //补单
+    @POST("/api/terminal/v1/trade/replenish")
+    Observable<ResultEntity<String>> sendOrderNotify(
             @Body SignRequestBody body
     );
 

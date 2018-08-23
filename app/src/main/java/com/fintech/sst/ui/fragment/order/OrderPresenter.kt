@@ -31,4 +31,20 @@ class OrderPresenter(val view: OrderContract.View,
                     }
                 })
     }
+
+    override fun reOrder(orderNo: String) {
+        model.reOrder(orderNo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : ProgressObserver<ResultEntity<String>, OrderContract.View>(view,false) {
+                    override fun onNext_(t: ResultEntity<String>?) {
+                        view.reOrderSuccess()
+                    }
+
+                    override fun onError(error: String) {
+                        view.loadError(error)
+                    }
+                })
+
+    }
 }

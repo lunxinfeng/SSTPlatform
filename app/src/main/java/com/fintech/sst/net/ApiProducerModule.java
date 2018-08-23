@@ -2,6 +2,8 @@ package com.fintech.sst.net;
 
 
 
+import com.fintech.sst.helper.ExpansionKt;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -9,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class ApiProducerModule {
 
@@ -41,11 +44,11 @@ public class ApiProducerModule {
                 e.printStackTrace();
             }
 
-//            if (BuildConfig.DEBUG) {
+            if (ExpansionKt.getDEBUG()) {
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY);
                 builder.addInterceptor(logging);
-//            }
+            }
 
 //            cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(App.getApplication()));
 //            builder.cookieJar(cookieJar);

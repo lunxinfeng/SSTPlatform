@@ -1,5 +1,6 @@
 package com.fintech.sst.ui.fragment.order
 
+import android.app.AlertDialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -44,6 +45,17 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
             layoutManager = LinearLayoutManager(activity)
             adapter = this@OrderFragment.adapter.apply {
                 setEmptyView(R.layout.empty_view_recycler,recyclerView)
+                setOnItemChildClickListener { _,_,position ->
+                    AlertDialog.Builder(activity)
+                            .setMessage("是否确定补单？")
+                            .setPositiveButton("确定"){_, _ ->
+                                presenter.reOrder(data[position].tradeNo)
+                            }
+                            .setNegativeButton("取消"){dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
+                }
             }
         }
 
@@ -84,6 +96,12 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
         showToast(error)
         refreshLayout.finishLoadMore(false)
         refreshLayout.finishRefresh()
+    }
+
+    override fun reOrderSuccess() {
+        showToast("补单成功")
+        pageIndex = 1
+        presenter.orderList(type)
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -26,12 +26,15 @@ public interface NoticeDao {
   @Update
   void updateAll(Notice... notices);
 
+  @Query("SELECT * FROM Notice WHERE uuid = :uuid")
+  Notice query(String uuid);
+
   @Query("SELECT * FROM Notice")
   List<Notice> queryAll();
 
-  @Query("SELECT * FROM Notice ORDER BY id DESC LIMIT :pageSize OFFSET (:pageIndex -1) * :pageSize")
+  @Query("SELECT * FROM Notice LIMIT :pageSize OFFSET (:pageIndex -1) * :pageSize")
   List<Notice> queryAll(int pageIndex,int pageSize);
 
-  @Query("SELECT * FROM Notice WHERE status = :status ORDER BY id DESC LIMIT :pageSize OFFSET (:pageIndex -1) * :pageSize")
+  @Query("SELECT * FROM Notice WHERE status = :status LIMIT :pageSize OFFSET (:pageIndex -1) * :pageSize")
   List<Notice> queryAll(int status,int pageIndex,int pageSize);
 }

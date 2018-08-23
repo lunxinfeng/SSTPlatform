@@ -41,4 +41,5 @@
     <string name="fail">失败</string>
     <string name="bu_aisle">补通知</string>
     <string name="no_pattern">未匹配</string>
+    <string name="warning_aisle">警告：\n删除通道为不可逆操作，请谨慎操作！</string>
 </resources>

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
-import com.fintech.sst.helper.RegexUtil
 import com.fintech.sst.helper.Utils
 import com.fintech.sst.helper.onChange
 import com.fintech.sst.net.Constants
@@ -35,7 +34,8 @@ class ConfigActivity : BaseActivity<ConfigContract.Presenter>(), ConfigContract.
 
         etAddress.onChange {
             Constants.baseUrl = it.toString()
-            btnNext.isEnabled = RegexUtil.isMatch(RegexUtil.URL,Constants.baseUrl)
+//            btnNext.isEnabled = RegexUtil.isMatch(RegexUtil.URL,Constants.baseUrl)
+            btnNext.isEnabled = true
         }
         btnNext.setOnClickListener { presenter.check(Constants.baseUrl) }
     }

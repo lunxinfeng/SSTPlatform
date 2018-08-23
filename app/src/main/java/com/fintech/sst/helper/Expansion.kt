@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
+import com.fintech.sst.App
 
 var DEBUG = true
 
@@ -33,3 +34,5 @@ fun EditText.onChange(onChange:(s: CharSequence?) -> Unit){
         }
     })
 }
+
+fun getColor(res:Int) = App.getAppContext().resources.getColor(res)

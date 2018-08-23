@@ -11,7 +11,7 @@ import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
-import com.fintech.sst.net.bean.UserInfoDetail
+import com.fintech.sst.net.bean.AisleInfo
 import com.fintech.sst.service.JobServiceCompact
 import io.reactivex.Observer
 import io.reactivex.Single
@@ -34,9 +34,9 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         } else {
             Constants.baseUrl = Configuration.getUserInfoByKey(Constants.KEY_ADDRESS)
         }
+        JobServiceCompact.startJob(1000)
         subscribeNotice()
         userInfo()
-        JobServiceCompact.startJob(1000)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -52,9 +52,55 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         model.userInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : ProgressObserver<ResultEntity<UserInfoDetail>, AisleManagerContract.View>(view) {
-                    override fun onNext_(t: ResultEntity<UserInfoDetail>?) {
+                .subscribe(object : ProgressObserver<ResultEntity<AisleInfo>, AisleManagerContract.View>(view) {
+                    override fun onNext_(t: ResultEntity<AisleInfo>?) {
+                        model.aisleInfo = t?.result
                         view.updateUserInfo(t?.result)
+                    }
+
+                    override fun onError(error: String) {
+                        view.showToast(error)
+                    }
+                })
+    }
+
+    override fun aisleStatus(open: Boolean) {
+        model.aisleStatus(open)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : ProgressObserver<ResultEntity<String>, AisleManagerContract.View>(view) {
+                    override fun onNext_(t: ResultEntity<String>?) {
+                        view.aisleStatusResult(t?.msg.toString().contains("success"))
+                    }
+
+                    override fun onError(error: String) {
+                        view.showToast(error)
+                    }
+                })
+    }
+
+    override fun aisleRefresh() {
+        model.aisleRefresh()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : ProgressObserver<ResultEntity<String>, AisleManagerContract.View>(view) {
+                    override fun onNext_(t: ResultEntity<String>?) {
+                        view.aisleRefreshResult(t?.msg.toString().contains("success"))
+                    }
+
+                    override fun onError(error: String) {
+                        view.showToast(error)
+                    }
+                })
+    }
+
+    override fun aisleDelete() {
+        model.aisleDelete()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : ProgressObserver<ResultEntity<String>, AisleManagerContract.View>(view) {
+                    override fun onNext_(t: ResultEntity<String>?) {
+                        view.aisleDeleteResult(t?.msg.toString().contains("success"))
                     }
 
                     override fun onError(error: String) {
@@ -79,6 +125,20 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
             compositeDisposable.clear()
             if (clickNum > 2)
                 view.showToast("再点${7 - clickNum}次进入通知详情页")
+        }
+        val d = Single.timer(1000, TimeUnit.MILLISECONDS)
+                .subscribe { _ -> clickNum = 0 }
+        compositeDisposable.add(d)
+    }
+
+    override fun toAisleManager() {
+        if (++clickNum == 7) {
+            view.toAisleManager()
+            return
+        } else {
+            compositeDisposable.clear()
+            if (clickNum in 3..6)
+                view.showToast("再点${7 - clickNum}次进入通道管理")
         }
         val d = Single.timer(1000, TimeUnit.MILLISECONDS)
                 .subscribe { _ -> clickNum = 0 }

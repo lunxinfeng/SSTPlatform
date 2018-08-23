@@ -25,6 +25,7 @@ import static com.fintech.sst.helper.ExpansionKt.debug;
 
 public class HeartJobService extends JobService {
     private static final String TAG = "HeartJobService";
+    private Subscription subscription;
     @Override
     public boolean onStartJob(JobParameters params) {
         debug(TAG,"=======onStartJob======");
@@ -46,7 +47,9 @@ public class HeartJobService extends JobService {
     }
 
     private void heartBeat() {
-        Flowable.interval(10*1000, TimeUnit.MILLISECONDS)
+        if (subscription!=null)
+            subscription.cancel();
+        Flowable.interval(0,10*1000, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
                 .filter(new Predicate<Long>() {
                     @Override
@@ -68,7 +71,7 @@ public class HeartJobService extends JobService {
                 .subscribe(new Subscriber<ResultEntity<Boolean>>() {
                     @Override
                     public void onSubscribe(Subscription s) {
-
+                        subscription = s;
                     }
 
                     @Override
@@ -79,11 +82,13 @@ public class HeartJobService extends JobService {
                     @Override
                     public void onError(Throwable t) {
                         t.printStackTrace();
+                        heartBeat();
                     }
 
                     @Override
                     public void onComplete() {
                         debug(TAG,"=======heartBeat onComplete======");
+                        heartBeat();
                     }
                 });
     }

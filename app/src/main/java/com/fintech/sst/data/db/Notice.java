@@ -2,12 +2,21 @@ package com.fintech.sst.data.db;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+import java.util.UUID;
 
 @Entity
 public class Notice {
 
-  @PrimaryKey(autoGenerate = true)
-  public int id;
+  @NonNull
+  @PrimaryKey
+  public String uuid = "";
+  public String title;
+  public String packageName;
+  public int noticeId;
+  public String tag;
+  public String erroMsg;
   /**
    * 通知内容
    */
@@ -16,7 +25,7 @@ public class Notice {
   /**
    * 金额
    */
-  public double amount;
+  public float amount;
 
   /**
    * 类型：0全部  100支付宝   200微信  300银行卡
@@ -31,18 +40,8 @@ public class Notice {
   public long saveTime;
 
   public Notice() {
+    uuid = UUID.randomUUID().toString().replaceAll("-","");
     saveTime = System.currentTimeMillis();
   }
 
-  @Override
-  public String toString() {
-    return "Notice{" +
-            "id=" + id +
-            ", content='" + content + '\'' +
-            ", amount=" + amount +
-            ", type=" + type +
-            ", status=" + status +
-            ", saveTime=" + saveTime +
-            '}';
-  }
 }
