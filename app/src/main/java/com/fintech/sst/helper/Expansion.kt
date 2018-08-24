@@ -42,6 +42,6 @@ fun EditText.onChange(onChange:(s: CharSequence?) -> Unit){
 fun getColor(res:Int) = App.getAppContext().resources.getColor(res)
 
 fun getTime(time:Long): String? {
-    val format = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA)
+    val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
     return format.format(Date(time))
 }

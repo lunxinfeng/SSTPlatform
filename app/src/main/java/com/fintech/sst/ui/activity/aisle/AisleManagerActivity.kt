@@ -8,8 +8,10 @@ import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.PermissionUtil
+import com.fintech.sst.helper.lastNoticeTime
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.bean.AisleInfo
+import com.fintech.sst.service.JobServiceCompact
 import com.fintech.sst.ui.activity.login.LoginActivity
 import com.fintech.sst.ui.activity.notice.NoticeListActivity
 import com.fintech.sst.ui.activity.order.OrderListActivity
@@ -38,6 +40,8 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         if (!success)
             switch_aisle.isChecked = !switch_aisle.isChecked
         showToast(if (success) "操作成功" else "操作失败")
+        if (success)
+            lastNoticeTime = System.currentTimeMillis()
     }
 
     override fun aisleRefreshResult(success: Boolean) {
@@ -48,6 +52,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         showToast(if (success) "操作成功" else "操作失败")
         if (success){
             Configuration.clearUserInfo()
+            JobServiceCompact.cancelAllJobs(this)
             toLogin()
         }
     }

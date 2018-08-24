@@ -2,6 +2,7 @@ package com.fintech.sst.ui.fragment.notice
 
 import android.arch.lifecycle.LifecycleObserver
 import com.fintech.sst.data.db.Notice
+import com.fintech.sst.helper.lastNoticeTime
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,6 +41,7 @@ class NoticePresenter(val view: NoticeContract.View,
                 .doOnNext {
                     val result = it.result
                     if (it.msg == "success" && result != null) {
+                        lastNoticeTime = result.saveTime
                         result.status = 1
                         model.updateDB(result)
                     }

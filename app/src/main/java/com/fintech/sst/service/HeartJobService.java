@@ -3,23 +3,31 @@ package com.fintech.sst.service;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 
+import com.fintech.sst.data.db.Notice;
 import com.fintech.sst.helper.PermissionUtil;
+import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.net.ApiProducerModule;
 import com.fintech.sst.net.ApiService;
 import com.fintech.sst.net.Configuration;
 import com.fintech.sst.net.ResultEntity;
 import com.fintech.sst.net.SignRequestBody;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static com.fintech.sst.helper.ExpansionKt.debug;
+import static com.fintech.sst.helper.ExpansionKt.getLastNoticeTime;
+import static com.fintech.sst.helper.ExpansionKt.setLastNoticeTime;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME;
 
 
 public class HeartJobService extends JobService {
@@ -63,22 +71,23 @@ public class HeartJobService extends JobService {
                 .flatMap(new Function<Long, ObservableSource<ResultEntity<Boolean>>>() {
                     @Override
                     public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) throws Exception {
-//                        if (System.currentTimeMillis() - getLastNoticeTime() > 60 * 1000){
-//                            HashMap<String, String> request = new HashMap<>();
-//                            request.put("appLoginName", Configuration.getUserInfoByKey(KEY_USER_NAME));
-//                            request.put("loginUserId", Configuration.getUserInfoByKey(KEY_MCH_ID));
-//                            request.put("type", "2001");
-//                            request.put("enable", "0");
-//                            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign())
-//                                    .subscribe(new Consumer<ResultEntity<String>>() {
-//                                        @Override
-//                                        public void accept(ResultEntity<String> stringResultEntity) throws Exception {
-//                                            Notice notice = new Notice();
-//                                            notice.type = 1;
-//                                            RxBus.getDefault().send(notice);
-//                                        }
-//                                    });
-//                        }
+                        if (System.currentTimeMillis() - getLastNoticeTime() > 120 * 1000 && getLastNoticeTime()!=0){
+                            HashMap<String, String> request = new HashMap<>();
+                            request.put("appLoginName", Configuration.getUserInfoByKey(KEY_USER_NAME));
+                            request.put("loginUserId", Configuration.getUserInfoByKey(KEY_MCH_ID));
+                            request.put("type", "2001");
+                            request.put("enable", "0");
+                            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign())
+                                    .subscribe(new Consumer<ResultEntity<String>>() {
+                                        @Override
+                                        public void accept(ResultEntity<String> stringResultEntity) throws Exception {
+                                            setLastNoticeTime(0);
+                                            Notice notice = new Notice();
+                                            notice.type = 1;
+                                            RxBus.getDefault().send(notice);
+                                        }
+                                    });
+                        }
                         return ApiProducerModule.create(ApiService.class).heartbeat(new SignRequestBody().sign());
                     }
                 })

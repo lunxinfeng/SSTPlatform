@@ -1,6 +1,7 @@
 package com.fintech.sst.ui.dialog;
 
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,11 +16,14 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TimePicker;
 
 import com.fintech.sst.R;
 import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.helper.ExpansionKt;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
 
 
 public class SendNoticeDialog extends Dialog {
@@ -52,6 +56,8 @@ public class SendNoticeDialog extends Dialog {
         final RadioButton rb_ali = findViewById(R.id.rb_ali);
         final RadioButton rb_wechat = findViewById(R.id.rb_wechat);
         final EditText etAccount = findViewById(R.id.et_amount);
+        final EditText etTime = findViewById(R.id.et_time);
+        final Button btnTime = findViewById(R.id.btnTime);
         final Button btnY = findViewById(R.id.btnY);
         Button btnN = findViewById(R.id.btnN);
         btnY.setEnabled(false);
@@ -108,6 +114,25 @@ public class SendNoticeDialog extends Dialog {
             }
         });
 
+        btnTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                TimePickerDialog dialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.HOUR,hourOfDay);
+                        cal.set(Calendar.MINUTE,minute);
+
+                        notice.saveTime = cal.getTimeInMillis();
+                        etTime.setText(ExpansionKt.getTime(notice.saveTime));
+                    }
+                },calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),true);
+                dialog.show();
+            }
+        });
+
         btnY.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +157,7 @@ public class SendNoticeDialog extends Dialog {
         int windowHeight = outMetrics.heightPixels;
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.width = (int) (windowWidth * 0.8); // 宽度设置为屏幕的一定比例大小
+        params.width = (int) (windowWidth * 0.95); // 宽度设置为屏幕的一定比例大小
 //        if (heightScale == 0) {
 //            params.gravity = Gravity.CENTER;
 //        } else {

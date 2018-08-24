@@ -9,7 +9,7 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:text="金额："
         app:layout_constraintStart_toStartOf="parent"
@@ -19,8 +19,8 @@
         android:id="@+id/et_amount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:inputType="numberDecimal"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
@@ -75,12 +75,12 @@
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="取消"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_amount" />
+        app:layout_constraintTop_toBottomOf="@+id/et_time" />
 
     <Button
         android:id="@+id/btnY"
@@ -93,4 +93,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnN"
         app:layout_constraintTop_toTopOf="@+id/btnN" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="时间："
+        app:layout_constraintStart_toStartOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <EditText
+        android:id="@+id/et_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textPersonName"
+        android:textSize="15sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
+        app:layout_constraintEnd_toStartOf="@+id/btnTime"
+        app:layout_constraintStart_toStartOf="@+id/et_amount" />
+
+    <Button
+        android:id="@+id/btnTime"
+        style="@style/button_primary_dark"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="8dp"
+        android:text="设置"
+        app:layout_constraintBottom_toBottomOf="@+id/et_time"
+        app:layout_constraintEnd_toEndOf="@+id/et_amount" />
 </android.support.constraint.ConstraintLayout>

@@ -36,7 +36,6 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         }
         JobServiceCompact.startJob(1000)
         subscribeNotice()
-        userInfo()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -46,6 +45,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
             view.showToast("请打开随身听通知监听权限")
         }
         clickNum = 0
+        userInfo()
     }
 
     override fun userInfo() {
