@@ -12,6 +12,7 @@ public class OrderList {
     private int tradeChannel;
     private double totalAmount;
     private double seviceFee;
+    private double feeRate;
     private double realAmount;
     private double discAmount;
     private int enable;
@@ -139,5 +140,13 @@ public class OrderList {
 
     public void setQrAccount(String qrAccount) {
         this.qrAccount = qrAccount;
+    }
+
+    public double getFeeRate() {
+        return feeRate;
+    }
+
+    public void setFeeRate(double feeRate) {
+        this.feeRate = feeRate;
     }
 }
