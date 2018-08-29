@@ -29,10 +29,10 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
     }
 
     override fun updateUserInfo(info: AisleInfo?) {
-        tvUser.text = "当前用户：${info?.appLoginName ?: ""}"
+        tvUser.text = "${info?.appLoginName ?: ""}"
         et_aisle.setText(info?.account ?: "")
         et_money.setText(info?.realAmount.toString())
-        et_successRate.setText(info?.ok.toString())
+        et_successRate.setText("${info?.ok.toString().toFloat() * 100}%")
         switch_aisle.isChecked = info?.enable == "1"
     }
 
@@ -120,6 +120,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
 
             layoutManager = LinearLayoutManager(this@AisleManagerActivity)
             adapter = this@AisleManagerActivity.adapter
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent?.getBooleanExtra("exit",false) == true){
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 

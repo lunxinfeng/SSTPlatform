@@ -69,7 +69,7 @@ public class AisleManagerDialog extends Dialog {
         int windowHeight = outMetrics.heightPixels;
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.width = (int) (windowWidth * 0.8); // 宽度设置为屏幕的一定比例大小
+        params.width = (int) (windowWidth * 0.95); // 宽度设置为屏幕的一定比例大小
 //        if (heightScale == 0) {
 //            params.gravity = Gravity.CENTER;
 //        } else {
@@ -77,7 +77,7 @@ public class AisleManagerDialog extends Dialog {
 //            params.y = (int) (windowHeight * heightScale); // 距离顶端高度设置为屏幕的一定比例大小
 //        }
         getWindow().setAttributes(params);
-
+        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
     public interface ClickListener{

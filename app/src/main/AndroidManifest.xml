@@ -20,7 +20,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.activity.config.ConfigActivity" />
         <activity android:name=".ui.activity.login.LoginActivity" />
-        <activity android:name=".ui.activity.aisle.AisleManagerActivity">
+        <activity android:name=".ui.activity.aisle.AisleManagerActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,7 +49,8 @@
         <activity
             android:name=".ui.activity.notice.NoticeListActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".ui.activity.setting.SettingActivity"></activity>
+        <activity android:name=".ui.activity.setting.SettingActivity"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

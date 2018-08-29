@@ -1,5 +1,6 @@
 package com.fintech.sst.service;
 
+import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 
@@ -69,6 +70,7 @@ public class HeartJobService extends JobService {
                     }
                 })
                 .flatMap(new Function<Long, ObservableSource<ResultEntity<Boolean>>>() {
+                    @SuppressLint("CheckResult")
                     @Override
                     public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) throws Exception {
                         if (System.currentTimeMillis() - getLastNoticeTime() > 120 * 1000 && getLastNoticeTime()!=0){

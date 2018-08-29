@@ -9,6 +9,9 @@
     <color name="transparent">#00ffffff</color>
     <color name="textColorDark3">#333333</color>
     <color name="success">#4daa01</color>
+    <color name="success_time">#74b93c</color>
     <color name="fail">#fb0802</color>
+    <color name="fail_time">#f38a87</color>
     <color name="loading">#277ce6</color>
+    <color name="disable">#cbcaca</color>
 </resources>

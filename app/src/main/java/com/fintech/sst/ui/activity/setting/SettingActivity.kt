@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.helper.PermissionUtil
-import com.fintech.sst.ui.activity.login.LoginActivity
+import com.fintech.sst.ui.activity.aisle.AisleManagerActivity
 import kotlinx.android.synthetic.main.activity_setting.*
 
 class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContract.View {
@@ -19,8 +19,9 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
     }
 
     override fun toLogin() {
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
+        val intent = Intent(this, AisleManagerActivity::class.java)
+        intent.putExtra("exit",true)
+        startActivity(intent)
     }
 
     override val presenter: SettingContract.Presenter = SettingPresenter(this)

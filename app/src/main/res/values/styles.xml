@@ -1,5 +1,9 @@
 <resources>
-
+    <declare-styleable name="RoundCornerButton">
+        <attr name="rcb_backgroundColor" format="color" />
+        <attr name="rcb_backgroundColorDisabled" format="color" />
+        <attr name="rcb_cornerRadius" format="dimension" />
+    </declare-styleable>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.Design.Light.NoActionBar">
         <!-- Customize your theme here. -->

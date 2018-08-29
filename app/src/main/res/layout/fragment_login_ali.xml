@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.fintech.lxf.ui.fragment.login.ali.LoginAliFragment">
+    tools:context="com.fintech.sst.ui.fragment.login.ali.LoginAliFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -29,18 +29,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvLoginAccount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="账号登陆"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/btnLoginAli"
-            app:layout_constraintStart_toStartOf="@+id/btnLoginAli"
-            app:layout_constraintTop_toBottomOf="@+id/btnLoginAli" />
-
         <include
             android:id="@+id/include_login"
             layout="@layout/bind_account"
@@ -48,11 +36,10 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLoginAccount" />
+            tools:layout_editor_absoluteY="165dp" />
 
 
     </android.support.constraint.ConstraintLayout>
