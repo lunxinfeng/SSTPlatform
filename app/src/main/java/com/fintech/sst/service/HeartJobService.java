@@ -51,6 +51,8 @@ public class HeartJobService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         debug(TAG,"=======onStopJob======");
+        if (disposable!=null)
+            disposable.dispose();
         return true;
     }
 
