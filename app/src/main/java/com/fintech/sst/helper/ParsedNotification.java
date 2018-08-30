@@ -52,8 +52,19 @@ public final class ParsedNotification {
         if (m.find()) {
             String group = m.group(1);
             return Float.parseFloat(group);
+        }else{
+            pattern = "成功收款([0-9]+.[0-9][0-9])元。";
+            r = Pattern.compile(pattern);
+            Matcher n = r.matcher(mTickerText);
+            String group = null;
+            while (n.find()){
+                group = n.group(1);
+            }
+            if (group!=null)
+                return Float.parseFloat(group);
+            else
+                return 0;
         }
-        return 0;
     }
 
     public float parseAmountWeChat() {
