@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-var DEBUG = false
+var DEBUG = true
 
 var lastNoticeTime:Long = 0
 

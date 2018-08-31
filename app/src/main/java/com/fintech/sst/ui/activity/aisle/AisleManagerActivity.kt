@@ -32,7 +32,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         tvUser.text = "${info?.appLoginName ?: ""}"
         et_aisle.setText(info?.account ?: "")
         et_money.setText(info?.realAmount.toString())
-        et_successRate.setText("${info?.ok.toString().toFloat() * 100}%")
+        et_successRate.setText("${info?.ok?.toString()?.toFloatOrNull()?:0 * 100}%")
         switch_aisle.isChecked = info?.enable == "1"
     }
 
@@ -43,7 +43,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         if (success)
             lastNoticeTime = System.currentTimeMillis()
     }
-
     override fun aisleRefreshResult(success: Boolean) {
         showToast(if (success) "操作成功" else "操作失败")
     }
