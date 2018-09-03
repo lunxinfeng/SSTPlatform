@@ -30,6 +30,8 @@ class LoginModel: DataSource {
     fun postAliCode(uid:String): Observable<ResultEntity<Map<String, String>>>? {
         val request = HashMap<String, String>()
         request.put("uid", uid)
+        request.put("app_version", App.getAppContext().packageManager
+                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString())
         return service.postAliCode(SignRequestBody(request))
     }
 
@@ -39,6 +41,8 @@ class LoginModel: DataSource {
         request.put("password", password)
         request.put("uid", ali_user_id)
         request.put("payMethod", "2001")
+        request.put("app_version", App.getAppContext().packageManager
+                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString())
         return service.bindAli(SignRequestBody(request))
     }
 

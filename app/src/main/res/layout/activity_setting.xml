@@ -52,6 +52,21 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_notice_setting" />
 
     <TextView
+        android:id="@+id/tv_time_setting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="自动关闭通道时间"
+        android:background="@color/white"
+        android:drawablePadding="6dp"
+        android:drawableRight="@mipmap/icon_more"
+        android:lines="1"
+        android:padding="16dp"
+        android:textColor="@color/textColorDark3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_permission_setting" />
+
+    <TextView
         android:id="@+id/tv_clear_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,7 +81,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_permission_setting" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_time_setting" />
 
     <TextView
         android:id="@+id/tv_exit_account"

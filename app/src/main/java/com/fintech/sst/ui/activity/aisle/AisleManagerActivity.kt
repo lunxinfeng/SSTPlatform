@@ -8,8 +8,10 @@ import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.PermissionUtil
+import com.fintech.sst.helper.closeTime
 import com.fintech.sst.helper.lastNoticeTime
 import com.fintech.sst.net.Configuration
+import com.fintech.sst.net.Constants
 import com.fintech.sst.net.bean.AisleInfo
 import com.fintech.sst.service.JobServiceCompact
 import com.fintech.sst.ui.activity.login.LoginActivity
@@ -40,8 +42,9 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         if (!success)
             switch_aisle.isChecked = !switch_aisle.isChecked
         showToast(if (success) "操作成功" else "操作失败")
-        if (success)
+        if (success){
             lastNoticeTime = System.currentTimeMillis()
+        }
     }
     override fun aisleRefreshResult(success: Boolean) {
         showToast(if (success) "操作成功" else "操作失败")
@@ -106,7 +109,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
             }
         }
         textView2.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN)
+            if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle.isChecked)
                 presenter.toAisleManager()
             false
         }
@@ -120,6 +123,8 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
             layoutManager = LinearLayoutManager(this@AisleManagerActivity)
             adapter = this@AisleManagerActivity.adapter
         }
+
+        closeTime = (Configuration.getUserInfoByKey(Constants.KEY_CLOSE_TIME).toLongOrNull()?:2) * 60 * 1000
     }
 
     override fun onNewIntent(intent: Intent?) {

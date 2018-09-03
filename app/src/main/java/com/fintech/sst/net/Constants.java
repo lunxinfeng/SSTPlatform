@@ -35,6 +35,7 @@ public class Constants {
     public static final String KEY_BEGIN_NUM = "beginNum";
     public static final String KEY_END_NUM = "endNum";
     public static final String KEY_MAX_NUM = "maxNum";
+    public static final String KEY_CLOSE_TIME = "closeTime";
 
 
 }

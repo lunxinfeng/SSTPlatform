@@ -14,5 +14,10 @@ class NoticeAdapter(layoutId:Int, data:List<Notice>?): BaseQuickAdapter<Notice, 
     override fun convert(holder: BaseViewHolder?, notice: Notice?) {
         holder?.setText(R.id.tv_content,notice?.content?:"")
                 ?.setText(R.id.tv_time,getTime(notice?.saveTime?:0).toString())
+                ?.setText(R.id.tv_type,when(notice?.type){
+                    1001 -> "微信通知"
+                    2001 -> "支付宝通知"
+                    else -> "未知"
+                })
     }
 }

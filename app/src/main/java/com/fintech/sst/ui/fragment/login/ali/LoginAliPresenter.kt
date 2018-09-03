@@ -82,6 +82,9 @@ class LoginAliPresenter(val view: LoginAliContract.View) : LoginAliContract.Pres
 
                                 view.loginSuccess()
                             }
+                            else ->{
+                                view.loginFail(s.subMsg)
+                            }
                         }
                     }
 

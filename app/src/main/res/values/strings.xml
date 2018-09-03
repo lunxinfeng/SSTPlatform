@@ -42,4 +42,13 @@
     <string name="bu_aisle">补通知</string>
     <string name="no_pattern">未匹配</string>
     <string name="warning_aisle">删除通道为不可逆操作，请谨慎操作！</string>
+
+    <string-array name="close_time">
+        <item>1分钟</item>
+        <item>2分钟</item>
+        <item>3分钟</item>
+        <item>5分钟</item>
+        <item>10分钟</item>
+        <item>永不关闭</item>
+    </string-array>
 </resources>

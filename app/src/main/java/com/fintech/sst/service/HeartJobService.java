@@ -25,6 +25,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static com.fintech.sst.helper.ExpansionKt.debug;
+import static com.fintech.sst.helper.ExpansionKt.getCloseTime;
 import static com.fintech.sst.helper.ExpansionKt.getLastNoticeTime;
 import static com.fintech.sst.helper.ExpansionKt.setLastNoticeTime;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID;
@@ -75,7 +76,7 @@ public class HeartJobService extends JobService {
                     @SuppressLint("CheckResult")
                     @Override
                     public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) throws Exception {
-                        if (System.currentTimeMillis() - getLastNoticeTime() > 120 * 1000 && getLastNoticeTime()!=0){
+                        if (System.currentTimeMillis() - getLastNoticeTime() > getCloseTime() && getLastNoticeTime()!=0){
                             HashMap<String, String> request = new HashMap<>();
                             request.put("appLoginName", Configuration.getUserInfoByKey(KEY_USER_NAME));
                             request.put("loginUserId", Configuration.getUserInfoByKey(KEY_MCH_ID));

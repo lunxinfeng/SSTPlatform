@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:textColor="#f39800"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,14 +19,20 @@
 
     <TextView
         android:id="@+id/tv_time"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:textColor="#eaac44"
         android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_content" />
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#eaac44"
+        android:textSize="13sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_time"
+        app:layout_constraintEnd_toEndOf="@+id/tv_content" />
 </android.support.constraint.ConstraintLayout>

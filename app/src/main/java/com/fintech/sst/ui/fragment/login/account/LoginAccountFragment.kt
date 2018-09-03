@@ -51,7 +51,7 @@ class LoginAccountFragment : BaseFragment<LoginAccountContract.Presenter>(), Log
         fragment.sharedElementReturnTransition = Fade()
         fragmentManager!!
                 .beginTransaction()
-                .addSharedElement(btnBind, "login")
+                .addSharedElement(btnBind!!, "login")
                 .replace(R.id.frame_content, fragment)
                 .commit()
     }

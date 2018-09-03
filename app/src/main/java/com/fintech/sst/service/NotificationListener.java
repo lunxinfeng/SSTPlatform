@@ -102,7 +102,7 @@ public final class NotificationListener extends NotificationListenerService {
 //        notice.title = "支付宝通知";
         switch (packageName) {
             case "com.tencent.mm":
-                notice.type = 2001;
+                notice.type = 1001;
                 notice.amount = parsedNotification.parseAmountWeChat() + "";
                 break;
             case "com.eg.android.AlipayGphone":

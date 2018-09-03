@@ -21,6 +21,8 @@ var DEBUG = true
 
 var lastNoticeTime:Long = 0
 
+var closeTime = 0L
+
 fun Activity.toActivity(clazz: Class<*>) = startActivity(Intent(this,clazz))
 
 fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(applicationContext, msg, duration).show()
