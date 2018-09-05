@@ -156,7 +156,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
 
                     override fun onNext(t: Notice) {
                         if (t.type == 1) {
-                            aisleRefresh()
+                            userInfo()
                         } else {
                             view.updateNoticeList(t)
                         }

@@ -58,7 +58,7 @@ public final class NotificationListener extends NotificationListenerService {
 
     @Override
     public final void onNotificationPosted(StatusBarNotification statusBarNotification) {
-        Log.d(TAG, "onNotificationPosted: " + statusBarNotification);
+        Log.d(TAG, "onNotificationPosted: " + statusBarNotification + "\t" + getClass());
 
         if (statusBarNotification == null || statusBarNotification.getNotification() == null) {
             return;

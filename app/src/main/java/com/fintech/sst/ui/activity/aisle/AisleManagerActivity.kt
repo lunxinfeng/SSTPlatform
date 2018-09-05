@@ -124,7 +124,15 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
             adapter = this@AisleManagerActivity.adapter
         }
 
-        closeTime = (Configuration.getUserInfoByKey(Constants.KEY_CLOSE_TIME).toLongOrNull()?:2) * 60 * 1000
+        closeTime = when(Configuration.getUserInfoByKey(Constants.KEY_CLOSE_TIME).toIntOrNull()?:2){
+            0 -> 60 * 1000 * 1
+            1 -> 60 * 1000 * 2
+            2 -> 60 * 1000 * 3
+            3 -> 60 * 1000 * 5
+            4 -> 60 * 1000 * 10
+            5 -> Long.MAX_VALUE
+            else -> Long.MAX_VALUE
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
