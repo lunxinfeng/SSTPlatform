@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.fintech.sst.App;
-import com.fintech.sst.service.JobServiceCompact;
 
 import static com.fintech.sst.net.Constants.KEY_ADDRESS;
 import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN;
@@ -54,7 +53,7 @@ public class Configuration {
     public static boolean clearUserInfo() {
 
 //        AlarmCompact.cancelAlarm(App.getApplication().getApplicationContext());
-        JobServiceCompact.cancelAllJobs(App.getAppContext());
+//        JobServiceCompact.cancelAllJobs(App.getAppContext());
 
         SharedPreferences sp = App.getApplication().getSharedPreferences(KEY_SP_, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();

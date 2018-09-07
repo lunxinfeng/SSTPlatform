@@ -13,7 +13,7 @@ import com.fintech.sst.helper.lastNoticeTime
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants
 import com.fintech.sst.net.bean.AisleInfo
-import com.fintech.sst.service.JobServiceCompact
+import com.fintech.sst.service.HeartService
 import com.fintech.sst.ui.activity.login.LoginActivity
 import com.fintech.sst.ui.activity.notice.NoticeListActivity
 import com.fintech.sst.ui.activity.order.OrderListActivity
@@ -54,7 +54,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         showToast(if (success) "操作成功" else "操作失败")
         if (success){
             Configuration.clearUserInfo()
-            JobServiceCompact.cancelAllJobs(this)
             toLogin()
         }
     }
@@ -99,6 +98,8 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         setContentView(R.layout.activity_aisle_manager)
         lifecycle.addObserver(presenter)
 
+        startHeartService()
+
         btnOrder.setOnClickListener { presenter.toOrder() }
         btnSetting.setOnClickListener { presenter.toSetting() }
         tv_refresh.setOnClickListener { presenter.userInfo() }
@@ -135,6 +136,11 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
         }
     }
 
+    override fun onDestroy() {
+        stopHeartService()
+        super.onDestroy()
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent?.getBooleanExtra("exit",false) == true){
@@ -145,5 +151,13 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
 
     override fun onBackPressed() {
 
+    }
+
+    private fun startHeartService(){
+        startService(Intent(this,HeartService::class.java))
+    }
+
+    private fun stopHeartService(){
+        stopService(Intent(this,HeartService::class.java))
     }
 }

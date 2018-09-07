@@ -12,7 +12,6 @@ import com.fintech.sst.net.Constants
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.bean.AisleInfo
-import com.fintech.sst.service.JobServiceCompact
 import io.reactivex.Observer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,7 +33,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         } else {
             Constants.baseUrl = Configuration.getUserInfoByKey(Constants.KEY_ADDRESS)
         }
-        JobServiceCompact.startJob(1000)
+//        JobServiceCompact.startJob(1000)
         subscribeNotice()
     }
 
