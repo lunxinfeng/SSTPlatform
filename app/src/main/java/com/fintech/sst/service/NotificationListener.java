@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
+import android.os.IBinder;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -57,8 +58,56 @@ public final class NotificationListener extends NotificationListenerService {
     }
 
     @Override
+    public void onListenerDisconnected() {
+        super.onListenerDisconnected();
+        Log.d(TAG, "onListenerDisconnected:");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind:");
+        return super.onBind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "onUnbind:");
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onListenerHintsChanged(int hints) {
+        super.onListenerHintsChanged(hints);
+        Log.d(TAG, "onListenerHintsChanged:");
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+        Log.d(TAG, "onRebind:");
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Log.d(TAG, "onLowMemory:");
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Log.d(TAG, "onTrimMemory:");
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        Log.d(TAG, "onTaskRemoved:");
+    }
+
+    @Override
     public final void onNotificationPosted(StatusBarNotification statusBarNotification) {
-        Log.d(TAG, "onNotificationPosted: " + statusBarNotification + "\t" + getClass());
+        Log.d(TAG, "onNotificationPosted: " + statusBarNotification + "\t" + this);
 
         if (statusBarNotification == null || statusBarNotification.getNotification() == null) {
             return;
@@ -115,7 +164,7 @@ public final class NotificationListener extends NotificationListenerService {
 
     @Override
     public final void onNotificationRemoved(StatusBarNotification statusBarNotification) {
-        Log.d(TAG, "onNotificationRemoved: " + statusBarNotification);
+        Log.d(TAG, "onNotificationRemoved: " + statusBarNotification + "\t" + this);
     }
 
     @Override
@@ -189,6 +238,7 @@ public final class NotificationListener extends NotificationListenerService {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.d(TAG, "db onError");
                         e.printStackTrace();
                         disposable.dispose();
                         db();
@@ -196,6 +246,7 @@ public final class NotificationListener extends NotificationListenerService {
 
                     @Override
                     public void onComplete() {
+                        Log.d(TAG, "db onComplete");
                         disposable.dispose();
                         db();
                     }

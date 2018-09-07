@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.fintech.sst.App;
 
@@ -36,11 +37,18 @@ public class PermissionUtil {
     }
 
     public static void toggleNotificationListenerService(Class<? extends NotificationListenerService> cls) {
+        Log.d("NotificationListener", "toggleNotificationListenerService");
         PackageManager pm = App.getAppContext().getPackageManager();
         pm.setComponentEnabledSetting(new ComponentName(App.getAppContext(), cls),
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         pm.setComponentEnabledSetting(new ComponentName(App.getAppContext(), cls),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+    }
+
+    public static void closeNotificationListenerService(Class<? extends NotificationListenerService> cls){
+        PackageManager pm = App.getAppContext().getPackageManager();
+        pm.setComponentEnabledSetting(new ComponentName(App.getAppContext(), cls),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
     }
 
     public static void toAppDetailActivity(Context context) {
