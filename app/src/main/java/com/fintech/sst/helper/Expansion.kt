@@ -68,7 +68,7 @@ fun View.clickN(num:Int, des:String, listener:(v: View) -> Unit){
             return
         } else {
             compositeDisposable.clear()
-            if (clickNum in 3..(num - 1))
+            if (clickNum in 4..(num - 1))
                 Toast.makeText(context,"再点${num - clickNum}次$des", Toast.LENGTH_SHORT).show()
         }
         val d = Single.timer(1000, TimeUnit.MILLISECONDS)

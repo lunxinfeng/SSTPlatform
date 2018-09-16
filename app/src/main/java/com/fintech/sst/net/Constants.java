@@ -11,8 +11,8 @@ public class Constants {
             = MediaType.parse("application/json; charset=utf-8");
 
 //    public static final String baseUrl = "https://api.pay.hccf8.com";
-    public static String baseUrl = "https://api1.52cjzf.com/";
-//    public static final String baseUrl = "http://47.52.162.210:50182";
+    public static String baseUrl = "http://api.3721sz.com";
+//    public static String baseUrl = "http://api.trueinfo.cn";
 
     public static final int RC_PERMISSION = 110;
     public static final int ALL_PERMISSION = 122;

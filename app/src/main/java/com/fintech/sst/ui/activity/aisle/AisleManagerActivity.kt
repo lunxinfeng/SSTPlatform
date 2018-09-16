@@ -8,12 +8,14 @@ import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.PermissionUtil
+import com.fintech.sst.helper.clickN
 import com.fintech.sst.helper.closeTime
 import com.fintech.sst.helper.lastNoticeTime
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants
 import com.fintech.sst.net.bean.AisleInfo
 import com.fintech.sst.service.HeartService
+import com.fintech.sst.ui.activity.config.ConfigActivity
 import com.fintech.sst.ui.activity.login.LoginActivity
 import com.fintech.sst.ui.activity.notice.NoticeListActivity
 import com.fintech.sst.ui.activity.order.OrderListActivity
@@ -134,6 +136,9 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>(), Ais
             5 -> Long.MAX_VALUE
             else -> Long.MAX_VALUE
         }
+
+        toolbar.clickN(10,"进入地址配置页面"){startActivity(Intent(this, ConfigActivity::class.java))}
+
     }
 
     override fun onDestroy() {

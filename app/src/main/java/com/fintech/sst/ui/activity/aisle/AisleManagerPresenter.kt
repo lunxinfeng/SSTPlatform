@@ -8,7 +8,6 @@ import com.fintech.sst.helper.PermissionUtil
 import com.fintech.sst.helper.RxBus
 import com.fintech.sst.helper.debug
 import com.fintech.sst.net.Configuration
-import com.fintech.sst.net.Constants
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.bean.AisleInfo
@@ -30,9 +29,11 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         if (Configuration.noLogin()) {
             view.toLogin()
             return
-        } else {
-            Constants.baseUrl = Configuration.getUserInfoByKey(Constants.KEY_ADDRESS)
         }
+//        else {
+//            Constants.baseUrl = Configuration.getUserInfoByKey(Constants.KEY_ADDRESS)
+//        }
+
 //        JobServiceCompact.startJob(1000)
         subscribeNotice()
     }
