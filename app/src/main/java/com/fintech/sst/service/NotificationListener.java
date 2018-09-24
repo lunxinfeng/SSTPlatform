@@ -232,6 +232,7 @@ public final class NotificationListener extends NotificationListenerService {
                         if (resultEntity.getMsg().equals("success") && notice!=null){
                             notice.status = 1;
                             DB.updateAll(NotificationListener.this, notice);
+                            cancelAllNotifications();
                         }
                         debug(TAG, "=========DB========: " + resultEntity);
                     }
