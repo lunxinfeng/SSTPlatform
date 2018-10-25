@@ -168,6 +168,19 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         compositeDisposable.add(d)
     }
 
+    override fun updateLocalAmount(type: String) {
+        model.localNoticeAmount(type)
+                .subscribe(object : ProgressObserver<List<Notice>, AisleManagerContract.View>(view) {
+                    override fun onNext_(t: List<Notice>) {
+                        view.updateLocalInfo(t,type)
+                    }
+
+                    override fun onError(error: String) {
+                        view.showToast(error)
+                    }
+                })
+    }
+
     private fun subscribeNotice() {
         RxBus.getDefault().toObservable(Notice::class.java)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -181,7 +194,18 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                         when {
                             t.type == 1 -> userInfo(METHOD_ALI)
                             t.type == 2 -> userInfo(METHOD_WECHAT)
-                            else -> view.updateNoticeList(t)
+                            t.type == 11 -> {
+                                view.showToast("账号在其他地方登录")
+                                exitLogin(METHOD_ALI)
+                            }
+                            t.type == 12 -> {
+                                view.showToast("账号在其他地方登录")
+                                exitLogin(METHOD_WECHAT)
+                            }
+                            else -> {
+                                view.updateNoticeList(t)
+                                updateLocalAmount(t.type.toString())
+                            }
                         }
                     }
 

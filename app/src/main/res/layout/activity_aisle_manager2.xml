@@ -157,15 +157,40 @@
                 <EditText
                     android:id="@+id/et_money_ali"
                     android:layout_width="0dp"
-                    android:layout_height="47dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:ems="10"
                     android:enabled="false"
                     android:focusable="false"
                     android:inputType="textPersonName"
+
+                    android:text="0.0/0.0"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textView33"
                     app:layout_constraintEnd_toEndOf="@+id/et_aisle_ali"
                     app:layout_constraintStart_toEndOf="@+id/textView33" />
+
+                <!--<TextView-->
+                    <!--android:id="@+id/textView10"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:text="收款"-->
+                    <!--app:layout_constraintBaseline_toBaselineOf="@+id/et_money_ali"-->
+                    <!--app:layout_constraintStart_toEndOf="@+id/et_money_ali" />-->
+
+                <!--<EditText-->
+                    <!--android:id="@+id/et_money_notice_ali"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:ems="10"-->
+                    <!--android:enabled="false"-->
+                    <!--android:focusable="false"-->
+                    <!--android:inputType="number"-->
+                    <!--android:text="0.0"-->
+                    <!--app:layout_constraintBaseline_toBaselineOf="@+id/textView10"-->
+                    <!--app:layout_constraintEnd_toEndOf="@+id/et_aisle_ali"-->
+                    <!--app:layout_constraintStart_toEndOf="@+id/textView10" />-->
             </android.support.constraint.ConstraintLayout>
 
             <TextView
@@ -174,6 +199,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="@string/ali_login" />
 
         </FrameLayout>
@@ -327,6 +353,7 @@
                     android:enabled="false"
                     android:focusable="false"
                     android:inputType="textPersonName"
+                    android:text="0.0/0.0"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
                     app:layout_constraintEnd_toEndOf="@+id/et_aisle_wechat"
                     app:layout_constraintStart_toEndOf="@+id/textView3" />

@@ -3,6 +3,8 @@ package com.fintech.sst.data.db;
 
 import android.content.Context;
 
+import com.fintech.sst.App;
+
 import java.util.List;
 
 public class DB {
@@ -28,6 +30,9 @@ public class DB {
 
   public static List<Notice> queryAll(Context context, int status,int pageIndex,int pageSize){
     return AppDatabase.getInstance(context).noticeDao().queryAll(status,pageIndex,pageSize);
+  }
+  public static List<Notice> queryAll(int type, long saveTimeMin){
+    return AppDatabase.getInstance(App.getAppContext()).noticeDao().queryAll(type,saveTimeMin);
   }
 
   public static int deleteAll(Context context, Notice... notices){

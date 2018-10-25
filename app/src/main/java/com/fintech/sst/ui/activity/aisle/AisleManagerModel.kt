@@ -1,6 +1,8 @@
 package com.fintech.sst.ui.activity.aisle
 
 import com.fintech.sst.data.DataSource
+import com.fintech.sst.data.db.DB
+import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.METHOD_ALI
 import com.fintech.sst.helper.METHOD_WECHAT
 import com.fintech.sst.net.Configuration
@@ -8,20 +10,22 @@ import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.SignRequestBody
 import com.fintech.sst.net.bean.AisleInfo
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
-class AisleManagerModel:DataSource {
-    var aisleInfoAli:AisleInfo? = null
-    var aisleInfoWeChat:AisleInfo? = null
+class AisleManagerModel : DataSource {
+    var aisleInfoAli: AisleInfo? = null
+    var aisleInfoWeChat: AisleInfo? = null
 
-    private fun getAisleInfo(type: String) = when(type){
+    private fun getAisleInfo(type: String) = when (type) {
         METHOD_ALI -> aisleInfoAli
         METHOD_WECHAT -> aisleInfoWeChat
         else -> null
     }
 
-    fun setAisleInfo(info:AisleInfo?,type: String) {
+    fun setAisleInfo(info: AisleInfo?, type: String) {
         when (type) {
             METHOD_ALI -> aisleInfoAli = info
             METHOD_WECHAT -> aisleInfoWeChat = info
@@ -34,7 +38,7 @@ class AisleManagerModel:DataSource {
         return service.userInfo(SignRequestBody(request).sign(type))
     }
 
-    fun aisleStatus(open:Boolean,type: String): Observable<ResultEntity<String>> {
+    fun aisleStatus(open: Boolean, type: String): Observable<ResultEntity<String>> {
         val request = HashMap<String, String>()
         request["appLoginName"] = getAisleInfo(type)?.appLoginName.toString()
         request["loginUserId"] = Configuration.getUserInfoByKey(getMChId(type))
@@ -55,5 +59,24 @@ class AisleManagerModel:DataSource {
         val request = HashMap<String, String>()
         request["accountId"] = getAisleInfo(type)?.accountId.toString()
         return service.aisleDelete(SignRequestBody(request).sign(type))
+    }
+
+    fun localNoticeAmount(type: String): Observable<List<Notice>> {
+        val minSaveTime = Calendar.getInstance().apply {
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        return Observable
+                .create<List<Notice>> {
+                    val result = DB.queryAll(type.toInt(),minSaveTime)
+                    if (result != null)
+                        it.onNext(result)
+                    it.onComplete()
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 }

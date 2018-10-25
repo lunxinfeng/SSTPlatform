@@ -201,7 +201,6 @@ public final class NotificationListener extends NotificationListenerService {
                     @Override
                     public ObservableSource<ResultEntity<Notice>> apply(Long aLong) throws Exception {
                         Notice notice = notices.poll();
-                        RxBus.getDefault().send(notice);
                         debug(TAG, "=========DB========: 发起请求" + notice.uuid);
                         MessageRequestBody body = new MessageRequestBody();
                         body.put("uuid", notice.uuid);
@@ -215,6 +214,7 @@ public final class NotificationListener extends NotificationListenerService {
                         body.put("tag", notice.tag);
                         body.sign(notice.type + "");
                         DB.insert(NotificationListener.this, notice);
+                        RxBus.getDefault().send(notice);
                         return ApiProducerModule
                                 .create(ApiService.class)
                                 .notifyLog(body);

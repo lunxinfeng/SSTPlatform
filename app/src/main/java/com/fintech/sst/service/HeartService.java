@@ -42,11 +42,18 @@ import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 public class HeartService extends Service {
     private static final String TAG = "HeartService";
-    private Disposable disposable;
+    private Disposable disposableAli;
+    private Disposable disposableWeChat;
 
     private void heartBeat(final String type) {
-        if (disposable!=null)
-            disposable.dispose();
+        if (type.equals(ExpansionKt.METHOD_ALI)){
+            if (disposableAli!=null)
+                disposableAli.dispose();
+        }else{
+            if (disposableWeChat!=null)
+                disposableWeChat.dispose();
+        }
+
         Observable.interval(0,10*1000, TimeUnit.MILLISECONDS)
                 .filter(new Predicate<Long>() {
                     @Override
@@ -110,26 +117,55 @@ public class HeartService extends Service {
                 .subscribe(new Observer<ResultEntity<Boolean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposable = d;
+                        if (type.equals(ExpansionKt.METHOD_ALI)){
+                            disposableAli = d;
+                        }else{
+                            disposableWeChat = d;
+                        }
+
                         debug(TAG,"=======heartBeat " + type + " onSubscribe======");
                     }
 
                     @Override
                     public void onNext(ResultEntity<Boolean> booleanResultEntity) {
                         debug(TAG,"=======heartBeat " + type + " onNext======");
+                        if (booleanResultEntity.getCode().equals("20001") && booleanResultEntity.getMsg().contains("签名错误")){
+                            Notice notice = new Notice();
+                            int noticeType = 0;
+                            switch (type){
+                                case ExpansionKt.METHOD_ALI:
+                                    noticeType = 11;
+                                    disposableAli.dispose();
+                                    break;
+                                case ExpansionKt.METHOD_WECHAT:
+                                    noticeType = 12;
+                                    disposableWeChat.dispose();
+                                    break;
+                            }
+                            notice.type = noticeType;
+                            RxBus.getDefault().send(notice);
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        disposable.dispose();
+                        if (type.equals(ExpansionKt.METHOD_ALI)){
+                            disposableAli.dispose();
+                        }else{
+                            disposableWeChat.dispose();
+                        }
                         debug(TAG,"=======heartBeat " + type + " onError======");
                         heartBeat(type);
                     }
 
                     @Override
                     public void onComplete() {
-                        disposable.dispose();
+                        if (type.equals(ExpansionKt.METHOD_ALI)){
+                            disposableAli.dispose();
+                        }else{
+                            disposableWeChat.dispose();
+                        }
                         debug(TAG,"=======heartBeat " + type + " onComplete======");
                         heartBeat(type);
                     }
@@ -161,12 +197,31 @@ public class HeartService extends Service {
     public void onDestroy() {
         super.onDestroy();
         debug(TAG,"=======onDestroy======");
-        if (disposable!=null)
-            disposable.dispose();
+        if (disposableAli!=null)
+            disposableAli.dispose();
+        if (disposableWeChat!=null)
+            disposableWeChat.dispose();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (Configuration.isLogin(METHOD_ALI)) {//登录的时候开启心跳
+            try {
+                if (disposableAli == null || disposableAli.isDisposed())
+                    heartBeat(METHOD_ALI);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (Configuration.isLogin(METHOD_WECHAT)) {//登录的时候开启心跳
+            try {
+                if (disposableWeChat == null || disposableWeChat.isDisposed())
+                    heartBeat(METHOD_WECHAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return Service.START_STICKY;
     }
 

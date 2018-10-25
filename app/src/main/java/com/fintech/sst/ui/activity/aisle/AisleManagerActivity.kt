@@ -43,19 +43,36 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         when (type) {
             METHOD_ALI -> {
                 et_aisle_ali.setText(info?.account ?: "")
-                et_money_ali.setText(info?.realAmount.toString())
+                val text = et_money_ali.text.toString().split("/")
+                et_money_ali.setText("${info?.realAmount.toString()}/${text[1]}")
                 et_successRate_ali.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
                 switch_aisle_ali.isChecked = info?.enable == "1"
             }
             METHOD_WECHAT -> {
                 et_aisle_wechat.setText(info?.account ?: "")
-                et_money_wechat.setText(info?.realAmount.toString())
-                et_successRate_wechat.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0
-                * 100}%")
+                val text = et_money_wechat.text.toString().split("/")
+                et_money_wechat.setText("${info?.realAmount.toString()}/${text[1]}")
+                et_successRate_wechat.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
                 switch_aisle_wechat.isChecked = info?.enable == "1"
             }
         }
 //        tvUser.text = "${info?.appLoginName ?: ""}"
+    }
+
+    override fun updateLocalInfo(notices: List<Notice>, type: String) {
+        var amountTotal = 0.0
+        notices.forEach { amountTotal += it.amount.toFloat() }
+
+        when (type) {
+            METHOD_ALI -> {
+                val text = et_money_ali.text.toString().split("/")
+                et_money_ali.setText("${text[0]}/$amountTotal")
+            }
+            METHOD_WECHAT -> {
+                val text = et_money_wechat.text.toString().split("/")
+                et_money_wechat.setText("${text[0]}/$amountTotal")
+            }
+        }
     }
 
     override fun aisleStatusResult(success: Boolean, type: String) {
@@ -152,7 +169,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
     override fun viewHideOrShow(view: View, show: Boolean) {
         view.visibility = if (show) View.VISIBLE else View.GONE
-
+        menuShowAll?.isVisible = !show
 //        if (show && view.visibility != View.GONE) return
 //        if (!show && view.visibility != View.VISIBLE) return
 //
@@ -197,6 +214,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
     }
 
     override val presenter: AisleManagerContract.Presenter = AisleManagerPresenter(this)
+    private var menuShowAll:MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -206,7 +224,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         setSupportActionBar(toolbar)
         toolbar.inflateMenu(R.menu.menu_asile)
 
-        startHeartService()
+//        startHeartService()
 
         tvLoginAli.setOnClickListener { presenter.aliLogin() }
         tvLoginWeChat.setOnClickListener { presenter.wechatLogin() }
@@ -272,6 +290,8 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_asile, menu)
+        menuShowAll = menu?.findItem(R.id.action_show_all)
+        menuShowAll?.isVisible = false
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -361,6 +381,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 exitWechat.visibility = View.VISIBLE
             }
         }
+        startHeartService()
     }
 
     override fun loginFail(hint: String) {

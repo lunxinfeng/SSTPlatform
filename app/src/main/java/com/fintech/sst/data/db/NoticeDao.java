@@ -37,4 +37,7 @@ public interface NoticeDao {
 
   @Query("SELECT * FROM Notice WHERE status = :status LIMIT :pageSize OFFSET (:pageIndex -1) * :pageSize")
   List<Notice> queryAll(int status,int pageIndex,int pageSize);
+
+  @Query("SELECT * FROM Notice WHERE type = :type AND saveTime > :saveTimeMin")
+  List<Notice> queryAll(int type, long saveTimeMin);
 }

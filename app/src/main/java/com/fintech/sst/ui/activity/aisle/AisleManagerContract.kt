@@ -9,6 +9,7 @@ import com.fintech.sst.net.bean.AisleInfo
 interface AisleManagerContract {
     interface View: BaseView<Presenter> {
         fun updateUserInfo(info: AisleInfo?,type: String)
+        fun updateLocalInfo(notices: List<Notice>,type: String)
         fun updateNoticeList(notice:Notice)
         fun aisleStatusResult(success: Boolean,type: String)
         fun aisleRefreshResult(success: Boolean)
@@ -40,5 +41,6 @@ interface AisleManagerContract {
         fun aliLogin()
         fun wechatLogin()
         fun exitLogin(type:String)
+        fun updateLocalAmount(type: String)
     }
 }
