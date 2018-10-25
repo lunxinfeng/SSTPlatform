@@ -213,7 +213,7 @@ public final class NotificationListener extends NotificationListenerService {
                         body.put("packageName", notice.packageName);
                         body.put("id", notice.noticeId);
                         body.put("tag", notice.tag);
-                        body.sign();
+                        body.sign(notice.type + "");
                         DB.insert(NotificationListener.this, notice);
                         return ApiProducerModule
                                 .create(ApiService.class)

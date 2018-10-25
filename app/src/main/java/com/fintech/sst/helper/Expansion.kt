@@ -19,7 +19,16 @@ import java.util.concurrent.TimeUnit
 
 var DEBUG = true
 
-var lastNoticeTime:Long = 0
+const val METHOD_WECHAT = "1001"
+const val METHOD_ALI = "2001"
+//const val WX_APPID = "wxabc93e80a65a6df8"
+//const val WX_APPSECRET = "c54a012fb257a2c69aab3db64ccb3bd9"
+
+const val WX_APPID = "wx97adb85ee024d14e"
+const val WX_APPSECRET = "5ffef877a687fac19cc98462768fbbda"
+
+var lastNoticeTimeAli:Long = 0
+var lastNoticeTimeWeChat:Long = 0
 
 var closeTime = 0L
 

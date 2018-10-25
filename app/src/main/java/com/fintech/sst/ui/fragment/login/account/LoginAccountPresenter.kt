@@ -1,6 +1,7 @@
 package com.fintech.sst.ui.fragment.login.account
 
 import android.arch.lifecycle.LifecycleObserver
+import com.fintech.sst.helper.METHOD_ALI
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.ui.fragment.login.LoginModel
@@ -22,7 +23,7 @@ class LoginAccountPresenter(val view: LoginAccountContract.View) : LoginAccountC
                             view.loginFail(resultEntity.subMsg?:resultEntity.msg)
                             return
                         }
-                        model.saveData(result)
+                        model.saveData(result, METHOD_ALI)
 
                         view.loginSuccess()
                     }

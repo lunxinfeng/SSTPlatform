@@ -2,7 +2,10 @@ package com.fintech.sst.ui.fragment.notice
 
 import android.arch.lifecycle.LifecycleObserver
 import com.fintech.sst.data.db.Notice
-import com.fintech.sst.helper.lastNoticeTime
+import com.fintech.sst.helper.METHOD_ALI
+import com.fintech.sst.helper.METHOD_WECHAT
+import com.fintech.sst.helper.lastNoticeTimeAli
+import com.fintech.sst.helper.lastNoticeTimeWeChat
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,7 +36,12 @@ class NoticePresenter(val view: NoticeContract.View,
     }
 
     override fun sendNotice(notice: Notice) {
-        model.sendNotice(notice)
+        val type = when(notice.type){
+            2001 -> METHOD_ALI
+            1001 -> METHOD_WECHAT
+            else -> "0"
+        }
+        model.sendNotice(notice,type)
                 .doOnSubscribe {
                     model.insertDB(notice)
                 }
@@ -41,7 +49,11 @@ class NoticePresenter(val view: NoticeContract.View,
                 .doOnNext {
                     val result = it.result
                     if (it.msg == "success" && result != null) {
-                        lastNoticeTime = result.saveTime
+                        when(type){
+                            METHOD_ALI -> lastNoticeTimeAli = result.saveTime
+                            METHOD_WECHAT -> lastNoticeTimeWeChat = result.saveTime
+                        }
+
                         result.status = 1
                         model.updateDB(result)
                     }

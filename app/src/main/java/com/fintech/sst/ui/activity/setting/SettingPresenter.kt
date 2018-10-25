@@ -3,7 +3,6 @@ package com.fintech.sst.ui.activity.setting
 import android.arch.lifecycle.LifecycleObserver
 import com.fintech.sst.App
 import com.fintech.sst.data.db.DB
-import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.ProgressObserver
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,8 +31,8 @@ class SettingPresenter(val view: SettingContract.View) : SettingContract.Present
                 })
     }
 
-    override fun exitAccount() {
-        Configuration.clearUserInfo()
-        view.toLogin()
-    }
+//    override fun exitAccount() {
+//        Configuration.clearUserInfo()
+//        view.toLogin()
+//    }
 }

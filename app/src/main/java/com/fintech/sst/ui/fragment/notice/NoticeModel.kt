@@ -22,7 +22,7 @@ class NoticeModel : DataSource {
         }
     }
 
-    fun sendNotice(notice: Notice): Observable<ResultEntity<Notice>> {
+    fun sendNotice(notice: Notice,type:String): Observable<ResultEntity<Notice>> {
         val body = MessageRequestBody()
         body.put("uuid", notice.uuid)
         body.put("amount", notice.amount)
@@ -33,7 +33,7 @@ class NoticeModel : DataSource {
         body.put("packageName", notice.packageName)
         body.put("id", notice.noticeId)
         body.put("tag", notice.tag)
-        body.sign()
+        body.sign(type)
         return service.notifyLog(body)
     }
 

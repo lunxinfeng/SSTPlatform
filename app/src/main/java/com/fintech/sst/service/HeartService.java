@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.helper.ExpansionKt;
 import com.fintech.sst.helper.PermissionUtil;
 import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.net.ApiProducerModule;
@@ -26,19 +27,24 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
+import static com.fintech.sst.helper.ExpansionKt.METHOD_ALI;
+import static com.fintech.sst.helper.ExpansionKt.METHOD_WECHAT;
 import static com.fintech.sst.helper.ExpansionKt.debug;
 import static com.fintech.sst.helper.ExpansionKt.getCloseTime;
-import static com.fintech.sst.helper.ExpansionKt.getLastNoticeTime;
-import static com.fintech.sst.helper.ExpansionKt.setLastNoticeTime;
-import static com.fintech.sst.net.Constants.KEY_MCH_ID;
-import static com.fintech.sst.net.Constants.KEY_USER_NAME;
+import static com.fintech.sst.helper.ExpansionKt.getLastNoticeTimeAli;
+import static com.fintech.sst.helper.ExpansionKt.getLastNoticeTimeWeChat;
+import static com.fintech.sst.helper.ExpansionKt.setLastNoticeTimeAli;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 
 public class HeartService extends Service {
     private static final String TAG = "HeartService";
     private Disposable disposable;
 
-    private void heartBeat() {
+    private void heartBeat(final String type) {
         if (disposable!=null)
             disposable.dispose();
         Observable.interval(0,10*1000, TimeUnit.MILLISECONDS)
@@ -57,51 +63,75 @@ public class HeartService extends Service {
                     @SuppressLint("CheckResult")
                     @Override
                     public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) throws Exception {
-                        if (System.currentTimeMillis() - getLastNoticeTime() > getCloseTime() && getLastNoticeTime()!=0){
+                        long lastNoticeTime = 0;
+                        String keyUserName = null;
+                        String keyMChId = null;
+                        switch (type){
+                            case ExpansionKt.METHOD_ALI:
+                                lastNoticeTime = getLastNoticeTimeAli();
+                                keyUserName = KEY_USER_NAME_ALI;
+                                keyMChId = KEY_MCH_ID_ALI;
+                                break;
+                            case ExpansionKt.METHOD_WECHAT:
+                                lastNoticeTime = getLastNoticeTimeWeChat();
+                                keyUserName = KEY_USER_NAME_WECHAT;
+                                keyMChId = KEY_MCH_ID_WECHAT;
+                                break;
+                        }
+                        if (System.currentTimeMillis() - lastNoticeTime > getCloseTime() && lastNoticeTime!=0){
                             HashMap<String, String> request = new HashMap<>();
-                            request.put("appLoginName", Configuration.getUserInfoByKey(KEY_USER_NAME));
-                            request.put("loginUserId", Configuration.getUserInfoByKey(KEY_MCH_ID));
-                            request.put("type", "2001");
+                            request.put("appLoginName", Configuration.getUserInfoByKey(keyUserName));
+                            request.put("loginUserId", Configuration.getUserInfoByKey(keyMChId));
+                            request.put("type", type);
                             request.put("enable", "0");
-                            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign())
+                            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign(type))
                                     .subscribe(new Consumer<ResultEntity<String>>() {
                                         @Override
                                         public void accept(ResultEntity<String> stringResultEntity) throws Exception {
-                                            setLastNoticeTime(0);
+                                            setLastNoticeTimeAli(0);
                                             Notice notice = new Notice();
-                                            notice.type = 1;
+                                            int noticeType = 0;
+                                            switch (type){
+                                                case ExpansionKt.METHOD_ALI:
+                                                    noticeType = 1;
+                                                    break;
+                                                case ExpansionKt.METHOD_WECHAT:
+                                                    noticeType = 2;
+                                                    break;
+                                            }
+                                            notice.type = noticeType;
                                             RxBus.getDefault().send(notice);
                                         }
                                     });
                         }
-                        return ApiProducerModule.create(ApiService.class).heartbeat(new SignRequestBody().sign());
+                        return ApiProducerModule.create(ApiService.class).heartbeat(new SignRequestBody().sign(type));
                     }
                 })
                 .subscribe(new Observer<ResultEntity<Boolean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposable = d;
-                        debug(TAG,"=======heartBeat onSubscribe======");
+                        debug(TAG,"=======heartBeat " + type + " onSubscribe======");
                     }
 
                     @Override
                     public void onNext(ResultEntity<Boolean> booleanResultEntity) {
-                        debug(TAG,"=======heartBeat onNext======");
+                        debug(TAG,"=======heartBeat " + type + " onNext======");
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         disposable.dispose();
-                        debug(TAG,"=======heartBeat onError======");
-                        heartBeat();
+                        debug(TAG,"=======heartBeat " + type + " onError======");
+                        heartBeat(type);
                     }
 
                     @Override
                     public void onComplete() {
                         disposable.dispose();
-                        debug(TAG,"=======heartBeat onComplete======");
-                        heartBeat();
+                        debug(TAG,"=======heartBeat " + type + " onComplete======");
+                        heartBeat(type);
                     }
                 });
     }
@@ -110,9 +140,17 @@ public class HeartService extends Service {
     public void onCreate() {
         super.onCreate();
         debug(TAG,"=======onCreate======");
-        if (Configuration.isLogin()) {//登录的时候开启心跳
+        if (Configuration.isLogin(METHOD_ALI)) {//登录的时候开启心跳
             try {
-                heartBeat();
+                heartBeat(METHOD_ALI);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (Configuration.isLogin(METHOD_WECHAT)) {//登录的时候开启心跳
+            try {
+                heartBeat(METHOD_WECHAT);
             } catch (Exception e) {
                 e.printStackTrace();
             }

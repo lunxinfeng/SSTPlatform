@@ -7,7 +7,8 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.fintech.sst"
+//        applicationId "com.fintech.sst"
+        applicationId "com.fintech.match.pay_2"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 2
@@ -46,4 +47,5 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     implementation 'com.afollestad.material-dialogs:core:2.0.0-alpha06'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 }

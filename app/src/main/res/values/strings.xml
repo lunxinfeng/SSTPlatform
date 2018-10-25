@@ -15,6 +15,7 @@
     <string name="csv">生成CSV</string>
     <string name="wechat_init">微信随便截</string>
     <string name="ali_login">支付宝登陆</string>
+    <string name="wechat_login">微信登陆</string>
     <string name="input_address">请输入您的服务器地址：</string>
     <string name="address_des">(服务器地址由您的服务商提供)</string>
     <string name="init_ali">支付宝随便截</string>
@@ -28,7 +29,7 @@
     <string name="refresh">刷新</string>
     <string name="watch_order">查看订单</string>
     <string name="set">设置</string>
-    <string name="order_detai">订单详情</string>
+    <string name="order_detail">订单详情</string>
     <string name="all">全部</string>
     <string name="paying">支付中</string>
     <string name="noticeing">通知中</string>
@@ -42,6 +43,9 @@
     <string name="bu_aisle">补通知</string>
     <string name="no_pattern">未匹配</string>
     <string name="warning_aisle">删除通道为不可逆操作，请谨慎操作！</string>
+    <string name="showAll">全部显示</string>
+    <string name="hide">隐藏</string>
+    <string name="exit">退出</string>
 
     <string-array name="close_time">
         <item>1分钟</item>

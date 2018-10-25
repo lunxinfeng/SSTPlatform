@@ -22,13 +22,23 @@ class OrderListActivity : AppCompatActivity(),OrderFragment.OnFragmentInteractio
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        val fragmentList = mutableListOf<OrderFragment>()
-        fragmentList.add(OrderFragment.newInstance())
-        fragmentList.add(OrderFragment.newInstance(10))
-        fragmentList.add(OrderFragment.newInstance(20))
-        fragmentList.add(OrderFragment.newInstance(30))
-        fragmentList.add(OrderFragment.newInstance(40))
-        viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragmentList)
+        val type = intent.getStringExtra("type")
+
+        val fragmentListAli = mutableListOf<OrderFragment>()
+        fragmentListAli.add(OrderFragment.newInstance(0, type))
+        fragmentListAli.add(OrderFragment.newInstance(10, type))
+        fragmentListAli.add(OrderFragment.newInstance(20, type))
+        fragmentListAli.add(OrderFragment.newInstance(30, type))
+        fragmentListAli.add(OrderFragment.newInstance(40, type))
+
+//        val fragmentListWeChat = mutableListOf<OrderFragment>()
+//        fragmentListWeChat.add(OrderFragment.newInstance(0, METHOD_WECHAT))
+//        fragmentListWeChat.add(OrderFragment.newInstance(10, METHOD_WECHAT))
+//        fragmentListWeChat.add(OrderFragment.newInstance(20, METHOD_WECHAT))
+//        fragmentListWeChat.add(OrderFragment.newInstance(30, METHOD_WECHAT))
+//        fragmentListWeChat.add(OrderFragment.newInstance(40, METHOD_WECHAT))
+
+        viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragmentListAli)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -44,5 +54,18 @@ class OrderListActivity : AppCompatActivity(),OrderFragment.OnFragmentInteractio
 
             }
         })
+
+//        bottomNavigationView.setOnNavigationItemSelectedListener {
+//            when(it.itemId){
+//                R.id.item_ali -> {
+//                    viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragmentListAli)
+//                }
+//
+//                R.id.item_wechat -> {
+//                    viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragmentListWeChat)
+//                }
+//            }
+//            false
+//        }
     }
 }

@@ -24,9 +24,9 @@ public class SignRequestBody extends HashMap<String, String> {
         this.put("deviceInfo", Utils.getDeviceInfo());
     }
 
-    public SignRequestBody sign() {
+    public SignRequestBody sign(String type) {
         try {
-            Configuration.KEY_SP_ keySp = Configuration.getKeySp();
+            Configuration.KEY_SP_ keySp = Configuration.getKeySp(type);
             this.put("mchId", keySp.getMchId());
             this.put("userName", keySp.getUserName());
             this.put("timestamp", System.currentTimeMillis());

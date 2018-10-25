@@ -28,7 +28,7 @@ public class Notice {
   public String amount;
 
   /**
-   * 类型：0全部  100支付宝   200微信  300银行卡
+   * 类型：0全部  2001支付宝   1001微信
    */
   public int type;
 

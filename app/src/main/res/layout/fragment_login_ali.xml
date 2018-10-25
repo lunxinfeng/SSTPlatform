@@ -29,18 +29,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/include_login"
-            layout="@layout/bind_account"
+        <!--<include-->
+            <!--android:id="@+id/include_login"-->
+            <!--layout="@layout/bind_account"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginEnd="32dp"-->
+            <!--android:layout_marginStart="32dp"-->
+            <!--android:visibility="gone"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--tools:layout_editor_absoluteY="165dp" />-->
+
+        <Button
+            android:id="@+id/btnLoginWechat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="165dp" />
-
+            android:layout_marginTop="64dp"
+            android:background="@mipmap/login_wechat"
+            android:text="@string/wechat_login"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:paddingLeft="50dp"
+            app:layout_constraintEnd_toEndOf="@+id/btnLoginAli"
+            app:layout_constraintStart_toStartOf="@+id/btnLoginAli"
+            app:layout_constraintTop_toBottomOf="@+id/btnLoginAli" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -9,7 +9,7 @@ import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.helper.PermissionUtil
 import com.fintech.sst.helper.closeTime
-import com.fintech.sst.helper.lastNoticeTime
+import com.fintech.sst.helper.lastNoticeTimeAli
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.KEY_CLOSE_TIME
 import com.fintech.sst.ui.activity.aisle.AisleManagerActivity
@@ -62,7 +62,7 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
                             5 -> Long.MAX_VALUE
                             else -> Long.MAX_VALUE
                         }
-                        lastNoticeTime = System.currentTimeMillis()
+                        lastNoticeTimeAli = System.currentTimeMillis()
                         Configuration.putUserInfo(KEY_CLOSE_TIME,index.toString())
                         dialog.dismiss()
                     }
@@ -80,17 +80,17 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
                     }
                     .show()
         }
-        tv_exit_account.setOnClickListener {
-            AlertDialog.Builder(this)
-                    .setMessage("是否确定退出当前账号？")
-                    .setPositiveButton("确定"){dialog, _ ->
-                        dialog.dismiss()
-                        presenter.exitAccount()
-                    }
-                    .setNegativeButton("取消"){dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-        }
+//        tv_exit_account.setOnClickListener {
+//            AlertDialog.Builder(this)
+//                    .setMessage("是否确定退出当前账号？")
+//                    .setPositiveButton("确定"){dialog, _ ->
+//                        dialog.dismiss()
+//                        presenter.exitAccount()
+//                    }
+//                    .setNegativeButton("取消"){dialog, _ ->
+//                        dialog.dismiss()
+//                    }
+//                    .show()
+//        }
     }
 }

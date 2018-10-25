@@ -53,6 +53,11 @@
             android:launchMode="singleTask" />
         <activity android:name=".ui.activity.setting.SettingActivity"
             android:launchMode="singleTask"/>
+
+        <activity
+            android:name="com.fintech.match.pay_2.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@style/App_WXEntry" />
     </application>
 
 </manifest>

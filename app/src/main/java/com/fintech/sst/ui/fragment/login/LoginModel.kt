@@ -2,24 +2,34 @@ package com.fintech.sst.ui.fragment.login
 
 import com.fintech.sst.App
 import com.fintech.sst.data.DataSource
+import com.fintech.sst.helper.METHOD_ALI
+import com.fintech.sst.helper.METHOD_WECHAT
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.SignRequestBody
 import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
 class LoginModel: DataSource {
+    companion object {
+        private const val KEY_MCH_ID = "mchId"
+        private const val KEY_USER_NAME = "userName"
+        private const val KEY_LOGIN_TOKEN = "loginToken"
+        private const val KEY_ACCOUNT = "account"
+        private const val KEY_ALLOW_LOAD = "allowLoad"
+        private const val KEY_BEGIN_NUM = "beginNum"
+        private const val KEY_END_NUM = "endNum"
+        private const val KEY_MAX_NUM = "maxNum"
+    }
+
     fun accountLogin(name: String, password: String): Observable<ResultEntity<Map<String, String>>> {
         val request = HashMap<String, String>()
-        request.put("userName", name)
-        request.put("password", password)
-        request.put("app_version", App.getAppContext().packageManager
-                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString())
+        request["userName"] = name
+        request["password"] = password
+        request["app_version"] = App.getAppContext().packageManager
+                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString()
         return service.login(SignRequestBody(request))
     }
 
@@ -29,46 +39,65 @@ class LoginModel: DataSource {
 
     fun postAliCode(uid:String): Observable<ResultEntity<Map<String, String>>>? {
         val request = HashMap<String, String>()
-        request.put("uid", uid)
-        request.put("app_version", App.getAppContext().packageManager
-                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString())
+        request["uid"] = uid
+        request["app_version"] = App.getAppContext().packageManager
+                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString()
         return service.postAliCode(SignRequestBody(request))
     }
 
     fun bindAli(name: String, password: String,ali_user_id:String): Observable<ResultEntity<Map<String, String>>> {
         val request = HashMap<String, String>()
-        request.put("userName", name)
-        request.put("password", password)
-        request.put("uid", ali_user_id)
-        request.put("payMethod", "2001")
-        request.put("app_version", App.getAppContext().packageManager
-                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString())
+        request["userName"] = name
+        request["password"] = password
+        request["uid"] = ali_user_id
+        request["payMethod"] = "2001"
+        request["app_version"] = App.getAppContext().packageManager
+                .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString()
         return service.bindAli(SignRequestBody(request))
     }
 
-    fun delLocalData() {
-        Single.just(1)
-                .subscribeOn(Schedulers.io())
-                .subscribe(Consumer {
-                    //                        DB.deleteTable(context);
-                    Configuration.removeUserInfoByKey(KEY_ACCOUNT)
-                    Configuration.removeUserInfoByKey(KEY_ALLOW_LOAD)
-                    Configuration.removeUserInfoByKey(KEY_BEGIN_NUM)
-                    Configuration.removeUserInfoByKey(KEY_END_NUM)
-                    Configuration.removeUserInfoByKey(KEY_MAX_NUM)
-                })
+//    fun delLocalData() {
+//        Single.just(1)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(Consumer {
+//                    //                        DB.deleteTable(context);
+//                    Configuration.removeUserInfoByKey(KEY_ACCOUNT)
+//                    Configuration.removeUserInfoByKey(KEY_ALLOW_LOAD)
+//                    Configuration.removeUserInfoByKey(KEY_BEGIN_NUM)
+//                    Configuration.removeUserInfoByKey(KEY_END_NUM)
+//                    Configuration.removeUserInfoByKey(KEY_MAX_NUM)
+//                })
+//    }
+
+
+    fun saveData(result: Map<String, String>,type:String) {
+        when(type){
+            METHOD_ALI -> {
+                Configuration.putUserInfo(KEY_MCH_ID_ALI, result[KEY_MCH_ID])
+                Configuration.putUserInfo(KEY_USER_NAME_ALI, result[KEY_USER_NAME])
+                Configuration.putUserInfo(KEY_LOGIN_TOKEN_ALI, result[KEY_LOGIN_TOKEN])
+
+                Configuration.putUserInfo(KEY_ACCOUNT_ALI, result[KEY_ACCOUNT])
+                Configuration.putUserInfo(KEY_ALLOW_LOAD_ALI, result[KEY_ALLOW_LOAD])
+                Configuration.putUserInfo(KEY_BEGIN_NUM_ALI, result[KEY_BEGIN_NUM])
+                Configuration.putUserInfo(KEY_END_NUM_ALI, result[KEY_END_NUM])
+                Configuration.putUserInfo(KEY_MAX_NUM_ALI, result[KEY_MAX_NUM])
+            }
+            METHOD_WECHAT -> {
+                Configuration.putUserInfo(KEY_MCH_ID_WECHAT, result[KEY_MCH_ID])
+                Configuration.putUserInfo(KEY_USER_NAME_WECHAT, result[KEY_USER_NAME])
+                Configuration.putUserInfo(KEY_LOGIN_TOKEN_WECHAT, result[KEY_LOGIN_TOKEN])
+
+                Configuration.putUserInfo(KEY_ACCOUNT_WECHAT, result[KEY_ACCOUNT])
+                Configuration.putUserInfo(KEY_ALLOW_LOAD_WECHAT, result[KEY_ALLOW_LOAD])
+                Configuration.putUserInfo(KEY_BEGIN_NUM_WECHAT, result[KEY_BEGIN_NUM])
+                Configuration.putUserInfo(KEY_END_NUM_WECHAT, result[KEY_END_NUM])
+                Configuration.putUserInfo(KEY_MAX_NUM_WECHAT, result[KEY_MAX_NUM])
+            }
+        }
     }
 
-
-    fun saveData(result: Map<String, String>) {
-        Configuration.putUserInfo(KEY_USER_NAME, result[KEY_USER_NAME])
-        Configuration.putUserInfo(KEY_MCH_ID, result[KEY_MCH_ID])
-        Configuration.putUserInfo(KEY_LOGIN_TOKEN, result[KEY_LOGIN_TOKEN])
-
-        Configuration.putUserInfo(KEY_ACCOUNT, result[KEY_ACCOUNT])
-        Configuration.putUserInfo(KEY_ALLOW_LOAD, result[KEY_ALLOW_LOAD])
-        Configuration.putUserInfo(KEY_BEGIN_NUM, result[KEY_BEGIN_NUM])
-        Configuration.putUserInfo(KEY_END_NUM, result[KEY_END_NUM])
-        Configuration.putUserInfo(KEY_MAX_NUM, result[KEY_MAX_NUM])
+    fun clearLoginInfo(type:String){
+        Configuration.clearUserInfo(type)
     }
 }

@@ -5,12 +5,16 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.fintech.sst.App;
+import com.fintech.sst.helper.ExpansionKt;
 
 import static com.fintech.sst.net.Constants.KEY_ADDRESS;
-import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN;
-import static com.fintech.sst.net.Constants.KEY_MCH_ID;
+import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_ALI;
+import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_WECHAT;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_SP_;
-import static com.fintech.sst.net.Constants.KEY_USER_NAME;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 
 /**
@@ -41,37 +45,61 @@ public class Configuration {
         edit.apply();
     }
 
-    public static KEY_SP_ getKeySp() {
+    public static KEY_SP_ getKeySp(String type) {
         SharedPreferences sp = App.getApplication().getSharedPreferences(KEY_SP_, Context.MODE_PRIVATE);
         Configuration.KEY_SP_ key_sp_ = new KEY_SP_();
-        key_sp_.mchId = sp.getString(KEY_MCH_ID, "");
-        key_sp_.userName = sp.getString(KEY_USER_NAME, "");
-        key_sp_.loginToken = sp.getString(KEY_LOGIN_TOKEN, "");
+        switch (type){
+            case ExpansionKt.METHOD_ALI:
+                key_sp_.mchId = sp.getString(KEY_MCH_ID_ALI, "");
+                key_sp_.userName = sp.getString(KEY_USER_NAME_ALI, "");
+                key_sp_.loginToken = sp.getString(KEY_LOGIN_TOKEN_ALI, "");
+                break;
+            case ExpansionKt.METHOD_WECHAT:
+                key_sp_.mchId = sp.getString(KEY_MCH_ID_WECHAT, "");
+                key_sp_.userName = sp.getString(KEY_USER_NAME_WECHAT, "");
+                key_sp_.loginToken = sp.getString(KEY_LOGIN_TOKEN_WECHAT, "");
+                break;
+        }
+
         return key_sp_;
     }
 
-    public static boolean clearUserInfo() {
+    public static boolean clearUserInfo(String type) {
 
 //        AlarmCompact.cancelAlarm(App.getApplication().getApplicationContext());
 //        JobServiceCompact.cancelAllJobs(App.getAppContext());
 
         SharedPreferences sp = App.getApplication().getSharedPreferences(KEY_SP_, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
-        edit.remove(KEY_MCH_ID);
-        edit.remove(KEY_LOGIN_TOKEN);
+        switch (type){
+            case ExpansionKt.METHOD_ALI:
+                edit.remove(KEY_MCH_ID_ALI);
+                edit.remove(KEY_LOGIN_TOKEN_ALI);
+                break;
+            case ExpansionKt.METHOD_WECHAT:
+                edit.remove(KEY_MCH_ID_WECHAT);
+                edit.remove(KEY_LOGIN_TOKEN_WECHAT);
+                break;
+        }
         return edit.commit();
     }
 
-    public static boolean noLogin() {
-        return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN));
+    public static boolean noLogin(String type) {
+        switch (type){
+            case ExpansionKt.METHOD_ALI:
+                return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_ALI));
+            case ExpansionKt.METHOD_WECHAT:
+                return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_WECHAT));
+        }
+        return false;
     }
 
     public static boolean noAddress() {
         return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_ADDRESS));
     }
 
-    public static boolean isLogin() {
-        return !noLogin();
+    public static boolean isLogin(String type) {
+        return !noLogin(type);
     }
 
     public static class KEY_SP_ {

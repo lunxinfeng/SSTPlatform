@@ -15,8 +15,8 @@ class OrderPresenter(val view: OrderContract.View,
 
     override val compositeDisposable = CompositeDisposable()
 
-    override fun orderList(type:Int, pageNow: Int, pageSize:Int,append:Boolean) {
-        model.orderList(type,pageNow,pageSize)
+    override fun orderList(tradeStatus:Int,type:String, pageNow: Int, pageSize:Int,append:Boolean) {
+        model.orderList(tradeStatus,pageNow,pageSize,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : ProgressObserver<ResultEntity<PageList<OrderList>>, OrderContract.View>(view,false) {
@@ -33,8 +33,8 @@ class OrderPresenter(val view: OrderContract.View,
                 })
     }
 
-    override fun orderCount(orderList: OrderList) {
-        model.orderCount(orderList.realAmount.toString(),orderList.createTime)
+    override fun orderCount(orderList: OrderList,type:String) {
+        model.orderCount(orderList.realAmount.toString(),orderList.createTime,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : ProgressObserver<ResultEntity<OrderCount>, OrderContract.View>(view,false) {
@@ -50,8 +50,8 @@ class OrderPresenter(val view: OrderContract.View,
                 })
     }
 
-    override fun reOrder(orderNo: String) {
-        model.reOrder(orderNo)
+    override fun reOrder(orderNo: String,type:String) {
+        model.reOrder(orderNo,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : ProgressObserver<ResultEntity<String>, OrderContract.View>(view,false) {

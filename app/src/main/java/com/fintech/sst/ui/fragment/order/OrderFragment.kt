@@ -21,7 +21,8 @@ import kotlinx.android.synthetic.main.fragment_order.*
 class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View {
     override val presenter: OrderContract.Presenter = OrderPresenter(this)
 
-    private var type: Int = 0
+    private var status: Int = 0
+    private var type: String = ""
     private val adapter = OrderAdapter(R.layout.item_order_list)
     private var pageIndex = 1
 
@@ -30,7 +31,8 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            type = arguments!!.getInt(PARAM_TYPE)
+            status = arguments!!.getInt(PARAM_STATUS)
+            type = arguments!!.getString(PARAM_TYPE)!!
         }
     }
 
@@ -47,7 +49,7 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
             adapter = this@OrderFragment.adapter.apply {
                 setEmptyView(R.layout.empty_view_recycler,recyclerView)
                 setOnItemChildClickListener { _,_,position ->
-                    presenter.orderCount(data[position])
+                    presenter.orderCount(data[position],type)
                 }
             }
         }
@@ -58,16 +60,16 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
             setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
                 override fun onLoadMore(refreshLayout: RefreshLayout) {
                     pageIndex++
-                    presenter.orderList(type,pageNow = pageIndex,append = true)
+                    presenter.orderList(status,type,pageNow = pageIndex,append = true)
                 }
 
                 override fun onRefresh(refreshLayout: RefreshLayout) {
                     pageIndex = 1
-                    presenter.orderList(type,pageNow = pageIndex)
+                    presenter.orderList(status,type,pageNow = pageIndex)
                 }
             })
         }
-        presenter.orderList(type)
+        presenter.orderList(status,type)
     }
 
     override fun loadMore(orders: List<OrderList>?) {
@@ -94,14 +96,14 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
     override fun reOrderSuccess() {
         showToast("补单成功")
         pageIndex = 1
-        presenter.orderList(type)
+        presenter.orderList(status,type)
     }
 
     override fun showReOrderHint(orderCount: OrderCount,orderList: OrderList) {
         AlertDialog.Builder(activity)
                 .setMessage("当前金额订单总数为${orderCount.orderCount}，收款单总数为${orderCount.noticeLogCount},是否确定补单?")
                 .setPositiveButton("确定"){_, _ ->
-                    presenter.reOrder(orderList.tradeNo)
+                    presenter.reOrder(orderList.tradeNo,type)
                 }
                 .setNegativeButton("取消"){dialog, _ ->
                     dialog.dismiss()
@@ -140,17 +142,19 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
      * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
     interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument status and name
         fun onFragmentInteraction(uri: Uri)
     }
 
     companion object {
-        private val PARAM_TYPE = "type"
+        private val PARAM_STATUS = "status"
+        private val PARAM_TYPE = "status"
 
-        fun newInstance(type: Int = 0): OrderFragment {
+        fun newInstance(status: Int = 0,type:String): OrderFragment {
             val fragment = OrderFragment()
             val args = Bundle()
-            args.putInt(PARAM_TYPE, type)
+            args.putInt(PARAM_STATUS, status)
+            args.putString(PARAM_TYPE, type)
             fragment.arguments = args
             return fragment
         }
