@@ -35,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="#ff0000"
             android:layout_gravity="end">
             <TextView
                 android:id="@+id/hideAli"
@@ -44,6 +43,9 @@
                 android:layout_weight="1"
                 android:padding="16dp"
                 android:gravity="center"
+                android:background="#52b1e1"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:text="@string/hide"/>
 
             <TextView
@@ -54,6 +56,9 @@
                 android:padding="16dp"
                 android:gravity="center"
                 android:visibility="gone"
+                android:background="#3586e5"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:text="@string/exit"/>
         </LinearLayout>
 
@@ -197,10 +202,15 @@
                 android:id="@+id/tvLoginAli"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
-                android:gravity="center"
-                android:visibility="gone"
-                android:text="@string/ali_login" />
+                android:background="@color/ali_bg"
+                android:gravity="center_vertical"
+                android:text="@string/ali_login"
+                android:drawableStart="@mipmap/logo_ali"
+                android:drawablePadding="32dp"
+                android:paddingStart="50dp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                />
 
         </FrameLayout>
     </com.fintech.sst.ui.widget.MenuCardView>
@@ -234,6 +244,9 @@
                 android:layout_weight="1"
                 android:padding="16dp"
                 android:gravity="center"
+                android:background="#58d760"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:text="@string/hide" />
 
             <TextView
@@ -244,6 +257,9 @@
                 android:padding="16dp"
                 android:gravity="center"
                 android:visibility="gone"
+                android:background="#00bc0c"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:text="@string/exit"/>
         </LinearLayout>
 
@@ -363,9 +379,14 @@
                 android:id="@+id/tvLoginWeChat"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
-                android:gravity="center"
-                android:text="@string/wechat_login" />
+                android:background="@color/wechat_bg"
+                android:gravity="center_vertical"
+                android:text="@string/wechat_login"
+                android:drawableStart="@mipmap/logo_wechat"
+                android:drawablePadding="32dp"
+                android:paddingStart="50dp"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
 
         </FrameLayout>
     </com.fintech.sst.ui.widget.MenuCardView>
@@ -386,5 +407,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewWechat"
         app:layout_goneMarginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/version"
+        android:textSize="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

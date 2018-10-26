@@ -195,11 +195,11 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                             t.type == 1 -> userInfo(METHOD_ALI)
                             t.type == 2 -> userInfo(METHOD_WECHAT)
                             t.type == 11 -> {
-                                view.showToast("账号在其他地方登录")
+                                view.showToast("支付宝通道账号退出登录")
                                 exitLogin(METHOD_ALI)
                             }
                             t.type == 12 -> {
-                                view.showToast("账号在其他地方登录")
+                                view.showToast("微信通道账号退出登录")
                                 exitLogin(METHOD_WECHAT)
                             }
                             else -> {
@@ -310,6 +310,26 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
         val req = SendAuth.Req()
         req.scope = "snsapi_userinfo"
         api.sendReq(req)
+    }
+
+    override fun accountLogin(account: String, password: String, type: String) {
+        modelLogin.accountLogin(account,password,type)
+                .subscribe(object : ProgressObserver<ResultEntity<Map<String, String>>, AisleManagerContract.View>(view) {
+                    override fun onNext_(resultEntity: ResultEntity<Map<String, String>>) {
+                        val result = resultEntity.result
+                        if (result == null){
+                            view.loginFail(resultEntity.subMsg?:resultEntity.msg)
+                            return
+                        }
+                        modelLogin.saveData(result,type)
+                        userInfo(type)
+                        view.loginSuccess(type)
+                    }
+
+                    override fun onError(error: String) {
+                        view.loginFail(error)
+                    }
+                })
     }
 
     override fun exitLogin(type: String) {

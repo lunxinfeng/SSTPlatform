@@ -9,6 +9,8 @@ import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.SignRequestBody
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
@@ -24,13 +26,16 @@ class LoginModel: DataSource {
         private const val KEY_MAX_NUM = "maxNum"
     }
 
-    fun accountLogin(name: String, password: String): Observable<ResultEntity<Map<String, String>>> {
+    fun accountLogin(name: String, password: String,type: String = METHOD_ALI): Observable<ResultEntity<Map<String, String>>> {
         val request = HashMap<String, String>()
         request["userName"] = name
         request["password"] = password
+        request["payMethod"] = type
         request["app_version"] = App.getAppContext().packageManager
                 .getPackageInfo(App.getAppContext().packageName,0).versionCode.toString()
         return service.login(SignRequestBody(request))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun aliLoginUrl(): Observable<ResultEntity<Map<String, String>>> {

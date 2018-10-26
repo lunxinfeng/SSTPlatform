@@ -14,4 +14,6 @@
     <color name="fail_time">#f38a87</color>
     <color name="loading">#277ce6</color>
     <color name="disable">#cbcaca</color>
+    <color name="ali_bg">#199fe4</color>
+    <color name="wechat_bg">#00bc0c</color>
 </resources>

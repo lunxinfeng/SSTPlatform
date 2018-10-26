@@ -25,6 +25,7 @@ interface AisleManagerContract {
 
         //----- login
         val context: FragmentActivity
+        fun accountLogin(type:String):Boolean
         fun loginSuccess(type:String)
         fun loginFail(hint:String)
     }
@@ -40,6 +41,7 @@ interface AisleManagerContract {
         fun toSetting()
         fun aliLogin()
         fun wechatLogin()
+        fun accountLogin(account:String,password:String,type:String)
         fun exitLogin(type:String)
         fun updateLocalAmount(type: String)
     }

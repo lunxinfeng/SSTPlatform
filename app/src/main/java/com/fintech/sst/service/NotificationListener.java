@@ -16,6 +16,7 @@ import com.fintech.sst.helper.ParsedNotification;
 import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.net.ApiProducerModule;
 import com.fintech.sst.net.ApiService;
+import com.fintech.sst.net.Configuration;
 import com.fintech.sst.net.MessageRequestBody;
 import com.fintech.sst.net.ResultEntity;
 
@@ -194,7 +195,7 @@ public final class NotificationListener extends NotificationListenerService {
                 .filter(new Predicate<Long>() {
                     @Override
                     public boolean test(Long aLong) throws Exception {
-                        return notices.size() > 0;
+                        return notices.size() > 0 && Configuration.isLogin(notices.get(0).type + "");
                     }
                 })
                 .flatMap(new Function<Long, ObservableSource<ResultEntity<Notice>>>() {

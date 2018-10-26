@@ -24,6 +24,7 @@ import com.fintech.sst.ui.activity.notice.NoticeListActivity
 import com.fintech.sst.ui.activity.order.OrderListActivity
 import com.fintech.sst.ui.activity.setting.SettingActivity
 import com.fintech.sst.ui.dialog.AisleManagerDialog
+import com.fintech.sst.ui.dialog.BindDialog
 import kotlinx.android.synthetic.main.activity_aisle_manager2.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -227,7 +228,9 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 //        startHeartService()
 
         tvLoginAli.setOnClickListener { presenter.aliLogin() }
+        tvLoginAli.setOnLongClickListener { accountLogin(METHOD_ALI) }
         tvLoginWeChat.setOnClickListener { presenter.wechatLogin() }
+        tvLoginWeChat.setOnLongClickListener { accountLogin(METHOD_WECHAT) }
         hideAli.setOnClickListener { viewHideOrShow(cardViewAli, false) }
         hideWechat.setOnClickListener { viewHideOrShow(cardViewWechat, false) }
         exitAli.setOnClickListener { presenter.exitLogin(METHOD_ALI) }
@@ -366,6 +369,13 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
     //----------------login---------------------
     override val context: FragmentActivity = this
+
+    override fun accountLogin(type: String):Boolean {
+        BindDialog(this, BindDialog.TYPE_LOGIN){name, password ->
+            presenter.accountLogin(name,password,type)
+        }.show()
+        return true
+    }
 
     override fun loginSuccess(type: String) {
 //        showToast("登录成功")
