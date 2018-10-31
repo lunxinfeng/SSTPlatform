@@ -32,6 +32,7 @@ public class SignRequestBody extends HashMap<String, String> {
             this.put("timestamp", System.currentTimeMillis());
             this.put("nonceStr", SignatureHelper.generateNonceStr());
             this.put("signType", "MD5");
+            this.put("payMethod", type);
 
             String sign = SignatureHelper.generateSignature(this, keySp.getLoginToken());
             this.put("sign", sign);

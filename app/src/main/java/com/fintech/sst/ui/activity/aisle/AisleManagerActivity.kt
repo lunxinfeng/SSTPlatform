@@ -25,6 +25,7 @@ import com.fintech.sst.ui.activity.order.OrderListActivity
 import com.fintech.sst.ui.activity.setting.SettingActivity
 import com.fintech.sst.ui.dialog.AisleManagerDialog
 import com.fintech.sst.ui.dialog.BindDialog
+import com.fintech.sst.ui.widget.MenuCardView
 import kotlinx.android.synthetic.main.activity_aisle_manager2.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -82,16 +83,16 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             METHOD_ALI -> {
                 if (!success)
                     switch_aisle_ali.isChecked = !switch_aisle_ali.isChecked
-                if (success) {
-                    lastNoticeTimeAli = System.currentTimeMillis()
-                }
+//                if (success) {
+//                    lastNoticeTimeAli = System.currentTimeMillis()
+//                }
             }
             METHOD_WECHAT -> {
                 if (!success)
                     switch_aisle_wechat.isChecked = !switch_aisle_wechat.isChecked
-                if (success) {
-                    lastNoticeTimeWeChat = System.currentTimeMillis()
-                }
+//                if (success) {
+//                    lastNoticeTimeWeChat = System.currentTimeMillis()
+//                }
             }
         }
     }
@@ -114,11 +115,13 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 tvLoginAli.visibility = View.VISIBLE
                 hideAli.visibility = View.VISIBLE
                 exitAli.visibility = View.GONE
+                cardViewAli.setStatus(MenuCardView.Status.CLOSE)
             }
             METHOD_WECHAT -> {
                 tvLoginWeChat.visibility = View.VISIBLE
                 hideWechat.visibility = View.VISIBLE
                 exitWechat.visibility = View.GONE
+                cardViewWechat.setStatus(MenuCardView.Status.CLOSE)
             }
         }
     }

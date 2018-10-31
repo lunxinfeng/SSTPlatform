@@ -27,8 +27,8 @@ const val METHOD_ALI = "2001"
 const val WX_APPID = "wx97adb85ee024d14e"
 const val WX_APPSECRET = "5ffef877a687fac19cc98462768fbbda"
 
-var lastNoticeTimeAli:Long = 0
-var lastNoticeTimeWeChat:Long = 0
+//var lastNoticeTimeAli:Long = 0
+//var lastNoticeTimeWeChat:Long = 0
 
 var closeTime = 0L
 

@@ -150,6 +150,9 @@ public final class NotificationListener extends NotificationListenerService {
         notice.title = parsedNotification.getmExtras().getString("android.title");
 //        notice.title = "微信支付";
 //        notice.title = "支付宝通知";
+
+        if (check(packageName, notice)) return;
+
         switch (packageName) {
             case "com.tencent.mm":
                 notice.type = 1001;
@@ -161,6 +164,28 @@ public final class NotificationListener extends NotificationListenerService {
                 break;
         }
         notices.offer(notice);
+    }
+
+    /**
+     * 是否被风控
+     */
+    private boolean check(String packageName, Notice notice) {
+        if (notice.content.startsWith("支付宝禁止一切提供赌博咨询或参与赌博的行为")){
+            Notice close = new Notice();
+            int noticeType = 0;
+            switch (packageName){
+                case "com.eg.android.AlipayGphone":
+                    noticeType = 1;
+                    break;
+                case "com.tencent.mm":
+                    noticeType = 2;
+                    break;
+            }
+            close.type = noticeType;
+            RxBus.getDefault().send(close);
+            return true;
+        }
+        return false;
     }
 
     @Override

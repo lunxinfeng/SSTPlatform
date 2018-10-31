@@ -38,6 +38,7 @@ class MenuCardView(
         super.onFinishInflate()
         content = getChildAt(1)
         menu = getChildAt(0)
+        menu.visibility = View.INVISIBLE
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -90,8 +91,32 @@ class MenuCardView(
             postInvalidate()
         }
 
+        override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {
+            if (dx < 0){//向左滑
+                if(menu.visibility != View.VISIBLE)
+                    menu.visibility = View.VISIBLE
+            }else{
+                if (left == 0){//向右滑到头
+                    if(menu.visibility == View.VISIBLE)
+                        menu.visibility = View.INVISIBLE
+                }
+            }
+        }
+
         override fun getViewHorizontalDragRange(child: View): Int {
             return menu.width
+        }
+    }
+
+    enum class Status{
+        OPEN,
+        CLOSE
+    }
+
+    fun setStatus(status: Status){
+        when(status){
+            Status.OPEN -> menu.visibility = View.VISIBLE
+            Status.CLOSE -> menu.visibility = View.INVISIBLE
         }
     }
 }

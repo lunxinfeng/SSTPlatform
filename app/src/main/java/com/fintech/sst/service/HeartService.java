@@ -15,8 +15,12 @@ import com.fintech.sst.net.ApiService;
 import com.fintech.sst.net.Configuration;
 import com.fintech.sst.net.ResultEntity;
 import com.fintech.sst.net.SignRequestBody;
+import com.fintech.sst.net.bean.OrderList;
+import com.fintech.sst.net.bean.PageList;
+import com.fintech.sst.ui.fragment.order.OrderModel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -30,10 +34,6 @@ import io.reactivex.functions.Predicate;
 import static com.fintech.sst.helper.ExpansionKt.METHOD_ALI;
 import static com.fintech.sst.helper.ExpansionKt.METHOD_WECHAT;
 import static com.fintech.sst.helper.ExpansionKt.debug;
-import static com.fintech.sst.helper.ExpansionKt.getCloseTime;
-import static com.fintech.sst.helper.ExpansionKt.getLastNoticeTimeAli;
-import static com.fintech.sst.helper.ExpansionKt.getLastNoticeTimeWeChat;
-import static com.fintech.sst.helper.ExpansionKt.setLastNoticeTimeAli;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
@@ -42,22 +42,23 @@ import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 public class HeartService extends Service {
     private static final String TAG = "HeartService";
+    private OrderModel orderModel = new OrderModel();
     private Disposable disposableAli;
     private Disposable disposableWeChat;
 
     private void heartBeat(final String type) {
-        if (type.equals(ExpansionKt.METHOD_ALI)){
-            if (disposableAli!=null)
+        if (type.equals(ExpansionKt.METHOD_ALI)) {
+            if (disposableAli != null)
                 disposableAli.dispose();
-        }else{
-            if (disposableWeChat!=null)
+        } else {
+            if (disposableWeChat != null)
                 disposableWeChat.dispose();
         }
 
-        Observable.interval(0,10*1000, TimeUnit.MILLISECONDS)
+        Observable.interval(0, 10 * 1000, TimeUnit.MILLISECONDS)
                 .filter(new Predicate<Long>() {
                     @Override
-                    public boolean test(Long aLong) throws Exception {
+                    public boolean test(Long aLong) {
 //                        boolean alive = PermissionUtil.isNotificationListenerEnabled();
                         boolean alive = NotificationListener.isActive();
                         if (!alive) {
@@ -69,36 +70,57 @@ public class HeartService extends Service {
                 .flatMap(new Function<Long, ObservableSource<ResultEntity<Boolean>>>() {
                     @SuppressLint("CheckResult")
                     @Override
-                    public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) throws Exception {
-                        long lastNoticeTime = 0;
-                        String keyUserName = null;
-                        String keyMChId = null;
-                        switch (type){
-                            case ExpansionKt.METHOD_ALI:
-                                lastNoticeTime = getLastNoticeTimeAli();
-                                keyUserName = KEY_USER_NAME_ALI;
-                                keyMChId = KEY_MCH_ID_ALI;
-                                break;
-                            case ExpansionKt.METHOD_WECHAT:
-                                lastNoticeTime = getLastNoticeTimeWeChat();
-                                keyUserName = KEY_USER_NAME_WECHAT;
-                                keyMChId = KEY_MCH_ID_WECHAT;
-                                break;
-                        }
-                        if (System.currentTimeMillis() - lastNoticeTime > getCloseTime() && lastNoticeTime!=0){
-                            HashMap<String, String> request = new HashMap<>();
-                            request.put("appLoginName", Configuration.getUserInfoByKey(keyUserName));
-                            request.put("loginUserId", Configuration.getUserInfoByKey(keyMChId));
-                            request.put("type", type);
-                            request.put("enable", "0");
-                            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign(type))
+                    public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) {
+                        if (aLong % 6 == 0) {
+                            orderModel.orderList(0, 1, 10, type)
+                                    .flatMap(new Function<ResultEntity<PageList<OrderList>>, ObservableSource<ResultEntity<String>>>() {
+                                        @Override
+                                        public ObservableSource<ResultEntity<String>> apply(ResultEntity<PageList<OrderList>> pageListResultEntity) {
+                                            if (pageListResultEntity != null && pageListResultEntity.getResult() != null) {
+                                                List<OrderList> list = pageListResultEntity.getResult().getList();
+                                                if (list.isEmpty()){
+                                                    return Observable.empty();
+                                                }
+
+                                                int num = 0;
+                                                for (OrderList item : list) {
+                                                    if (item.getTradeStatus().equals("30")) {
+                                                        num++;
+                                                    }
+                                                }
+
+                                                if (num == 0) {
+                                                    String keyUserName = null;
+                                                    String keyMChId = null;
+                                                    switch (type) {
+                                                        case ExpansionKt.METHOD_ALI:
+                                                            keyUserName = KEY_USER_NAME_ALI;
+                                                            keyMChId = KEY_MCH_ID_ALI;
+                                                            break;
+                                                        case ExpansionKt.METHOD_WECHAT:
+                                                            keyUserName = KEY_USER_NAME_WECHAT;
+                                                            keyMChId = KEY_MCH_ID_WECHAT;
+                                                            break;
+                                                    }
+                                                    HashMap<String, String> request = new HashMap<>();
+                                                    request.put("appLoginName", Configuration.getUserInfoByKey(keyUserName));
+                                                    request.put("loginUserId", Configuration.getUserInfoByKey(keyMChId));
+                                                    request.put("type", type);
+                                                    request.put("enable", "0");
+                                                    return ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign(type));
+                                                } else {
+                                                    return Observable.empty();
+                                                }
+                                            }
+                                            return Observable.empty();
+                                        }
+                                    })
                                     .subscribe(new Consumer<ResultEntity<String>>() {
                                         @Override
-                                        public void accept(ResultEntity<String> stringResultEntity) throws Exception {
-                                            setLastNoticeTimeAli(0);
+                                        public void accept(ResultEntity<String> stringResultEntity) {
                                             Notice notice = new Notice();
                                             int noticeType = 0;
-                                            switch (type){
+                                            switch (type) {
                                                 case ExpansionKt.METHOD_ALI:
                                                     noticeType = 1;
                                                     break;
@@ -111,28 +133,31 @@ public class HeartService extends Service {
                                         }
                                     });
                         }
-                        return ApiProducerModule.create(ApiService.class).heartbeat(new SignRequestBody().sign(type));
+
+                        HashMap<String, String> request = new HashMap<>();
+                        request.put("payMethod", type);
+                        return ApiProducerModule.create(ApiService.class).heartbeat(new SignRequestBody(request).sign(type));
                     }
                 })
                 .subscribe(new Observer<ResultEntity<Boolean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        if (type.equals(ExpansionKt.METHOD_ALI)){
+                        if (type.equals(ExpansionKt.METHOD_ALI)) {
                             disposableAli = d;
-                        }else{
+                        } else {
                             disposableWeChat = d;
                         }
 
-                        debug(TAG,"=======heartBeat " + type + " onSubscribe======");
+                        debug(TAG, "=======heartBeat " + type + " onSubscribe======");
                     }
 
                     @Override
                     public void onNext(ResultEntity<Boolean> booleanResultEntity) {
-                        debug(TAG,"=======heartBeat " + type + " onNext======");
-                        if (booleanResultEntity.getCode().equals("20001") && booleanResultEntity.getMsg().contains("签名错误")){
+                        debug(TAG, "=======heartBeat " + type + " onNext======");
+                        if (booleanResultEntity.getCode().equals("20001") && booleanResultEntity.getMsg().contains("签名错误")) {
                             Notice notice = new Notice();
                             int noticeType = 0;
-                            switch (type){
+                            switch (type) {
                                 case ExpansionKt.METHOD_ALI:
                                     noticeType = 11;
                                     disposableAli.dispose();
@@ -150,23 +175,23 @@ public class HeartService extends Service {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (type.equals(ExpansionKt.METHOD_ALI)){
+                        if (type.equals(ExpansionKt.METHOD_ALI)) {
                             disposableAli.dispose();
-                        }else{
+                        } else {
                             disposableWeChat.dispose();
                         }
-                        debug(TAG,"=======heartBeat " + type + " onError======");
+                        debug(TAG, "=======heartBeat " + type + " onError======");
                         heartBeat(type);
                     }
 
                     @Override
                     public void onComplete() {
-                        if (type.equals(ExpansionKt.METHOD_ALI)){
+                        if (type.equals(ExpansionKt.METHOD_ALI)) {
                             disposableAli.dispose();
-                        }else{
+                        } else {
                             disposableWeChat.dispose();
                         }
-                        debug(TAG,"=======heartBeat " + type + " onComplete======");
+                        debug(TAG, "=======heartBeat " + type + " onComplete======");
                         heartBeat(type);
                     }
                 });
@@ -175,7 +200,7 @@ public class HeartService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        debug(TAG,"=======onCreate======");
+        debug(TAG, "=======onCreate======");
         if (Configuration.isLogin(METHOD_ALI)) {//登录的时候开启心跳
             try {
                 heartBeat(METHOD_ALI);
@@ -196,10 +221,10 @@ public class HeartService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        debug(TAG,"=======onDestroy======");
-        if (disposableAli!=null)
+        debug(TAG, "=======onDestroy======");
+        if (disposableAli != null)
             disposableAli.dispose();
-        if (disposableWeChat!=null)
+        if (disposableWeChat != null)
             disposableWeChat.dispose();
     }
 
