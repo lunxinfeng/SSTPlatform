@@ -15,7 +15,24 @@ android {
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            //签名文件
+            storeFile file('../Android.keystore')
+            //密码
+            storePassword "201510301120Cert"
+            //别名
+            keyAlias "android.keystore"
+            //别名密码
+            keyPassword "201510301120Cert"
+        }
+
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

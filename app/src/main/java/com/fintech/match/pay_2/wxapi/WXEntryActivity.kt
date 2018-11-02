@@ -38,7 +38,7 @@ class WXEntryActivity : BaseActivity<WXContract.Presenter>(), IWXAPIEventHandler
                 }
             }
             else -> {
-                toast(resp.errStr)
+                toast("${resp.errCode}\t${resp.errStr}")
                 finish()
             }
         }

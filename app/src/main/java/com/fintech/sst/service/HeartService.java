@@ -89,7 +89,7 @@ public class HeartService extends Service {
                                                     }
                                                 }
 
-                                                if (num == 0) {
+                                                if (num == 0 && list.size() >= 10) {
                                                     String keyUserName = null;
                                                     String keyMChId = null;
                                                     switch (type) {
