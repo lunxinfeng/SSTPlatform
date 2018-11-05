@@ -97,7 +97,7 @@
                     android:textColor="#515151"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/textView33"
-                    app:layout_constraintTop_toBottomOf="@+id/textView33" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView100" />
 
                 <TextView
                     android:id="@+id/textView22"
@@ -120,7 +120,7 @@
                     android:layout_marginTop="16dp"
                     android:drawableLeft="@mipmap/icon_amount"
                     android:drawablePadding="10dp"
-                    android:text="@string/money"
+                    android:text="@string/money_pay"
                     android:textColor="#515151"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/textView22"
@@ -174,28 +174,31 @@
                     app:layout_constraintEnd_toEndOf="@+id/et_aisle_ali"
                     app:layout_constraintStart_toEndOf="@+id/textView33" />
 
-                <!--<TextView-->
-                    <!--android:id="@+id/textView10"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="8dp"-->
-                    <!--android:text="收款"-->
-                    <!--app:layout_constraintBaseline_toBaselineOf="@+id/et_money_ali"-->
-                    <!--app:layout_constraintStart_toEndOf="@+id/et_money_ali" />-->
+                <TextView
+                    android:id="@+id/textView100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableStart="@mipmap/icon_amount"
+                    android:drawablePadding="10dp"
+                    android:text="@string/money_notice"
+                    android:textColor="#515151"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView33"
+                    app:layout_constraintTop_toBottomOf="@+id/textView33" />
 
-                <!--<EditText-->
-                    <!--android:id="@+id/et_money_notice_ali"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="8dp"-->
-                    <!--android:ems="10"-->
-                    <!--android:enabled="false"-->
-                    <!--android:focusable="false"-->
-                    <!--android:inputType="number"-->
-                    <!--android:text="0.0"-->
-                    <!--app:layout_constraintBaseline_toBaselineOf="@+id/textView10"-->
-                    <!--app:layout_constraintEnd_toEndOf="@+id/et_aisle_ali"-->
-                    <!--app:layout_constraintStart_toEndOf="@+id/textView10" />-->
+                <EditText
+                    android:id="@+id/et_money_notice_ali"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:inputType="number"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView100"
+                    app:layout_constraintEnd_toEndOf="@+id/et_money_ali"
+                    app:layout_constraintStart_toEndOf="@+id/textView100" />
             </android.support.constraint.ConstraintLayout>
 
             <TextView
@@ -298,7 +301,7 @@
                     android:textColor="#515151"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/textView3"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
                 <TextView
                     android:id="@+id/textView2"
@@ -321,7 +324,7 @@
                     android:layout_marginTop="16dp"
                     android:drawableLeft="@mipmap/icon_amount"
                     android:drawablePadding="10dp"
-                    android:text="@string/money"
+                    android:text="@string/money_pay"
                     android:textColor="#515151"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/textView2"
@@ -344,7 +347,7 @@
                     android:id="@+id/tv_refresh_wechat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@mipmap/refresh"
+                    android:drawableStart="@mipmap/refresh"
                     android:textColor="@color/colorPrimaryDark"
                     app:layout_constraintEnd_toEndOf="@+id/switch_aisle_wechat"
                     app:layout_constraintTop_toTopOf="@+id/textView6" />
@@ -354,7 +357,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/toggle_aisle_manager"
+                    android:background="@drawable/toggle_aisle_manager_wechat"
                     android:thumb="@null"
                     android:track="@null"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -369,10 +372,35 @@
                     android:enabled="false"
                     android:focusable="false"
                     android:inputType="textPersonName"
-                    android:text="0.0/0.0"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
                     app:layout_constraintEnd_toEndOf="@+id/et_aisle_wechat"
                     app:layout_constraintStart_toEndOf="@+id/textView3" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableStart="@mipmap/icon_amount"
+                    android:drawablePadding="10dp"
+                    android:text="@string/money_notice"
+                    android:textColor="#515151"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView3"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                <EditText
+                    android:id="@+id/et_money_notice_wechat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:inputType="number"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView10"
+                    app:layout_constraintEnd_toEndOf="@+id/et_money_wechat"
+                    app:layout_constraintStart_toEndOf="@+id/textView10" />
             </android.support.constraint.ConstraintLayout>
 
             <TextView

@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import com.fintech.sst.R
+import com.fintech.sst.helper.METHOD_ALI
+import com.fintech.sst.helper.METHOD_WECHAT
 import com.fintech.sst.ui.fragment.order.OrderFragment
 import kotlinx.android.synthetic.main.activity_order_list.*
 
@@ -15,6 +17,12 @@ class OrderListActivity : AppCompatActivity(),OrderFragment.OnFragmentInteractio
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val type = intent.getStringExtra("type")
+        when(type){
+            METHOD_ALI -> setTheme(R.style.App_Ali)
+            METHOD_WECHAT -> setTheme(R.style.App_WeChat)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_list)
 
@@ -22,7 +30,6 @@ class OrderListActivity : AppCompatActivity(),OrderFragment.OnFragmentInteractio
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        val type = intent.getStringExtra("type")
 
         val fragmentListAli = mutableListOf<OrderFragment>()
         fragmentListAli.add(OrderFragment.newInstance(0, type))

@@ -45,15 +45,13 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         when (type) {
             METHOD_ALI -> {
                 et_aisle_ali.setText(info?.account ?: "")
-                val text = et_money_ali.text.toString().split("/")
-                et_money_ali.setText("${info?.realAmount.toString()}/${text[1]}")
+                et_money_ali.setText(info?.realAmount.toString())
                 et_successRate_ali.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
                 switch_aisle_ali.isChecked = info?.enable == "1"
             }
             METHOD_WECHAT -> {
                 et_aisle_wechat.setText(info?.account ?: "")
-                val text = et_money_wechat.text.toString().split("/")
-                et_money_wechat.setText("${info?.realAmount.toString()}/${text[1]}")
+                et_money_wechat.setText(info?.realAmount.toString())
                 et_successRate_wechat.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
                 switch_aisle_wechat.isChecked = info?.enable == "1"
             }
@@ -67,12 +65,10 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
         when (type) {
             METHOD_ALI -> {
-                val text = et_money_ali.text.toString().split("/")
-                et_money_ali.setText("${text[0]}/$amountTotal")
+                et_money_notice_wechat.setText(amountTotal.toString())
             }
             METHOD_WECHAT -> {
-                val text = et_money_wechat.text.toString().split("/")
-                et_money_wechat.setText("${text[0]}/$amountTotal")
+                et_money_notice_wechat.setText(amountTotal.toString())
             }
         }
     }

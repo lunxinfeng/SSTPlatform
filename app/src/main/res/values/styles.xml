@@ -12,6 +12,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="App_Ali" parent="AppTheme">
+    </style>
+    <style name="App_WeChat" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary_weChat</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_weChat</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>
         <!-- 设置未浮动窗口 -->

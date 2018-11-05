@@ -2,6 +2,8 @@
 <resources>
     <color name="colorPrimary">#277de5</color>
     <color name="colorPrimaryDark">#3d86dd</color>
+    <color name="colorPrimary_weChat">#01c80b</color>
+    <color name="colorPrimaryDark_weChat">#01c80b</color>
     <color name="colorAccent">#f39900</color>
     <color name="btn_unenable">#d2d0d0</color>
     <color name="black_90">#90000000</color>
