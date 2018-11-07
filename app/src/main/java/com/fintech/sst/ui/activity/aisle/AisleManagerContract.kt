@@ -22,6 +22,7 @@ interface AisleManagerContract {
         fun toNoticeList()
         fun toAisleManager(type: String)
         fun viewHideOrShow(view:android.view.View,show:Boolean)
+        fun showHintDialog(content:String)
 
         //----- login
         val context: FragmentActivity

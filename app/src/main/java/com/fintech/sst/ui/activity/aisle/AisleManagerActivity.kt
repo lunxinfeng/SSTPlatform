@@ -46,12 +46,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             METHOD_ALI -> {
                 et_aisle_ali.setText(info?.account ?: "")
                 et_money_ali.setText(info?.realAmount.toString())
+                et_money_notice_ali.setText(info?.tradeNoticeLogAmount.toString())
                 et_successRate_ali.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
                 switch_aisle_ali.isChecked = info?.enable == "1"
             }
             METHOD_WECHAT -> {
                 et_aisle_wechat.setText(info?.account ?: "")
                 et_money_wechat.setText(info?.realAmount.toString())
+                et_money_notice_wechat.setText(info?.tradeNoticeLogAmount.toString())
                 et_successRate_wechat.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
                 switch_aisle_wechat.isChecked = info?.enable == "1"
             }
@@ -60,17 +62,17 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
     }
 
     override fun updateLocalInfo(notices: List<Notice>, type: String) {
-        var amountTotal = 0.0
-        notices.forEach { amountTotal += it.amount.toFloat() }
-
-        when (type) {
-            METHOD_ALI -> {
-                et_money_notice_ali.setText(amountTotal.toString())
-            }
-            METHOD_WECHAT -> {
-                et_money_notice_wechat.setText(amountTotal.toString())
-            }
-        }
+//        var amountTotal = 0.0
+//        notices.forEach { amountTotal += it.amount.toFloat() }
+//
+//        when (type) {
+//            METHOD_ALI -> {
+//                et_money_notice_ali.setText(amountTotal.toString())
+//            }
+//            METHOD_WECHAT -> {
+//                et_money_notice_wechat.setText(amountTotal.toString())
+//            }
+//        }
     }
 
     override fun aisleStatusResult(success: Boolean, type: String) {
@@ -165,6 +167,20 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 presenter.aisleDelete(type)
             }
         }).show()
+    }
+
+    override fun showHintDialog(content: String) {
+        MaterialDialog(this)
+                .title(
+                        text = "警告"
+                )
+                .message(
+                        text = content
+                )
+                .positiveButton{
+                    stopWarning()
+                }
+                .show()
     }
 
     override fun viewHideOrShow(view: View, show: Boolean) {

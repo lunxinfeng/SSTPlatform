@@ -8,6 +8,15 @@ public class AisleInfo {
     private String account;
     private String accountId;
     private String enable;
+    private String tradeNoticeLogAmount;
+
+    public String getTradeNoticeLogAmount() {
+        return tradeNoticeLogAmount;
+    }
+
+    public void setTradeNoticeLogAmount(String tradeNoticeLogAmount) {
+        this.tradeNoticeLogAmount = tradeNoticeLogAmount;
+    }
 
     public String getEnable() {
         return enable;

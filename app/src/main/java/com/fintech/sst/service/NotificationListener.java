@@ -40,9 +40,7 @@ import io.reactivex.functions.Predicate;
 
 import static com.fintech.sst.helper.ExpansionKt.debug;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
-import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
-import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 @TargetApi(18)
 public final class NotificationListener extends NotificationListenerService {
@@ -178,40 +176,16 @@ public final class NotificationListener extends NotificationListenerService {
      */
     private boolean check(String packageName, Notice notice) {
         if (notice.content.startsWith("支付宝禁止一切提供赌博咨询或参与赌博的行为")){
-            String type = "";
             Notice close = new Notice();
-            int noticeType = 0;
-            switch (packageName){
-                case "com.eg.android.AlipayGphone":
-                    noticeType = 1;
-                    type = ExpansionKt.METHOD_ALI;
-                    break;
-                case "com.tencent.mm":
-                    noticeType = 2;
-                    type = ExpansionKt.METHOD_WECHAT;
-                    break;
-            }
-            close.type = noticeType;
+            close.type = 3;
 
 
-            String keyUserName = null;
-            String keyMChId = null;
-            switch (type) {
-                case ExpansionKt.METHOD_ALI:
-                    keyUserName = KEY_USER_NAME_ALI;
-                    keyMChId = KEY_MCH_ID_ALI;
-                    break;
-                case ExpansionKt.METHOD_WECHAT:
-                    keyUserName = KEY_USER_NAME_WECHAT;
-                    keyMChId = KEY_MCH_ID_WECHAT;
-                    break;
-            }
             HashMap<String, String> request = new HashMap<>();
-            request.put("appLoginName", Configuration.getUserInfoByKey(keyUserName));
-            request.put("loginUserId", Configuration.getUserInfoByKey(keyMChId));
-            request.put("type", type);
+            request.put("appLoginName", Configuration.getUserInfoByKey(KEY_USER_NAME_ALI));
+            request.put("loginUserId", Configuration.getUserInfoByKey(KEY_MCH_ID_ALI));
+            request.put("type", ExpansionKt.METHOD_ALI);
             request.put("enable", "0");
-            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign(type)).subscribe();
+            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign(ExpansionKt.METHOD_ALI)).subscribe();
 
             RxBus.getDefault().send(close);
             return true;

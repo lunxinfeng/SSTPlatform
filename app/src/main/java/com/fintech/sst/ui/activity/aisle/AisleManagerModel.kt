@@ -1,8 +1,6 @@
 package com.fintech.sst.ui.activity.aisle
 
 import com.fintech.sst.data.DataSource
-import com.fintech.sst.data.db.DB
-import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.METHOD_ALI
 import com.fintech.sst.helper.METHOD_WECHAT
 import com.fintech.sst.net.Configuration
@@ -10,8 +8,6 @@ import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.SignRequestBody
 import com.fintech.sst.net.bean.AisleInfo
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
@@ -61,22 +57,22 @@ class AisleManagerModel : DataSource {
         return service.aisleDelete(SignRequestBody(request).sign(type))
     }
 
-    fun localNoticeAmount(type: String): Observable<List<Notice>> {
-        val minSaveTime = Calendar.getInstance().apply {
-            set(Calendar.HOUR, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
-
-        return Observable
-                .create<List<Notice>> {
-                    val result = DB.queryAll(type.toInt(),minSaveTime)
-                    if (result != null)
-                        it.onNext(result)
-                    it.onComplete()
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
+//    fun localNoticeAmount(type: String): Observable<List<Notice>> {
+//        val minSaveTime = Calendar.getInstance().apply {
+//            set(Calendar.HOUR, 0)
+//            set(Calendar.MINUTE, 0)
+//            set(Calendar.SECOND, 0)
+//            set(Calendar.MILLISECOND, 0)
+//        }.timeInMillis
+//
+//        return Observable
+//                .create<List<Notice>> {
+//                    val result = DB.queryAll(type.toInt(),minSaveTime)
+//                    if (result != null)
+//                        it.onNext(result)
+//                    it.onComplete()
+//                }
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//    }
 }

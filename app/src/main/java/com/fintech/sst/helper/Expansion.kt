@@ -61,6 +61,14 @@ fun getTime(time:Long): String? {
     return format.format(Date(time))
 }
 
+fun playWarning(){
+    SoundPoolHelper.getInstance().playWarning()
+}
+
+fun stopWarning(){
+    SoundPoolHelper.getInstance().stop()
+}
+
 /**
  * @param num 共点多少次
  * @param des 行为描述

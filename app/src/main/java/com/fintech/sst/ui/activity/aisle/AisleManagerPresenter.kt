@@ -169,16 +169,16 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
     }
 
     override fun updateLocalAmount(type: String) {
-        model.localNoticeAmount(type)
-                .subscribe(object : ProgressObserver<List<Notice>, AisleManagerContract.View>(view) {
-                    override fun onNext_(t: List<Notice>) {
-                        view.updateLocalInfo(t,type)
-                    }
-
-                    override fun onError(error: String) {
-                        view.showToast(error)
-                    }
-                })
+//        model.localNoticeAmount(type)
+//                .subscribe(object : ProgressObserver<List<Notice>, AisleManagerContract.View>(view) {
+//                    override fun onNext_(t: List<Notice>) {
+//                        view.updateLocalInfo(t,type)
+//                    }
+//
+//                    override fun onError(error: String) {
+//                        view.showToast(error)
+//                    }
+//                })
     }
 
     private fun subscribeNotice() {
@@ -192,8 +192,21 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
 
                     override fun onNext(t: Notice) {
                         when {
-                            t.type == 1 -> userInfo(METHOD_ALI)
-                            t.type == 2 -> userInfo(METHOD_WECHAT)
+                            t.type == 1 -> {//支付宝连续10单不成功
+                                userInfo(METHOD_ALI)
+                                playWarning()
+                                view.showHintDialog("支付宝连续10单不成功")
+                            }
+                            t.type == 2 -> {//微信连续10单不成功
+                                userInfo(METHOD_WECHAT)
+                                playWarning()
+                                view.showHintDialog("微信连续10单不成功")
+                            }
+                            t.type == 3 -> {//支付宝风控
+                                userInfo(METHOD_ALI)
+                                playWarning()
+                                view.showHintDialog("支付宝被风控")
+                            }
                             t.type == 11 -> {
                                 view.showToast("支付宝通道账号退出登录")
                                 exitLogin(METHOD_ALI)
@@ -204,7 +217,8 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                             }
                             else -> {
                                 view.updateNoticeList(t)
-                                updateLocalAmount(t.type.toString())
+//                                updateLocalAmount(t.type.toString())
+                                userInfo(t.type.toString())
                             }
                         }
                     }
