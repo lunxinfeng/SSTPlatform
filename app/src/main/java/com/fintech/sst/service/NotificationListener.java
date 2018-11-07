@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.fintech.sst.data.db.DB;
 import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.helper.ExpansionKt;
 import com.fintech.sst.helper.ParsedNotification;
 import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.net.ApiProducerModule;
@@ -19,8 +20,10 @@ import com.fintech.sst.net.ApiService;
 import com.fintech.sst.net.Configuration;
 import com.fintech.sst.net.MessageRequestBody;
 import com.fintech.sst.net.ResultEntity;
+import com.fintech.sst.net.SignRequestBody;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -36,6 +39,10 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static com.fintech.sst.helper.ExpansionKt.debug;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 @TargetApi(18)
 public final class NotificationListener extends NotificationListenerService {
@@ -171,17 +178,41 @@ public final class NotificationListener extends NotificationListenerService {
      */
     private boolean check(String packageName, Notice notice) {
         if (notice.content.startsWith("支付宝禁止一切提供赌博咨询或参与赌博的行为")){
+            String type = "";
             Notice close = new Notice();
             int noticeType = 0;
             switch (packageName){
                 case "com.eg.android.AlipayGphone":
                     noticeType = 1;
+                    type = ExpansionKt.METHOD_ALI;
                     break;
                 case "com.tencent.mm":
                     noticeType = 2;
+                    type = ExpansionKt.METHOD_WECHAT;
                     break;
             }
             close.type = noticeType;
+
+
+            String keyUserName = null;
+            String keyMChId = null;
+            switch (type) {
+                case ExpansionKt.METHOD_ALI:
+                    keyUserName = KEY_USER_NAME_ALI;
+                    keyMChId = KEY_MCH_ID_ALI;
+                    break;
+                case ExpansionKt.METHOD_WECHAT:
+                    keyUserName = KEY_USER_NAME_WECHAT;
+                    keyMChId = KEY_MCH_ID_WECHAT;
+                    break;
+            }
+            HashMap<String, String> request = new HashMap<>();
+            request.put("appLoginName", Configuration.getUserInfoByKey(keyUserName));
+            request.put("loginUserId", Configuration.getUserInfoByKey(keyMChId));
+            request.put("type", type);
+            request.put("enable", "0");
+            ApiProducerModule.create(ApiService.class).aisleStatus(new SignRequestBody(request).sign(type)).subscribe();
+
             RxBus.getDefault().send(close);
             return true;
         }

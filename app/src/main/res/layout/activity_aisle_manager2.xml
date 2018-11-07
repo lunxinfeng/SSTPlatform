@@ -196,6 +196,9 @@
                     android:enabled="false"
                     android:focusable="false"
                     android:inputType="number"
+                    android:textColor="@color/red"
+                    android:textStyle="bold"
+                    android:text="0.0"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textView100"
                     app:layout_constraintEnd_toEndOf="@+id/et_money_ali"
                     app:layout_constraintStart_toEndOf="@+id/textView100" />
@@ -398,6 +401,9 @@
                     android:enabled="false"
                     android:focusable="false"
                     android:inputType="number"
+                    android:textColor="@color/red"
+                    android:textStyle="bold"
+                    android:text="0.0"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textView10"
                     app:layout_constraintEnd_toEndOf="@+id/et_money_wechat"
                     app:layout_constraintStart_toEndOf="@+id/textView10" />

@@ -18,4 +18,5 @@
     <color name="disable">#cbcaca</color>
     <color name="ali_bg">#199fe4</color>
     <color name="wechat_bg">#00bc0c</color>
+    <color name="red">#ff0000</color>
 </resources>

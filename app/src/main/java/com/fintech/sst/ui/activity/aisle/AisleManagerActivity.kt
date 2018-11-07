@@ -65,7 +65,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
         when (type) {
             METHOD_ALI -> {
-                et_money_notice_wechat.setText(amountTotal.toString())
+                et_money_notice_ali.setText(amountTotal.toString())
             }
             METHOD_WECHAT -> {
                 et_money_notice_wechat.setText(amountTotal.toString())
