@@ -125,20 +125,22 @@ public final class NotificationListener extends NotificationListenerService {
         }
 
         debug(TAG, "onNotificationPosted: " + statusBarNotification.getNotification().tickerText);
+        debug(TAG, "thread: " + Thread.currentThread().getName());
 
         if (PACKAGES_LOWER_CASE.contains(str.toLowerCase())) {//监控 微信 and 支付宝  Notification
-            sLock.lock();
-            try {
-                onPostedAsync(statusBarNotification);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                sLock.unlock();
-            }
+            onPostedAsync(statusBarNotification);
+//            sLock.lock();
+//            try {
+//                onPostedAsync(statusBarNotification);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            } finally {
+//                sLock.unlock();
+//            }
         }
     }
 
-    protected void onPostedAsync(StatusBarNotification statusBarNotification) {
+    protected synchronized void onPostedAsync(StatusBarNotification statusBarNotification) {
         if (statusBarNotification == null) return;
         String packageName = statusBarNotification.getPackageName();
         Notification notification = statusBarNotification.getNotification();
@@ -158,17 +160,22 @@ public final class NotificationListener extends NotificationListenerService {
 
         if (check(packageName, notice)) return;
 
+        float amount = 0;
         switch (packageName) {
             case "com.tencent.mm":
                 notice.type = 1001;
-                notice.amount = parsedNotification.parseAmountWeChat() + "";
+                amount = parsedNotification.parseAmountWeChat();
+                notice.amount = amount + "";
                 break;
             case "com.eg.android.AlipayGphone":
                 notice.type = 2001;
-                notice.amount = parsedNotification.parseAmountAli() + "";
+                amount = parsedNotification.parseAmountAli();
+                notice.amount = amount + "";
                 break;
         }
-        notices.offer(notice);
+        debug(TAG, "通知收款: " + notice + "\t" +  parsedNotification.getmTickerText());
+        if (amount!=0)
+            notices.offer(notice);
     }
 
     /**

@@ -41,4 +41,25 @@ class ExampleUnitTest {
         }
 
     }
+
+    @Test
+    fun parse() {
+        for (i in 0..9) {
+            val text = if (i == 3 || i == 5) "收款5.00元" else "1"
+            val amount = parseAmountWeChat(text)
+            println(amount)
+        }
+    }
+
+    fun parseAmountWeChat(text: String): Float {
+
+        val pattern = "收款([0-9]+.[0-9][0-9])元$"
+        val r = Pattern.compile(pattern)
+        val m = r.matcher(text)
+        if (m.find()) {
+            val group = m.group(1)
+            return java.lang.Float.parseFloat(group)
+        }
+        return 0f
+    }
 }

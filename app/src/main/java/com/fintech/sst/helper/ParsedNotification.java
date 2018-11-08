@@ -48,14 +48,14 @@ public final class ParsedNotification {
 
         String pattern = "付款([0-9]+.[0-9][0-9])元$";
         Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(mTickerText);
+        Matcher m = r.matcher(mTickerText.trim());
         if (m.find()) {
             String group = m.group(1);
             return Float.parseFloat(group);
         }else{
             pattern = "成功收款([0-9]+.[0-9][0-9])元。";
             r = Pattern.compile(pattern);
-            Matcher n = r.matcher(mTickerText);
+            Matcher n = r.matcher(mTickerText.trim());
             String group = null;
             while (n.find()){
                 group = n.group(1);
@@ -71,11 +71,13 @@ public final class ParsedNotification {
 
         String pattern = "收款([0-9]+.[0-9][0-9])元$";
         Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(mTickerText);
+        Matcher m = r.matcher(mTickerText.trim());
         if (m.find()) {
             String group = m.group(1);
+            System.out.println("收款parse：" + group + "\t" + mTickerText + "\t" + m);
             return Float.parseFloat(group);
         }
+        System.out.println("收款parse 0：" + 0 + "\t" + mTickerText + "\t" + m);
         return 0;
     }
 

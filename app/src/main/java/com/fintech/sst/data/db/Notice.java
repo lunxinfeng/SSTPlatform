@@ -45,4 +45,20 @@ public class Notice {
     saveTime = System.currentTimeMillis();
   }
 
+  @Override
+  public String toString() {
+    return "Notice{" +
+            "title='" + title + '\'' +
+            ", amount='" + amount + '\'' +
+            ", content='" + content + '\'' +
+            ", packageName='" + packageName + '\'' +
+            ", noticeId=" + noticeId +
+            ", tag='" + tag + '\'' +
+            ", erroMsg='" + erroMsg + '\'' +
+            ", type=" + type +
+            ", status=" + status +
+            ", uuid='" + uuid + '\'' +
+            ", saveTime=" + saveTime +
+            '}';
+  }
 }
