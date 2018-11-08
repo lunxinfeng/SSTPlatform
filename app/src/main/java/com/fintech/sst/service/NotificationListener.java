@@ -144,7 +144,9 @@ public final class NotificationListener extends NotificationListenerService {
         if (statusBarNotification == null) return;
         String packageName = statusBarNotification.getPackageName();
         Notification notification = statusBarNotification.getNotification();
-        if (notification == null) return;
+        if (notification == null || notification.tickerText == null) return;
+        debug(TAG, "notification: " + notification);
+        debug(TAG, "notification text: " + notification.tickerText);
         Notice notice = new Notice();
         notice.content = notification.tickerText.toString();
 //        notice.content = "支付宝通知: 收款100.01元";
