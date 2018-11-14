@@ -216,9 +216,17 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 exitLogin(METHOD_WECHAT)
                             }
                             else -> {
+                                if (noticeLast?.equals(t) == true){//有重复通知
+                                    val type = t.type.toString()
+                                    aisleStatus(false,type)
+                                    playWarning()
+                                    view.showHintDialog("${if (type == METHOD_ALI) "支付宝" else if (type == METHOD_WECHAT) "微信" else "未知通道"}有重复通知")
+                                }
+
                                 view.updateNoticeList(t)
 //                                updateLocalAmount(t.type.toString())
                                 userInfo(t.type.toString())
+                                noticeLast = t
                             }
                         }
                     }

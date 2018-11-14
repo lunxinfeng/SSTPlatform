@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import com.fintech.sst.App
+import com.fintech.sst.data.db.Notice
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import java.text.SimpleDateFormat
@@ -26,6 +27,8 @@ const val METHOD_ALI = "2001"
 
 const val WX_APPID = "wx97adb85ee024d14e"
 const val WX_APPSECRET = "5ffef877a687fac19cc98462768fbbda"
+
+var noticeLast: Notice? = null
 
 //var lastNoticeTimeAli:Long = 0
 //var lastNoticeTimeWeChat:Long = 0

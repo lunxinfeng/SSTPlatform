@@ -46,6 +46,14 @@ public class Notice {
   }
 
   @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Notice){
+      return type == ((Notice) obj).type && amount.equals(((Notice) obj).amount) && Math.abs(saveTime - ((Notice) obj).saveTime) < 1000;
+    }
+    return super.equals(obj);
+  }
+
+  @Override
   public String toString() {
     return "Notice{" +
             "title='" + title + '\'' +

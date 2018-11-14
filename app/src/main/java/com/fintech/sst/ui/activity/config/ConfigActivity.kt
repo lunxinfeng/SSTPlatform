@@ -7,7 +7,7 @@ import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.helper.Utils
 import com.fintech.sst.helper.onChange
 import com.fintech.sst.net.Constants
-import com.fintech.sst.ui.activity.login.LoginActivity
+import com.fintech.sst.ui.activity.aisle.AisleManagerActivity
 import kotlinx.android.synthetic.main.activity_config.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -17,7 +17,7 @@ class ConfigActivity : BaseActivity<ConfigContract.Presenter>(), ConfigContract.
     override var presenter: ConfigContract.Presenter = ConfigPresenter(this)
 
     override fun checkSuccess(hint: String) {
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, AisleManagerActivity::class.java)
         startActivity(intent)
         finish()
     }
