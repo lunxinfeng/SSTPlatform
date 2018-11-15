@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 
 import com.fintech.sst.data.db.Notice;
@@ -27,7 +28,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
@@ -115,9 +115,16 @@ public class HeartService extends Service {
                                             return Observable.empty();
                                         }
                                     })
-                                    .subscribe(new Consumer<ResultEntity<String>>() {
+                                    .subscribe(new Observer<ResultEntity<String>>() {
+                                        Disposable d;
                                         @Override
-                                        public void accept(ResultEntity<String> stringResultEntity) {
+                                        public void onSubscribe(Disposable d) {
+                                            this.d = d;
+                                            debug(TAG, "=======heartBeat orderList " + type + " onSubscribe======");
+                                        }
+
+                                        @Override
+                                        public void onNext(ResultEntity<String> stringResultEntity) {
                                             Notice notice = new Notice();
                                             int noticeType = 0;
                                             switch (type) {
@@ -130,6 +137,21 @@ public class HeartService extends Service {
                                             }
                                             notice.type = noticeType;
                                             RxBus.getDefault().send(notice);
+                                            debug(TAG, "=======heartBeat orderList " + type + " onNext======");
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            if (this.d != null)
+                                                this.d.dispose();
+                                            debug(TAG, "=======heartBeat orderList " + type + " onError======");
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+                                            if (this.d != null)
+                                                this.d.dispose();
+                                            debug(TAG, "=======heartBeat orderList " + type + " onComplete======");
                                         }
                                     });
                         }
@@ -174,13 +196,13 @@ public class HeartService extends Service {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
                         if (type.equals(ExpansionKt.METHOD_ALI)) {
                             disposableAli.dispose();
                         } else {
                             disposableWeChat.dispose();
                         }
                         debug(TAG, "=======heartBeat " + type + " onError======");
+                        SystemClock.sleep(10 * 1000);
                         heartBeat(type);
                     }
 
@@ -192,6 +214,7 @@ public class HeartService extends Service {
                             disposableWeChat.dispose();
                         }
                         debug(TAG, "=======heartBeat " + type + " onComplete======");
+                        SystemClock.sleep(10 * 1000);
                         heartBeat(type);
                     }
                 });
