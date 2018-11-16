@@ -1,6 +1,5 @@
 package com.fintech.sst
 
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.regex.Pattern
 
@@ -12,7 +11,8 @@ import java.util.regex.Pattern
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        val info = 1.00
+        println((info?.toString()?.toFloatOrNull() ?: 0f) * 100)
     }
 
     @Test

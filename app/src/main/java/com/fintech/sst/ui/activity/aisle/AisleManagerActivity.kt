@@ -47,14 +47,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 et_aisle_ali.setText(info?.account ?: "")
                 et_money_ali.setText(info?.realAmount.toString())
                 et_money_notice_ali.setText(info?.tradeNoticeLogAmount.toString())
-                et_successRate_ali.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
+                et_successRate_ali.setText("${(info?.ok?.toString()?.toFloatOrNull() ?: 0f) * 100}%")
                 switch_aisle_ali.isChecked = info?.enable == "1"
             }
             METHOD_WECHAT -> {
                 et_aisle_wechat.setText(info?.account ?: "")
                 et_money_wechat.setText(info?.realAmount.toString())
                 et_money_notice_wechat.setText(info?.tradeNoticeLogAmount.toString())
-                et_successRate_wechat.setText("${info?.ok?.toString()?.toFloatOrNull() ?: 0 * 100}%")
+                et_successRate_wechat.setText("${(info?.ok?.toString()?.toFloatOrNull() ?: 0f) * 100}%")
                 switch_aisle_wechat.isChecked = info?.enable == "1"
             }
         }

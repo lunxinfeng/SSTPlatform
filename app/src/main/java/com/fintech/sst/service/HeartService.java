@@ -20,6 +20,7 @@ import com.fintech.sst.net.bean.OrderList;
 import com.fintech.sst.net.bean.PageList;
 import com.fintech.sst.ui.fragment.order.OrderModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -72,24 +73,34 @@ public class HeartService extends Service {
                     @Override
                     public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) {
                         if (aLong % 6 == 0) {
-                            orderModel.orderList(0, 1, 10, type)
+                            orderModel.orderList(0, 1, 20, type)
                                     .flatMap(new Function<ResultEntity<PageList<OrderList>>, ObservableSource<ResultEntity<String>>>() {
                                         @Override
                                         public ObservableSource<ResultEntity<String>> apply(ResultEntity<PageList<OrderList>> pageListResultEntity) {
                                             if (pageListResultEntity != null && pageListResultEntity.getResult() != null) {
                                                 List<OrderList> list = pageListResultEntity.getResult().getList();
-                                                if (list.isEmpty()){
+                                                if (list.isEmpty()) {
                                                     return Observable.empty();
                                                 }
 
-                                                int num = 0;
+                                                List<OrderList> result = new ArrayList<>();
                                                 for (OrderList item : list) {
+                                                    if (item.getTradeStatus().equals("10") || item.getTradeStatus().equals("20")) {
+                                                        continue;
+                                                    }
+                                                    result.add(item);
+                                                }
+
+                                                if (result.size()>10)
+                                                    result = result.subList(0,10);
+                                                int num = 0;
+                                                for (OrderList item : result) {
                                                     if (item.getTradeStatus().equals("30")) {
                                                         num++;
                                                     }
                                                 }
 
-                                                if (num == 0 && list.size() >= 10) {
+                                                if (num == 0 && result.size() >= 10) {
                                                     String keyUserName = null;
                                                     String keyMChId = null;
                                                     switch (type) {
@@ -117,6 +128,7 @@ public class HeartService extends Service {
                                     })
                                     .subscribe(new Observer<ResultEntity<String>>() {
                                         Disposable d;
+
                                         @Override
                                         public void onSubscribe(Disposable d) {
                                             this.d = d;
