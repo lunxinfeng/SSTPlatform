@@ -8,6 +8,7 @@ import com.alipay.sdk.app.AuthTask
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.*
 import com.fintech.sst.net.Configuration
+import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import com.fintech.sst.net.bean.AisleInfo
@@ -138,6 +139,36 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
 
     override fun toSetting() {
         view.toSetting()
+    }
+
+    override fun toDaMa() {
+        val loginAli = Configuration.isLogin(METHOD_ALI)
+        val loginWechat = Configuration.isLogin(METHOD_WECHAT)
+        if (loginAli && loginWechat){
+            view.checkDaMaType()
+        }else if (loginAli){
+            val account = Configuration.getUserInfoByKey(KEY_USER_NAME_ALI)
+            val password = Configuration.getUserInfoByKey(KEY_PASSWORD_ALI)
+            if (password.isNullOrEmpty()) {
+                view.checkPassword {
+                    checkLogin(account,it, METHOD_ALI)
+                }
+            } else {
+                view.toDaMa(account, password, METHOD_ALI)
+            }
+        }else if(loginWechat){
+            val account = Configuration.getUserInfoByKey(KEY_USER_NAME_WECHAT)
+            val password = Configuration.getUserInfoByKey(KEY_PASSWORD_WECHAT)
+            if (password.isNullOrEmpty()) {
+                view.checkPassword {
+                    checkLogin(account,it, METHOD_WECHAT)
+                }
+            } else {
+                view.toDaMa(account, password, METHOD_WECHAT)
+            }
+        }else{
+            view.showToast("请先登录")
+        }
     }
 
     override fun toNoticeList() {
@@ -294,7 +325,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                                         view.loginFail(resultEntity.subMsg?:resultEntity.msg)
                                                         return
                                                     }
-                                                    modelLogin.saveData(result,METHOD_ALI)
+                                                    modelLogin.saveData(result,METHOD_ALI,password)
                                                     userInfo(METHOD_ALI)
                                                     view.loginSuccess(METHOD_ALI)
                                                 }
@@ -343,13 +374,32 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                             view.loginFail(resultEntity.subMsg?:resultEntity.msg)
                             return
                         }
-                        modelLogin.saveData(result,type)
+                        modelLogin.saveData(result,type,password)
                         userInfo(type)
                         view.loginSuccess(type)
                     }
 
                     override fun onError(error: String) {
                         view.loginFail(error)
+                    }
+                })
+    }
+
+    override fun checkLogin(account: String, password: String, type: String) {
+        modelLogin.accountLogin(account,password,type)
+                .subscribe(object : ProgressObserver<ResultEntity<Map<String, String>>, AisleManagerContract.View>(view) {
+                    override fun onNext_(resultEntity: ResultEntity<Map<String, String>>) {
+                        val result = resultEntity.result
+                        if (result == null){
+                            view.showToast(resultEntity.subMsg?:resultEntity.msg)
+                            return
+                        }
+                        modelLogin.saveData(result,type,password)
+                        view.toDaMa(account,password,type)
+                    }
+
+                    override fun onError(error: String) {
+                        view.showToast(error)
                     }
                 })
     }

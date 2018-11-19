@@ -31,6 +31,7 @@
     <string name="refresh">刷新</string>
     <string name="watch_order">查看订单</string>
     <string name="set">设置</string>
+    <string name="dama">打码</string>
     <string name="order_detail">订单详情</string>
     <string name="all">全部</string>
     <string name="paying">支付中</string>
@@ -48,7 +49,7 @@
     <string name="showAll">全部显示</string>
     <string name="hide">隐藏</string>
     <string name="exit">退出</string>
-    <string name="version">2018.11.16.1</string>
+    <string name="version">2018.11.19</string>
     <string-array name="close_time">
         <item>1分钟</item>
         <item>2分钟</item>

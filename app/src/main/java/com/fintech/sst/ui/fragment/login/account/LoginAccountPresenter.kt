@@ -23,7 +23,7 @@ class LoginAccountPresenter(val view: LoginAccountContract.View) : LoginAccountC
                             view.loginFail(resultEntity.subMsg?:resultEntity.msg)
                             return
                         }
-                        model.saveData(result, METHOD_ALI)
+                        model.saveData(result, METHOD_ALI,password)
 
                         view.loginSuccess()
                     }

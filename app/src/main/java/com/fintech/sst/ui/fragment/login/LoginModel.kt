@@ -75,11 +75,13 @@ class LoginModel: DataSource {
 //    }
 
 
-    fun saveData(result: Map<String, String>,type:String) {
+    fun saveData(result: Map<String, String>,type:String,password: String = "") {
         when(type){
             METHOD_ALI -> {
                 Configuration.putUserInfo(KEY_MCH_ID_ALI, result[KEY_MCH_ID])
                 Configuration.putUserInfo(KEY_USER_NAME_ALI, result[KEY_USER_NAME])
+                if (password != "")
+                    Configuration.putUserInfo(KEY_PASSWORD_ALI, password)
                 Configuration.putUserInfo(KEY_LOGIN_TOKEN_ALI, result[KEY_LOGIN_TOKEN])
 
                 Configuration.putUserInfo(KEY_ACCOUNT_ALI, result[KEY_ACCOUNT])
@@ -91,6 +93,8 @@ class LoginModel: DataSource {
             METHOD_WECHAT -> {
                 Configuration.putUserInfo(KEY_MCH_ID_WECHAT, result[KEY_MCH_ID])
                 Configuration.putUserInfo(KEY_USER_NAME_WECHAT, result[KEY_USER_NAME])
+                if (password != "")
+                    Configuration.putUserInfo(KEY_PASSWORD_WECHAT, password)
                 Configuration.putUserInfo(KEY_LOGIN_TOKEN_WECHAT, result[KEY_LOGIN_TOKEN])
 
                 Configuration.putUserInfo(KEY_ACCOUNT_WECHAT, result[KEY_ACCOUNT])

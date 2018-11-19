@@ -62,7 +62,7 @@ class LoginAliPresenter(val view: LoginAliContract.View) : LoginAliContract.Pres
                                                         view.loginFail(resultEntity.subMsg?:resultEntity.msg)
                                                         return
                                                     }
-                                                    model.saveData(result, METHOD_ALI)
+                                                    model.saveData(result, METHOD_ALI,password)
 
                                                     view.loginSuccess()
                                                 }

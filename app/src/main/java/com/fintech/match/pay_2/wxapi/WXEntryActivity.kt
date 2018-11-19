@@ -108,7 +108,7 @@ class WXEntryActivity : BaseActivity<WXContract.Presenter>(), IWXAPIEventHandler
                                                         return
                                                     }
 
-                                                    model.saveData(result, METHOD_WECHAT)
+                                                    model.saveData(result, METHOD_WECHAT,password)
                                                     startActivity(Intent(this@WXEntryActivity,AisleManagerActivity::class.java).apply {
                                                         putExtra("typeLogin", METHOD_WECHAT)
                                                     })

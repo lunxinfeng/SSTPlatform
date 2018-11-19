@@ -64,5 +64,6 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     implementation 'com.afollestad.material-dialogs:core:2.0.0-alpha06'
+    implementation 'com.afollestad.material-dialogs:input:2.0.0-alpha05'
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 }

@@ -1,14 +1,18 @@
 package com.fintech.sst.ui.activity.aisle
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.getInputField
+import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
@@ -47,14 +51,16 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 et_aisle_ali.setText(info?.account ?: "")
                 et_money_ali.setText(info?.realAmount.toString())
                 et_money_notice_ali.setText(info?.tradeNoticeLogAmount.toString())
-                et_successRate_ali.setText("${(info?.ok?.toString()?.toFloatOrNull() ?: 0f) * 100}%")
+                et_successRate_ali.setText("${(info?.ok?.toString()?.toFloatOrNull()
+                        ?: 0f) * 100}%")
                 switch_aisle_ali.isChecked = info?.enable == "1"
             }
             METHOD_WECHAT -> {
                 et_aisle_wechat.setText(info?.account ?: "")
                 et_money_wechat.setText(info?.realAmount.toString())
                 et_money_notice_wechat.setText(info?.tradeNoticeLogAmount.toString())
-                et_successRate_wechat.setText("${(info?.ok?.toString()?.toFloatOrNull() ?: 0f) * 100}%")
+                et_successRate_wechat.setText("${(info?.ok?.toString()?.toFloatOrNull()
+                        ?: 0f) * 100}%")
                 switch_aisle_wechat.isChecked = info?.enable == "1"
             }
         }
@@ -149,6 +155,70 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         startActivity(Intent(this, SettingActivity::class.java))
     }
 
+    override fun checkDaMaType() {
+        MaterialDialog(this)
+                .listItems(
+                        items = listOf("支付宝通道", "微信通道"),
+                        selection = { dialog, index, _ ->
+                            when (index) {
+                                0 -> {
+                                    val account = Configuration.getUserInfoByKey(Constants.KEY_USER_NAME_ALI)
+                                    val password = Configuration.getUserInfoByKey(Constants.KEY_PASSWORD_ALI)
+                                    if (password.isNullOrEmpty()) {
+                                        checkPassword {
+                                            presenter.checkLogin(account,it, METHOD_ALI)
+                                        }
+                                    } else {
+                                        toDaMa(account, password, METHOD_ALI)
+                                    }
+                                }
+                                1 -> {
+                                    val account = Configuration.getUserInfoByKey(Constants.KEY_USER_NAME_WECHAT)
+                                    val password = Configuration.getUserInfoByKey(Constants.KEY_PASSWORD_WECHAT)
+                                    if (password.isNullOrEmpty()) {
+                                        checkPassword {
+                                            presenter.checkLogin(account,it, METHOD_WECHAT)
+                                        }
+                                    } else {
+                                        toDaMa(account, password, METHOD_WECHAT)
+                                    }
+                                }
+                            }
+                            dialog.dismiss()
+                        }
+                )
+                .show()
+    }
+
+    override fun checkPassword(callback: (password: String) -> Unit) {
+        MaterialDialog(this)
+                .title(
+                        text = "验证密码"
+                )
+                .input(
+                        inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+                )
+                .positiveButton(
+                        text = "确定",
+                        click = {
+                            val password = it.getInputField()?.text.toString()
+                            callback.invoke(password)
+                        }
+                )
+                .show()
+    }
+
+    override fun toDaMa(account: String, password: String, type: String) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_MAIN
+            component = ComponentName("com.fintech.match.pay_3", "com.fintech.lxf.ui.activity.login.LoginActivity")
+            putExtra("account", account)
+            putExtra("password", password)
+            putExtra("loginType", type)
+        }
+        startActivity(intent)
+    }
+
     override fun toNotifactionSetting() {
         PermissionUtil.setNotificationListener(this, 100)
     }
@@ -177,7 +247,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 .message(
                         text = content
                 )
-                .positiveButton{
+                .positiveButton {
                     stopWarning()
                 }
                 .show()
@@ -230,7 +300,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
     }
 
     override val presenter: AisleManagerContract.Presenter = AisleManagerPresenter(this)
-    private var menuShowAll:MenuItem? = null
+    private var menuShowAll: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -325,6 +395,9 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             R.id.action_setting -> {
                 presenter.toSetting()
             }
+            R.id.action_dama -> {
+                presenter.toDaMa()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -385,9 +458,9 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
     //----------------login---------------------
     override val context: FragmentActivity = this
 
-    override fun accountLogin(type: String):Boolean {
-        BindDialog(this, BindDialog.TYPE_LOGIN){name, password ->
-            presenter.accountLogin(name,password,type)
+    override fun accountLogin(type: String): Boolean {
+        BindDialog(this, BindDialog.TYPE_LOGIN) { name, password ->
+            presenter.accountLogin(name, password, type)
         }.show()
         return true
     }
