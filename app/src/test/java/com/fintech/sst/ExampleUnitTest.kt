@@ -1,5 +1,6 @@
 package com.fintech.sst
 
+import com.fintech.sst.data.db.Notice
 import org.junit.Test
 import java.util.regex.Pattern
 
@@ -9,6 +10,24 @@ import java.util.regex.Pattern
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+    @Test
+    fun addition_test() {
+        var notice1 = Notice()
+        notice1.amount = "5.0"
+//        SystemClock.sleep(1000)
+        var i = 0
+        while (i<10000){
+            i++
+        }
+        var notice2 = Notice()
+        notice2.amount = "6.0"
+        println(notice1)
+        println(notice2)
+        notice1 = notice2
+        println(notice1)
+        println(notice2)
+    }
+
     @Test
     fun addition_isCorrect() {
         val info = 1.00

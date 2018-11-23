@@ -48,7 +48,10 @@ public class Notice {
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof Notice){
-      return type == ((Notice) obj).type && amount.equals(((Notice) obj).amount) && Math.abs(saveTime - ((Notice) obj).saveTime) < 1000;
+      return type == ((Notice) obj).type &&
+              amount!=null && ((Notice) obj).amount!=null && amount.equals(((Notice) obj).amount) &&
+              content!=null && ((Notice) obj).content!=null && content.trim().equals(((Notice) obj).content.trim()) &&
+              Math.abs(saveTime - ((Notice) obj).saveTime) < 900;
     }
     return super.equals(obj);
   }

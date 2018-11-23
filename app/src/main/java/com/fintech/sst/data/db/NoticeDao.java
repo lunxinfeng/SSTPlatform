@@ -40,4 +40,7 @@ public interface NoticeDao {
 
   @Query("SELECT * FROM Notice WHERE type = :type AND saveTime > :saveTimeMin")
   List<Notice> queryAll(int type, long saveTimeMin);
+
+  @Query("SELECT * FROM Notice WHERE type = :type ORDER BY saveTime DESC LIMIT 2")
+  List<Notice> queryLastTwo(int type);
 }

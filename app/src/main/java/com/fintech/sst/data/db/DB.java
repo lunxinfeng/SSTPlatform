@@ -34,6 +34,9 @@ public class DB {
   public static List<Notice> queryAll(int type, long saveTimeMin){
     return AppDatabase.getInstance(App.getAppContext()).noticeDao().queryAll(type,saveTimeMin);
   }
+  public static List<Notice> queryLastTwo(int type){
+    return AppDatabase.getInstance(App.getAppContext()).noticeDao().queryLastTwo(type);
+  }
 
   public static int deleteAll(Context context, Notice... notices){
     return AppDatabase.getInstance(context).noticeDao().delAll(notices);

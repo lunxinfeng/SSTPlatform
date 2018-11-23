@@ -247,6 +247,9 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 exitLogin(METHOD_WECHAT)
                             }
                             else -> {
+                                println("++++$noticeLast")
+                                println("++++$t")
+                                println("++++${noticeLast?.equals(t)}")
                                 if (noticeLast?.equals(t) == true){//有重复通知
                                     val type = t.type.toString()
                                     aisleStatus(false,type)

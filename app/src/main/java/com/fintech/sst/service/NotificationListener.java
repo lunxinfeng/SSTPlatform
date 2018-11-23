@@ -176,6 +176,7 @@ public final class NotificationListener extends NotificationListenerService {
                 break;
         }
         debug(TAG, "通知收款: " + notice + "\t" +  parsedNotification.getmTickerText());
+        System.out.println("++++offer" + notice);
         if (amount!=0)
             notices.offer(notice);
     }
@@ -253,6 +254,7 @@ public final class NotificationListener extends NotificationListenerService {
                         body.put("id", notice.noticeId);
                         body.put("tag", notice.tag);
                         body.sign(notice.type + "");
+                        System.out.println("++++insert" + notice);
                         DB.insert(NotificationListener.this, notice);
                         RxBus.getDefault().send(notice);
                         return ApiProducerModule

@@ -16,10 +16,13 @@ import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
+import com.fintech.sst.data.db.DB
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.*
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants
+import com.fintech.sst.net.Constants.*
+import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.bean.AisleInfo
 import com.fintech.sst.service.HeartService
 import com.fintech.sst.ui.activity.config.ConfigActivity
@@ -30,6 +33,9 @@ import com.fintech.sst.ui.activity.setting.SettingActivity
 import com.fintech.sst.ui.dialog.AisleManagerDialog
 import com.fintech.sst.ui.dialog.BindDialog
 import com.fintech.sst.ui.widget.MenuCardView
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_aisle_manager2.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -166,7 +172,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                                     val password = Configuration.getUserInfoByKey(Constants.KEY_PASSWORD_ALI)
                                     if (password.isNullOrEmpty()) {
                                         checkPassword {
-                                            presenter.checkLogin(account,it, METHOD_ALI)
+                                            presenter.checkLogin(account, it, METHOD_ALI)
                                         }
                                     } else {
                                         toDaMa(account, password, METHOD_ALI)
@@ -177,7 +183,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                                     val password = Configuration.getUserInfoByKey(Constants.KEY_PASSWORD_WECHAT)
                                     if (password.isNullOrEmpty()) {
                                         checkPassword {
-                                            presenter.checkLogin(account,it, METHOD_WECHAT)
+                                            presenter.checkLogin(account, it, METHOD_WECHAT)
                                         }
                                     } else {
                                         toDaMa(account, password, METHOD_WECHAT)
@@ -318,8 +324,16 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         tvLoginWeChat.setOnLongClickListener { accountLogin(METHOD_WECHAT) }
         hideAli.setOnClickListener { viewHideOrShow(cardViewAli, false) }
         hideWechat.setOnClickListener { viewHideOrShow(cardViewWechat, false) }
-        exitAli.setOnClickListener { presenter.exitLogin(METHOD_ALI) }
-        exitWechat.setOnClickListener { presenter.exitLogin(METHOD_WECHAT) }
+        exitAli.setOnClickListener {
+            Configuration.removeUserInfoByKey(KEY_USER_NAME_ALI)
+            Configuration.removeUserInfoByKey(KEY_PASSWORD_ALI)
+            presenter.exitLogin(METHOD_ALI)
+        }
+        exitWechat.setOnClickListener {
+            Configuration.removeUserInfoByKey(KEY_USER_NAME_WECHAT)
+            Configuration.removeUserInfoByKey(KEY_PASSWORD_WECHAT)
+            presenter.exitLogin(METHOD_WECHAT)
+        }
 
         tv_refresh_ali.setOnClickListener { presenter.userInfo(METHOD_ALI) }
         tv_refresh_wechat.setOnClickListener { presenter.userInfo(METHOD_WECHAT) }
@@ -398,8 +412,53 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             R.id.action_dama -> {
                 presenter.toDaMa()
             }
+            R.id.action_check -> {
+                MaterialDialog(this@AisleManagerActivity)
+                        .listItems(
+                                items = listOf("支付宝通道","微信通道"),
+                                selection = { dialog, index, text ->
+                                    when(index){
+                                        0 -> check(METHOD_ALI)
+                                        1 -> check(METHOD_WECHAT)
+                                    }
+                                }
+                        )
+                        .show()
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun check(type: String) {
+        Observable
+                .create<List<Notice>> {
+                    val list = DB.queryLastTwo(type.toInt())
+                    if (list == null)
+                        it.onNext(listOf<Notice>())
+                    else
+                        it.onNext(list)
+                    it.onComplete()
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : ProgressObserver<List<Notice>, AisleManagerContract.View>(this,true) {
+                    override fun onNext_(t: List<Notice>) {
+                        MaterialDialog(this@AisleManagerActivity)
+                                .message(
+                                        text = when {
+                                            t.size == 2 -> "最后一条：${t[0]}\n倒数二条：${t[1]}"
+                                            t.size == 1 -> "数据库只有一条：${t[0]}"
+                                            t.isEmpty() -> "数据库无数据"
+                                            else -> "代码异常"
+                                        }
+                                )
+                                .show()
+                    }
+
+                    override fun onError(error: String?) {
+
+                    }
+                })
     }
 
     override fun onDestroy() {
