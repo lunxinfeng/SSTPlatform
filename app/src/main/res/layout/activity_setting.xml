@@ -67,6 +67,23 @@
         <!--app:layout_constraintTop_toBottomOf="@+id/tv_permission_setting" />-->
 
     <TextView
+        android:id="@+id/tv_order_num_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawableRight="@mipmap/icon_more"
+        android:drawablePadding="6dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:lines="1"
+        android:padding="16dp"
+        android:text="自动关闭通道"
+        android:textColor="@color/textColorDark3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_permission_setting" />
+
+    <TextView
         android:id="@+id/tv_clear_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,7 +98,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_permission_setting" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_num_close" />
 
     <!--<TextView-->
         <!--android:id="@+id/tv_exit_account"-->

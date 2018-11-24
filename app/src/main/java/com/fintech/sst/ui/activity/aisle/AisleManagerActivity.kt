@@ -318,7 +318,17 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
 //        startHeartService()
 
-        tvLoginAli.setOnClickListener { presenter.aliLogin() }
+        tvLoginAli.setOnClickListener {
+//            val notice = Notice().apply {
+//                type = 1001
+//                content = "成功收款5.00元"
+//                amount = "5.0"
+//                saveTime = 1111111111111111L
+//            }
+//            RxBus.getDefault().send(notice)
+//            RxBus.getDefault().send(notice)
+            presenter.aliLogin()
+        }
         tvLoginAli.setOnLongClickListener { accountLogin(METHOD_ALI) }
         tvLoginWeChat.setOnClickListener { presenter.wechatLogin() }
         tvLoginWeChat.setOnLongClickListener { accountLogin(METHOD_WECHAT) }
@@ -380,6 +390,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             5 -> Long.MAX_VALUE
             else -> Long.MAX_VALUE
         }
+        closeOrderNum = Configuration.getUserInfoByKey(Constants.KEY_CLOSE_ORDER_NUM).toIntOrNull()?:15
 
         toolbar.clickN(10, "进入地址配置页面") { startActivity(Intent(this, ConfigActivity::class.java)) }
 

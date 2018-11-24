@@ -34,6 +34,7 @@ var noticeLast: Notice? = null
 //var lastNoticeTimeWeChat:Long = 0
 
 var closeTime = 0L
+var closeOrderNum = 15
 
 fun Activity.toActivity(clazz: Class<*>) = startActivity(Intent(this,clazz))
 

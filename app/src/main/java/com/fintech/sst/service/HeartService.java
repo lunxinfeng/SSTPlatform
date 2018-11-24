@@ -73,7 +73,7 @@ public class HeartService extends Service {
                     @Override
                     public ObservableSource<ResultEntity<Boolean>> apply(Long aLong) {
                         if (aLong % 6 == 0) {
-                            orderModel.orderList(0, 1, 20, type)
+                            orderModel.orderList(0, 1, ExpansionKt.getCloseOrderNum() * 2, type)
                                     .flatMap(new Function<ResultEntity<PageList<OrderList>>, ObservableSource<ResultEntity<String>>>() {
                                         @Override
                                         public ObservableSource<ResultEntity<String>> apply(ResultEntity<PageList<OrderList>> pageListResultEntity) {
@@ -91,8 +91,8 @@ public class HeartService extends Service {
                                                     result.add(item);
                                                 }
 
-                                                if (result.size()>10)
-                                                    result = result.subList(0,10);
+                                                if (result.size()>ExpansionKt.getCloseOrderNum())
+                                                    result = result.subList(0,ExpansionKt.getCloseOrderNum());
                                                 int num = 0;
                                                 for (OrderList item : result) {
                                                     if (item.getTradeStatus().equals("30")) {
@@ -100,7 +100,7 @@ public class HeartService extends Service {
                                                     }
                                                 }
 
-                                                if (num == 0 && result.size() >= 10) {
+                                                if (num == 0 && result.size() >= ExpansionKt.getCloseOrderNum()) {
                                                     String keyUserName = null;
                                                     String keyMChId = null;
                                                     switch (type) {
@@ -188,7 +188,7 @@ public class HeartService extends Service {
                     @Override
                     public void onNext(ResultEntity<Boolean> booleanResultEntity) {
                         debug(TAG, "=======heartBeat " + type + " onNext======");
-                        if (booleanResultEntity.getCode().equals("20001") && booleanResultEntity.getMsg().contains("签名错误")) {
+                        if (booleanResultEntity.getCode().equals("20001") && (booleanResultEntity.getMsg().contains("签名错误") || booleanResultEntity.getMsg().contains("未登录") )) {
                             Notice notice = new Notice();
                             int noticeType = 0;
                             switch (type) {

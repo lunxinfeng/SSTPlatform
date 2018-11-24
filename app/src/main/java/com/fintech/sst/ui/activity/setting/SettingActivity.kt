@@ -3,11 +3,16 @@ package com.fintech.sst.ui.activity.setting
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.getInputField
+import com.afollestad.materialdialogs.input.input
 import com.fintech.sst.R
 import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.helper.PermissionUtil
+import com.fintech.sst.helper.closeOrderNum
 import com.fintech.sst.net.Configuration
-import com.fintech.sst.net.Constants.KEY_CLOSE_TIME
+import com.fintech.sst.net.Constants.KEY_CLOSE_ORDER_NUM
 import com.fintech.sst.ui.activity.aisle.AisleManagerActivity
 import kotlinx.android.synthetic.main.activity_setting.*
 
@@ -36,8 +41,10 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        val index = Configuration.getUserInfoByKey(KEY_CLOSE_TIME).toIntOrNull()?:1
+//        val index = Configuration.getUserInfoByKey(KEY_CLOSE_TIME).toIntOrNull()?:1
 //        tv_time_setting.text = "通道自动关闭时间（${resources.getStringArray(R.array.close_time)[index]}）"
+        val order_num = Configuration.getUserInfoByKey(KEY_CLOSE_ORDER_NUM).toIntOrNull()?:15
+        tv_order_num_close.text = "自动关闭通道（$order_num 单不成功）"
 
         tv_notice_setting.setOnClickListener { toNotifactionSetting() }
         tv_permission_setting.setOnClickListener { toAppDetailActivity() }
@@ -64,6 +71,25 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
 //                    }
 //                    .show()
 //        }
+        tv_order_num_close.setOnClickListener {_ ->
+            MaterialDialog(this)
+                    .title(
+                            text = "自动关闭通道的订单数"
+                    )
+                    .input(
+                            inputType = InputType.TYPE_CLASS_NUMBER
+                    )
+                    .positiveButton(
+                            text = "确定",
+                            click = {
+                                val num = it.getInputField()?.text.toString()
+                                Configuration.putUserInfo(KEY_CLOSE_ORDER_NUM,num)
+                                closeOrderNum = num.toIntOrNull()?:15
+                                tv_order_num_close.text = "自动关闭通道（$closeOrderNum 单不成功）"
+                            }
+                    )
+                    .show()
+        }
         tv_clear_data.setOnClickListener {
             AlertDialog.Builder(this)
                     .setMessage("是否清除本地数据库？")
