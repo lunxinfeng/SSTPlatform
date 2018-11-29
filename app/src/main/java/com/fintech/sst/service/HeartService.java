@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 
 import com.fintech.sst.data.db.Notice;
 import com.fintech.sst.helper.ExpansionKt;
-import com.fintech.sst.helper.PermissionUtil;
 import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.net.ApiProducerModule;
 import com.fintech.sst.net.ApiService;
@@ -61,11 +60,12 @@ public class HeartService extends Service {
                     @Override
                     public boolean test(Long aLong) {
 //                        boolean alive = PermissionUtil.isNotificationListenerEnabled();
-                        boolean alive = NotificationListener.isActive();
-                        if (!alive) {
-                            PermissionUtil.toggleNotificationListenerService(NotificationListener.class);
-                        }
-                        return alive;
+//                        boolean alive = NotificationListener.isActive();
+//                        if (!alive) {
+//                            PermissionUtil.toggleNotificationListenerService(NotificationListener.class);
+//                        }
+//                        return alive;
+                        return true;
                     }
                 })
                 .flatMap(new Function<Long, ObservableSource<ResultEntity<Boolean>>>() {

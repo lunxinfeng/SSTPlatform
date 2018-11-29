@@ -1,6 +1,7 @@
 package com.fintech.sst.helper
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.text.Editable
@@ -71,6 +72,19 @@ fun playWarning(){
 
 fun stopWarning(){
     SoundPoolHelper.getInstance().stop()
+}
+
+fun isServiceRunning(context: Context,serviceName: String):Boolean{
+    if (serviceName.isEmpty())
+        return false
+
+    val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    val runningServices = activityManager.getRunningServices(30)
+    runningServices.forEach {
+        if (it.service.className == serviceName)
+            return true
+    }
+    return false
 }
 
 /**

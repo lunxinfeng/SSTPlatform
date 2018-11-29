@@ -24,6 +24,7 @@ import com.fintech.sst.net.Constants
 import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.bean.AisleInfo
+import com.fintech.sst.service.AliService
 import com.fintech.sst.service.HeartService
 import com.fintech.sst.ui.activity.config.ConfigActivity
 import com.fintech.sst.ui.activity.login.LoginActivity
@@ -42,7 +43,7 @@ import pub.devrel.easypermissions.EasyPermissions
 
 class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         , AisleManagerContract.View, EasyPermissions.PermissionCallbacks {
-
+    private val TAG = "AisleManagerActivity"
     private val adapter = NoticeAdapter(R.layout.item_notice_manager, null)
 
     override fun updateNoticeList(notice: Notice) {
@@ -351,6 +352,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             setOnCheckedChangeListener { view, isChecked ->
                 if (view.isPressed)
                     presenter.aisleStatus(isChecked, METHOD_ALI)
+                if (isChecked){
+                    if (!isServiceRunning(this@AisleManagerActivity,AliService::class.java.name)){
+                        debug(TAG,"支付宝监听服务没有启动，开始启动")
+                        startAliService()
+                    }
+                }else{
+                    stopAliService()
+                }
             }
         }
         switch_aisle_wechat.apply {
@@ -420,9 +429,9 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             R.id.action_setting -> {
                 presenter.toSetting()
             }
-            R.id.action_dama -> {
-                presenter.toDaMa()
-            }
+//            R.id.action_dama -> {
+//                presenter.toDaMa()
+//            }
             R.id.action_check -> {
                 MaterialDialog(this@AisleManagerActivity)
                         .listItems(
@@ -499,6 +508,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
     private fun stopHeartService() {
         stopService(Intent(this, HeartService::class.java))
+    }
+
+    private fun stopAliService() {
+        stopService(Intent(this, AliService::class.java))
+    }
+
+    private fun startAliService() {
+        startService(Intent(this, AliService::class.java))
     }
 
     @AfterPermissionGranted(Constants.ALL_PERMISSION)

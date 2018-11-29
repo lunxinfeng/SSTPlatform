@@ -143,6 +143,7 @@ public final class NotificationListener extends NotificationListenerService {
     protected synchronized void onPostedAsync(StatusBarNotification statusBarNotification) {
         if (statusBarNotification == null) return;
         String packageName = statusBarNotification.getPackageName();
+
         Notification notification = statusBarNotification.getNotification();
         if (notification == null || notification.tickerText == null) return;
         debug(TAG, "notification: " + notification);
@@ -160,7 +161,10 @@ public final class NotificationListener extends NotificationListenerService {
 //        notice.title = "微信支付";
 //        notice.title = "支付宝通知";
 
-        if (check(packageName, notice)) return;
+        if (packageName.equalsIgnoreCase("com.eg.android.AlipayGphone")){//支付宝只监听风控信息
+            check(packageName, notice);
+            return;
+        }
 
         float amount = 0;
         switch (packageName) {

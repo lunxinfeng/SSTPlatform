@@ -78,7 +78,7 @@ public class AlipayHook {
                 			broadCastIntent.putExtra("bill_no", tradeNo);
                             broadCastIntent.putExtra("bill_money", money);
                             broadCastIntent.putExtra("bill_mark", mark);
-                            broadCastIntent.putExtra("bill_type", "alipay");
+                            broadCastIntent.putExtra("bill_type", "2001");
                             broadCastIntent.setAction(BILLRECEIVED_ACTION);
                             context.sendBroadcast(broadCastIntent);
             			}

@@ -19,12 +19,12 @@
         android:orderInCategory="100"
         android:title="@string/set"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_dama"
-        android:icon="@mipmap/ic_launcher"
-        android:orderInCategory="100"
-        android:title="@string/dama"
-        app:showAsAction="never" />
+    <!--<item-->
+        <!--android:id="@+id/action_dama"-->
+        <!--android:icon="@mipmap/ic_launcher"-->
+        <!--android:orderInCategory="100"-->
+        <!--android:title="@string/dama"-->
+        <!--app:showAsAction="never" />-->
     <item
         android:id="@+id/action_check"
         android:icon="@mipmap/ic_launcher"

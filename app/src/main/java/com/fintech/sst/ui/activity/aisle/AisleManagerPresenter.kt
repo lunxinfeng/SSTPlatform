@@ -47,10 +47,10 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        if (!PermissionUtil.isNotificationListenerEnabled()) {
-            view.toNotifactionSetting()
-            view.showToast("请打开随身听通知监听权限")
-        }
+//        if (!PermissionUtil.isNotificationListenerEnabled()) {
+//            view.toNotifactionSetting()
+//            view.showToast("请打开随身听通知监听权限")
+//        }
         clickNum = 0
 
         if (Configuration.isLogin(METHOD_ALI)){
@@ -247,9 +247,6 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 exitLogin(METHOD_WECHAT)
                             }
                             else -> {
-                                println("++++$noticeLast")
-                                println("++++$t")
-                                println("++++${noticeLast?.equals(t)}")
                                 if (noticeLast?.equals(t) == true){//有重复通知
                                     val type = t.type.toString()
                                     aisleStatus(false,type)

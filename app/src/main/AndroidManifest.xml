@@ -26,7 +26,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="微信、支付宝收款码生成、订单监控" />
+            android:value="支付宝订单监控" />
         <meta-data
             android:name="xposedminversion"
             android:value="54" />
@@ -36,8 +36,10 @@
         <activity
             android:name=".ui.activity.aisle.AisleManagerActivity"
             android:launchMode="singleTask">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -78,6 +80,11 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
+
+        <service
+            android:name=".service.AliService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

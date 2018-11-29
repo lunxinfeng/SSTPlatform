@@ -28,6 +28,15 @@ public class Notice {
   public String amount;
 
   /**
+   * 订单号
+   */
+  public String orderNo;
+  /**
+   * 备注
+   */
+  public String mark;
+
+  /**
    * 类型：0全部  2001支付宝   1001微信
    */
   public int type;
@@ -70,6 +79,7 @@ public class Notice {
             ", status=" + status +
             ", uuid='" + uuid + '\'' +
             ", saveTime=" + saveTime +
+            ", mark=" + mark +
             '}';
   }
 }
