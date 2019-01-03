@@ -25,6 +25,7 @@ import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.bean.AisleInfo
 import com.fintech.sst.service.AliService
+import com.fintech.sst.service.BankService
 import com.fintech.sst.service.HeartService
 import com.fintech.sst.ui.activity.config.ConfigActivity
 import com.fintech.sst.ui.activity.login.LoginActivity
@@ -70,6 +71,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                         ?: 0f) * 100}%")
                 switch_aisle_wechat.isChecked = info?.enable == "1"
             }
+            METHOD_BANK -> {
+                et_aisle_Bank.setText(info?.account ?: "")
+                et_money_Bank.setText(info?.realAmount.toString())
+                et_money_notice_Bank.setText(info?.tradeNoticeLogAmount.toString())
+                et_successRate_Bank.setText("${(info?.ok?.toString()?.toFloatOrNull()
+                        ?: 0f) * 100}%")
+                switch_aisle_Bank.isChecked = info?.enable == "1"
+            }
         }
 //        tvUser.text = "${info?.appLoginName ?: ""}"
     }
@@ -105,6 +114,13 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 //                    lastNoticeTimeWeChat = System.currentTimeMillis()
 //                }
             }
+            METHOD_BANK -> {
+                if (!success)
+                    switch_aisle_Bank.isChecked = !switch_aisle_Bank.isChecked
+//                if (success) {
+//                    lastNoticeTimeWeChat = System.currentTimeMillis()
+//                }
+            }
         }
     }
 
@@ -134,17 +150,24 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 exitWechat.visibility = View.GONE
                 cardViewWechat.setStatus(MenuCardView.Status.CLOSE)
             }
+            METHOD_BANK -> {
+                tvLoginBank.visibility = View.VISIBLE
+                hideBank.visibility = View.VISIBLE
+                exitBank.visibility = View.GONE
+                cardViewBank.setStatus(MenuCardView.Status.CLOSE)
+            }
         }
     }
 
     override fun checkOrderType() {
         MaterialDialog(this)
                 .listItems(
-                        items = listOf("支付宝通道", "微信通道"),
+                        items = listOf("支付宝通道", "微信通道", "银行通道"),
                         selection = { dialog, index, _ ->
                             when (index) {
                                 0 -> toOrderList(METHOD_ALI)
                                 1 -> toOrderList(METHOD_WECHAT)
+                                2 -> toOrderList(METHOD_BANK)
                             }
                             dialog.dismiss()
                         }
@@ -333,21 +356,34 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         tvLoginAli.setOnLongClickListener { accountLogin(METHOD_ALI) }
         tvLoginWeChat.setOnClickListener { presenter.wechatLogin() }
         tvLoginWeChat.setOnLongClickListener { accountLogin(METHOD_WECHAT) }
+        tvLoginBank.setOnClickListener { accountLogin(METHOD_BANK) }
+
         hideAli.setOnClickListener { viewHideOrShow(cardViewAli, false) }
         hideWechat.setOnClickListener { viewHideOrShow(cardViewWechat, false) }
+        hideBank.setOnClickListener { viewHideOrShow(cardViewBank, false) }
+
         exitAli.setOnClickListener {
             Configuration.removeUserInfoByKey(KEY_USER_NAME_ALI)
             Configuration.removeUserInfoByKey(KEY_PASSWORD_ALI)
             presenter.exitLogin(METHOD_ALI)
+            stopAliService()
         }
         exitWechat.setOnClickListener {
             Configuration.removeUserInfoByKey(KEY_USER_NAME_WECHAT)
             Configuration.removeUserInfoByKey(KEY_PASSWORD_WECHAT)
             presenter.exitLogin(METHOD_WECHAT)
         }
+        exitBank.setOnClickListener {
+            Configuration.removeUserInfoByKey(KEY_USER_NAME_BANK)
+            Configuration.removeUserInfoByKey(KEY_PASSWORD_BANK)
+            presenter.exitLogin(METHOD_BANK)
+            stopBankService()
+        }
 
         tv_refresh_ali.setOnClickListener { presenter.userInfo(METHOD_ALI) }
         tv_refresh_wechat.setOnClickListener { presenter.userInfo(METHOD_WECHAT) }
+        tv_refresh_Bank.setOnClickListener { presenter.userInfo(METHOD_BANK) }
+
         switch_aisle_ali.apply {
             setOnCheckedChangeListener { view, isChecked ->
                 if (view.isPressed)
@@ -368,6 +404,21 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                     presenter.aisleStatus(isChecked, METHOD_WECHAT)
             }
         }
+        switch_aisle_Bank.apply {
+            setOnCheckedChangeListener { view, isChecked ->
+                if (view.isPressed)
+                    presenter.aisleStatus(isChecked, METHOD_BANK)
+                if (isChecked){
+                    if (!isServiceRunning(this@AisleManagerActivity,BankService::class.java.name)){
+                        debug(TAG,"短信监听服务没有启动，开始启动")
+                        startBankService()
+                    }
+                }else{
+                    stopBankService()
+                }
+            }
+        }
+
         textView22.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_ali.isChecked)
                 presenter.toAisleManager(METHOD_ALI)
@@ -378,6 +429,12 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 presenter.toAisleManager(METHOD_WECHAT)
             false
         }
+        textView222.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_Bank.isChecked)
+                presenter.toAisleManager(METHOD_BANK)
+            false
+        }
+
         recyclerView.apply {
             setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_DOWN)
@@ -414,6 +471,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         menuInflater.inflate(R.menu.menu_asile, menu)
         menuShowAll = menu?.findItem(R.id.action_show_all)
         menuShowAll?.isVisible = false
+        viewHideOrShow(cardViewWechat, false)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -422,6 +480,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             R.id.action_show_all -> {
                 viewHideOrShow(cardViewAli, true)
                 viewHideOrShow(cardViewWechat, true)
+                viewHideOrShow(cardViewBank, true)
             }
             R.id.action_order_manager -> {
                 presenter.toOrder()
@@ -518,6 +577,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         startService(Intent(this, AliService::class.java))
     }
 
+    private fun stopBankService() {
+        stopService(Intent(this, BankService::class.java))
+    }
+
+    private fun startBankService() {
+        startService(Intent(this, BankService::class.java))
+    }
+
     @AfterPermissionGranted(Constants.ALL_PERMISSION)
     fun requestAllPermission() {
         if (!EasyPermissions.hasPermissions(this, *Constants.PERMISSIONS_GROUP)) {
@@ -564,6 +631,11 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 tvLoginWeChat.visibility = View.GONE
                 hideWechat.visibility = View.GONE
                 exitWechat.visibility = View.VISIBLE
+            }
+            METHOD_BANK -> {
+                tvLoginBank.visibility = View.GONE
+                hideBank.visibility = View.GONE
+                exitBank.visibility = View.VISIBLE
             }
         }
         startHeartService()

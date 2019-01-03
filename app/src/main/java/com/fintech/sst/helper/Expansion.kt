@@ -23,6 +23,7 @@ var DEBUG = true
 
 const val METHOD_WECHAT = "1001"
 const val METHOD_ALI = "2001"
+const val METHOD_BANK = "3001"
 //const val WX_APPID = "wxabc93e80a65a6df8"
 //const val WX_APPSECRET = "c54a012fb257a2c69aab3db64ccb3bd9"
 

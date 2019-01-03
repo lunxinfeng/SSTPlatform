@@ -3,6 +3,7 @@ package com.fintech.sst.ui.fragment.login
 import com.fintech.sst.App
 import com.fintech.sst.data.DataSource
 import com.fintech.sst.helper.METHOD_ALI
+import com.fintech.sst.helper.METHOD_BANK
 import com.fintech.sst.helper.METHOD_WECHAT
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.*
@@ -24,6 +25,8 @@ class LoginModel: DataSource {
         private const val KEY_BEGIN_NUM = "beginNum"
         private const val KEY_END_NUM = "endNum"
         private const val KEY_MAX_NUM = "maxNum"
+        private const val KEY_CODE = "bankAuthCode"
+        private const val KEY_REGEX = "regex"
     }
 
     fun accountLogin(name: String, password: String,type: String = METHOD_ALI): Observable<ResultEntity<Map<String, String>>> {
@@ -102,6 +105,21 @@ class LoginModel: DataSource {
                 Configuration.putUserInfo(KEY_BEGIN_NUM_WECHAT, result[KEY_BEGIN_NUM])
                 Configuration.putUserInfo(KEY_END_NUM_WECHAT, result[KEY_END_NUM])
                 Configuration.putUserInfo(KEY_MAX_NUM_WECHAT, result[KEY_MAX_NUM])
+            }
+            METHOD_BANK -> {
+                Configuration.putUserInfo(KEY_MCH_ID_BANK, result[KEY_MCH_ID])
+                Configuration.putUserInfo(KEY_USER_NAME_BANK, result[KEY_USER_NAME])
+                if (password != "")
+                    Configuration.putUserInfo(KEY_PASSWORD_BANK, password)
+                Configuration.putUserInfo(KEY_LOGIN_TOKEN_BANK, result[KEY_LOGIN_TOKEN])
+
+                Configuration.putUserInfo(KEY_ACCOUNT_BANK, result[KEY_ACCOUNT])
+                Configuration.putUserInfo(KEY_ALLOW_LOAD_BANK, result[KEY_ALLOW_LOAD])
+                Configuration.putUserInfo(KEY_BEGIN_NUM_BANK, result[KEY_BEGIN_NUM])
+                Configuration.putUserInfo(KEY_END_NUM_BANK, result[KEY_END_NUM])
+                Configuration.putUserInfo(KEY_MAX_NUM_BANK, result[KEY_MAX_NUM])
+                Configuration.putUserInfo(KEY_BANK_CODE, result[KEY_CODE])
+                Configuration.putUserInfo(KEY_BANK_REGEX, result[KEY_REGEX])
             }
         }
     }

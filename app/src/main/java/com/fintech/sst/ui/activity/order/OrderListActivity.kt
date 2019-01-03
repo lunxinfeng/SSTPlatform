@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import com.fintech.sst.R
 import com.fintech.sst.helper.METHOD_ALI
+import com.fintech.sst.helper.METHOD_BANK
 import com.fintech.sst.helper.METHOD_WECHAT
 import com.fintech.sst.ui.fragment.order.OrderFragment
 import kotlinx.android.synthetic.main.activity_order_list.*
@@ -21,6 +22,7 @@ class OrderListActivity : AppCompatActivity(),OrderFragment.OnFragmentInteractio
         when(type){
             METHOD_ALI -> setTheme(R.style.App_Ali)
             METHOD_WECHAT -> setTheme(R.style.App_WeChat)
+            METHOD_BANK -> setTheme(R.style.App_Bank)
         }
 
         super.onCreate(savedInstanceState)

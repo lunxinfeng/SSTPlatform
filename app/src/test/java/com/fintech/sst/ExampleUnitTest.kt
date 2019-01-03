@@ -38,13 +38,15 @@ class ExampleUnitTest {
     fun parseAmountAli() {
         val s1 = "风一样的男子通过扫码向你付款88.00元"
         val s2 = "成功收款3000.00元。:成功收款0.96元。享免费提现等更多专属服务，点击查看"
+        val s3 = "您尾号7981的储蓄卡账户1月2日21时14分支付机构提现收入人民币699.38元,活期余额753.07元。[建设银行]"
 
-        var pattern = "付款([0-9]+.[0-9][0-9])元$"
+        var pattern = "账户(.*)收入人民币(\\d*\\.?\\d{1,2})"
         var r = Pattern.compile(pattern)
-        val m = r.matcher(s2)
+        val m = r.matcher(s3)
         if (m.find()) {
-            val group = m.group(1)
-            print(group)
+            val group = m.group(2)
+            println(m)
+            println(group)
         } else {
             pattern = "成功收款([0-9]+.[0-9][0-9])元。"
             r = Pattern.compile(pattern)

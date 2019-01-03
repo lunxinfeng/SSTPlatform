@@ -17,6 +17,7 @@ class NoticeAdapter(layoutId:Int, data:List<Notice>?): BaseQuickAdapter<Notice, 
                 ?.setText(R.id.tv_type,when(notice?.type){
                     1001 -> "微信通知"
                     2001 -> "支付宝通知"
+                    3001 -> "银行通知"
                     else -> "未知"
                 })
     }

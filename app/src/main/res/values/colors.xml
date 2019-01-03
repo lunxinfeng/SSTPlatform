@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#3d86dd</color>
     <color name="colorPrimary_weChat">#01c80b</color>
     <color name="colorPrimaryDark_weChat">#01c80b</color>
+    <color name="colorPrimary_bank">#eed501</color>
+    <color name="colorPrimaryDark_bank">#eed501</color>
     <color name="colorAccent">#f39900</color>
     <color name="btn_unenable">#d2d0d0</color>
     <color name="black_90">#90000000</color>
@@ -18,5 +20,6 @@
     <color name="disable">#cbcaca</color>
     <color name="ali_bg">#199fe4</color>
     <color name="wechat_bg">#00bc0c</color>
+    <color name="bank_bg">#eed501</color>
     <color name="red">#ff0000</color>
 </resources>

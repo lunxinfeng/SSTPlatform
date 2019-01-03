@@ -62,6 +62,11 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
             userInfo(METHOD_WECHAT)
             view.loginSuccess(METHOD_WECHAT)
         }
+
+        if (Configuration.isLogin(METHOD_BANK)){
+            userInfo(METHOD_BANK)
+            view.loginSuccess(METHOD_BANK)
+        }
     }
 
     override fun userInfo(type: String) {
@@ -126,12 +131,16 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
     }
 
     override fun toOrder() {
-        if (Configuration.isLogin(METHOD_ALI) && Configuration.isLogin(METHOD_WECHAT)){
+        if ((Configuration.isLogin(METHOD_ALI) && Configuration.isLogin(METHOD_WECHAT)) ||
+                (Configuration.isLogin(METHOD_ALI) && Configuration.isLogin(METHOD_BANK)) ||
+                (Configuration.isLogin(METHOD_WECHAT) && Configuration.isLogin(METHOD_BANK))){
             view.checkOrderType()
         }else if (Configuration.isLogin(METHOD_ALI)){
             view.toOrderList(METHOD_ALI)
         }else if (Configuration.isLogin(METHOD_WECHAT)){
             view.toOrderList(METHOD_WECHAT)
+        }else if (Configuration.isLogin(METHOD_BANK)){
+            view.toOrderList(METHOD_BANK)
         }else{
             view.showToast("请先登录")
         }

@@ -19,6 +19,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark_weChat</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="App_Bank" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary_bank</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_bank</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <style name="dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>

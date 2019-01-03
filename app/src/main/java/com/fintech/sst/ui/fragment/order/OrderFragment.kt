@@ -148,7 +148,7 @@ class OrderFragment : BaseFragment<OrderContract.Presenter>(),OrderContract.View
 
     companion object {
         private val PARAM_STATUS = "status"
-        private val PARAM_TYPE = "status"
+        private val PARAM_TYPE = "type"
 
         fun newInstance(status: Int = 0,type:String): OrderFragment {
             val fragment = OrderFragment()

@@ -32,11 +32,14 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static com.fintech.sst.helper.ExpansionKt.METHOD_ALI;
+import static com.fintech.sst.helper.ExpansionKt.METHOD_BANK;
 import static com.fintech.sst.helper.ExpansionKt.METHOD_WECHAT;
 import static com.fintech.sst.helper.ExpansionKt.debug;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_BANK;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_BANK;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 
@@ -45,14 +48,22 @@ public class HeartService extends Service {
     private OrderModel orderModel = new OrderModel();
     private Disposable disposableAli;
     private Disposable disposableWeChat;
+    private Disposable disposableBank;
 
     private void heartBeat(final String type) {
-        if (type.equals(ExpansionKt.METHOD_ALI)) {
-            if (disposableAli != null)
-                disposableAli.dispose();
-        } else {
-            if (disposableWeChat != null)
-                disposableWeChat.dispose();
+        switch (type) {
+            case ExpansionKt.METHOD_ALI:
+                if (disposableAli != null)
+                    disposableAli.dispose();
+                break;
+            case ExpansionKt.METHOD_WECHAT:
+                if (disposableWeChat != null)
+                    disposableWeChat.dispose();
+                break;
+            case ExpansionKt.METHOD_BANK:
+                if (disposableBank != null)
+                    disposableBank.dispose();
+                break;
         }
 
         Observable.interval(0, 10 * 1000, TimeUnit.MILLISECONDS)
@@ -64,7 +75,6 @@ public class HeartService extends Service {
 //                        if (!alive) {
 //                            PermissionUtil.toggleNotificationListenerService(NotificationListener.class);
 //                        }
-//                        return alive;
                         return true;
                     }
                 })
@@ -91,8 +101,8 @@ public class HeartService extends Service {
                                                     result.add(item);
                                                 }
 
-                                                if (result.size()>ExpansionKt.getCloseOrderNum())
-                                                    result = result.subList(0,ExpansionKt.getCloseOrderNum());
+                                                if (result.size() > ExpansionKt.getCloseOrderNum())
+                                                    result = result.subList(0, ExpansionKt.getCloseOrderNum());
                                                 int num = 0;
                                                 for (OrderList item : result) {
                                                     if (item.getTradeStatus().equals("30")) {
@@ -111,6 +121,10 @@ public class HeartService extends Service {
                                                         case ExpansionKt.METHOD_WECHAT:
                                                             keyUserName = KEY_USER_NAME_WECHAT;
                                                             keyMChId = KEY_MCH_ID_WECHAT;
+                                                            break;
+                                                        case ExpansionKt.METHOD_BANK:
+                                                            keyUserName = KEY_USER_NAME_BANK;
+                                                            keyMChId = KEY_MCH_ID_BANK;
                                                             break;
                                                     }
                                                     HashMap<String, String> request = new HashMap<>();
@@ -146,6 +160,9 @@ public class HeartService extends Service {
                                                 case ExpansionKt.METHOD_WECHAT:
                                                     noticeType = 2;
                                                     break;
+                                                case ExpansionKt.METHOD_BANK:
+                                                    noticeType = 3;
+                                                    break;
                                             }
                                             notice.type = noticeType;
                                             RxBus.getDefault().send(notice);
@@ -176,10 +193,16 @@ public class HeartService extends Service {
                 .subscribe(new Observer<ResultEntity<Boolean>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        if (type.equals(ExpansionKt.METHOD_ALI)) {
-                            disposableAli = d;
-                        } else {
-                            disposableWeChat = d;
+                        switch (type) {
+                            case ExpansionKt.METHOD_ALI:
+                                disposableAli = d;
+                                break;
+                            case ExpansionKt.METHOD_WECHAT:
+                                disposableWeChat = d;
+                                break;
+                            case ExpansionKt.METHOD_BANK:
+                                disposableBank = d;
+                                break;
                         }
 
                         debug(TAG, "=======heartBeat " + type + " onSubscribe======");
@@ -188,7 +211,7 @@ public class HeartService extends Service {
                     @Override
                     public void onNext(ResultEntity<Boolean> booleanResultEntity) {
                         debug(TAG, "=======heartBeat " + type + " onNext======");
-                        if (booleanResultEntity.getCode().equals("20001") && (booleanResultEntity.getMsg().contains("签名错误") || booleanResultEntity.getMsg().contains("未登录") )) {
+                        if (booleanResultEntity.getCode().equals("20001") && (booleanResultEntity.getMsg().contains("签名错误") || booleanResultEntity.getMsg().contains("未登录"))) {
                             Notice notice = new Notice();
                             int noticeType = 0;
                             switch (type) {
@@ -200,6 +223,10 @@ public class HeartService extends Service {
                                     noticeType = 12;
                                     disposableWeChat.dispose();
                                     break;
+                                case ExpansionKt.METHOD_BANK:
+                                    noticeType = 13;
+                                    disposableBank.dispose();
+                                    break;
                             }
                             notice.type = noticeType;
                             RxBus.getDefault().send(notice);
@@ -208,10 +235,16 @@ public class HeartService extends Service {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (type.equals(ExpansionKt.METHOD_ALI)) {
-                            disposableAli.dispose();
-                        } else {
-                            disposableWeChat.dispose();
+                        switch (type) {
+                            case ExpansionKt.METHOD_ALI:
+                                disposableAli.dispose();
+                                break;
+                            case ExpansionKt.METHOD_WECHAT:
+                                disposableWeChat.dispose();
+                                break;
+                            case ExpansionKt.METHOD_BANK:
+                                disposableBank.dispose();
+                                break;
                         }
                         debug(TAG, "=======heartBeat " + type + " onError======");
                         SystemClock.sleep(10 * 1000);
@@ -220,10 +253,16 @@ public class HeartService extends Service {
 
                     @Override
                     public void onComplete() {
-                        if (type.equals(ExpansionKt.METHOD_ALI)) {
-                            disposableAli.dispose();
-                        } else {
-                            disposableWeChat.dispose();
+                        switch (type) {
+                            case ExpansionKt.METHOD_ALI:
+                                disposableAli.dispose();
+                                break;
+                            case ExpansionKt.METHOD_WECHAT:
+                                disposableWeChat.dispose();
+                                break;
+                            case ExpansionKt.METHOD_BANK:
+                                disposableBank.dispose();
+                                break;
                         }
                         debug(TAG, "=======heartBeat " + type + " onComplete======");
                         SystemClock.sleep(10 * 1000);
@@ -251,6 +290,14 @@ public class HeartService extends Service {
                 e.printStackTrace();
             }
         }
+
+        if (Configuration.isLogin(METHOD_BANK)) {//登录的时候开启心跳
+            try {
+                heartBeat(METHOD_BANK);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -261,6 +308,8 @@ public class HeartService extends Service {
             disposableAli.dispose();
         if (disposableWeChat != null)
             disposableWeChat.dispose();
+        if (disposableBank != null)
+            disposableBank.dispose();
     }
 
     @Override
@@ -278,6 +327,14 @@ public class HeartService extends Service {
             try {
                 if (disposableWeChat == null || disposableWeChat.isDisposed())
                     heartBeat(METHOD_WECHAT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (Configuration.isLogin(METHOD_BANK)) {//登录的时候开启心跳
+            try {
+                if (disposableBank == null || disposableBank.isDisposed())
+                    heartBeat(METHOD_BANK);
             } catch (Exception e) {
                 e.printStackTrace();
             }

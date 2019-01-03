@@ -2,6 +2,7 @@ package com.fintech.sst.ui.activity.aisle
 
 import com.fintech.sst.data.DataSource
 import com.fintech.sst.helper.METHOD_ALI
+import com.fintech.sst.helper.METHOD_BANK
 import com.fintech.sst.helper.METHOD_WECHAT
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.ResultEntity
@@ -14,10 +15,12 @@ import java.util.*
 class AisleManagerModel : DataSource {
     var aisleInfoAli: AisleInfo? = null
     var aisleInfoWeChat: AisleInfo? = null
+    var aisleInfoBank: AisleInfo? = null
 
     private fun getAisleInfo(type: String) = when (type) {
         METHOD_ALI -> aisleInfoAli
         METHOD_WECHAT -> aisleInfoWeChat
+        METHOD_BANK -> aisleInfoBank
         else -> null
     }
 
@@ -25,6 +28,7 @@ class AisleManagerModel : DataSource {
         when (type) {
             METHOD_ALI -> aisleInfoAli = info
             METHOD_WECHAT -> aisleInfoWeChat = info
+            METHOD_BANK -> aisleInfoBank = info
         }
     }
 

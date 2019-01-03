@@ -156,6 +156,7 @@
                     android:background="@drawable/toggle_aisle_manager"
                     android:thumb="@null"
                     android:track="@null"
+                    android:checked="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView22" />
 
@@ -363,6 +364,7 @@
                     android:background="@drawable/toggle_aisle_manager_wechat"
                     android:thumb="@null"
                     android:track="@null"
+                    android:checked="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView2" />
 
@@ -425,6 +427,211 @@
         </FrameLayout>
     </com.fintech.sst.ui.widget.MenuCardView>
 
+    <com.fintech.sst.ui.widget.MenuCardView
+        android:id="@+id/cardViewBank"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:elevation="5dp"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewWechat"
+        app:layout_goneMarginEnd="24dp"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#ff0000"
+            android:layout_gravity="end">
+
+            <TextView
+                android:id="@+id/hideBank"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:gravity="center"
+                android:background="#fbf155"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:text="@string/hide" />
+
+            <TextView
+                android:id="@+id/exitBank"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="#00bc0c"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:text="@string/exit"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+
+                <EditText
+                    android:id="@+id/et_aisle_Bank"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:inputType="textPersonName"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView222"
+                    app:layout_constraintEnd_toStartOf="@+id/switch_aisle_Bank"
+                    app:layout_constraintStart_toEndOf="@+id/textView222" />
+
+                <TextView
+                    android:id="@+id/textView666"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@mipmap/icon_success_rate"
+                    android:drawablePadding="10dp"
+                    android:text="@string/success_rate"
+                    android:textColor="#515151"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView333"
+                    app:layout_constraintTop_toBottomOf="@+id/textView1000" />
+
+                <TextView
+                    android:id="@+id/textView222"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@mipmap/icon_aisle_manger"
+                    android:drawablePadding="10dp"
+                    android:text="@string/aisle"
+                    android:textColor="#515151"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView333"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@mipmap/icon_amount"
+                    android:drawablePadding="10dp"
+                    android:text="@string/money_pay"
+                    android:textColor="#515151"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView222"
+                    app:layout_constraintTop_toBottomOf="@+id/textView222" />
+
+                <EditText
+                    android:id="@+id/et_successRate_Bank"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:inputType="textPersonName"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView666"
+                    app:layout_constraintEnd_toEndOf="@+id/et_aisle_Bank"
+                    app:layout_constraintStart_toEndOf="@+id/textView666" />
+
+                <TextView
+                    android:id="@+id/tv_refresh_Bank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@mipmap/refresh"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintEnd_toEndOf="@+id/switch_aisle_Bank"
+                    app:layout_constraintTop_toTopOf="@+id/textView666" />
+
+                <Switch
+                    android:id="@+id/switch_aisle_Bank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/toggle_aisle_manager_wechat"
+                    android:thumb="@null"
+                    android:track="@null"
+                    android:checked="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView222" />
+
+                <EditText
+                    android:id="@+id/et_money_Bank"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:inputType="textPersonName"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView333"
+                    app:layout_constraintEnd_toEndOf="@+id/et_aisle_Bank"
+                    app:layout_constraintStart_toEndOf="@+id/textView333" />
+
+                <TextView
+                    android:id="@+id/textView1000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableStart="@mipmap/icon_amount"
+                    android:drawablePadding="10dp"
+                    android:text="@string/money_notice"
+                    android:textColor="#515151"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView333"
+                    app:layout_constraintTop_toBottomOf="@+id/textView333" />
+
+                <EditText
+                    android:id="@+id/et_money_notice_Bank"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:inputType="number"
+                    android:textColor="@color/red"
+                    android:textStyle="bold"
+                    android:text="0.0"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView1000"
+                    app:layout_constraintEnd_toEndOf="@+id/et_money_Bank"
+                    app:layout_constraintStart_toEndOf="@+id/textView1000" />
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tvLoginBank"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bank_bg"
+                android:gravity="center_vertical"
+                android:text="@string/bank_login"
+                android:drawableStart="@mipmap/logo_bank"
+                android:drawablePadding="32dp"
+                android:paddingStart="50dp"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+
+        </FrameLayout>
+    </com.fintech.sst.ui.widget.MenuCardView>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -439,7 +646,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardViewWechat"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewBank"
         app:layout_goneMarginTop="16dp"/>
 
     <TextView

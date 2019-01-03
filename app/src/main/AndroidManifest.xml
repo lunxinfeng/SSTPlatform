@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+
 
     <application
         android:name=".App"
@@ -36,10 +38,8 @@
         <activity
             android:name=".ui.activity.aisle.AisleManagerActivity"
             android:launchMode="singleTask">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -74,17 +74,23 @@
             android:exported="true"
             android:theme="@style/App_WXEntry" />
         <activity android:name=".xposed.XposedActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <service
             android:name=".service.AliService"
             android:enabled="true"
             android:exported="false" />
+        <service
+            android:name=".service.BankService"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>

@@ -9,11 +9,14 @@ import com.fintech.sst.helper.ExpansionKt;
 
 import static com.fintech.sst.net.Constants.KEY_ADDRESS;
 import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_ALI;
+import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_BANK;
 import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_BANK;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_SP_;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_BANK;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 
 
@@ -59,6 +62,11 @@ public class Configuration {
                 key_sp_.userName = sp.getString(KEY_USER_NAME_WECHAT, "");
                 key_sp_.loginToken = sp.getString(KEY_LOGIN_TOKEN_WECHAT, "");
                 break;
+            case ExpansionKt.METHOD_BANK:
+                key_sp_.mchId = sp.getString(KEY_MCH_ID_BANK, "");
+                key_sp_.userName = sp.getString(KEY_USER_NAME_BANK, "");
+                key_sp_.loginToken = sp.getString(KEY_LOGIN_TOKEN_BANK, "");
+                break;
         }
 
         return key_sp_;
@@ -80,6 +88,10 @@ public class Configuration {
                 edit.remove(KEY_MCH_ID_WECHAT);
                 edit.remove(KEY_LOGIN_TOKEN_WECHAT);
                 break;
+            case ExpansionKt.METHOD_BANK:
+                edit.remove(KEY_MCH_ID_BANK);
+                edit.remove(KEY_LOGIN_TOKEN_BANK);
+                break;
         }
         return edit.commit();
     }
@@ -90,6 +102,8 @@ public class Configuration {
                 return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_ALI));
             case ExpansionKt.METHOD_WECHAT:
                 return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_WECHAT));
+            case ExpansionKt.METHOD_BANK:
+                return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_BANK));
         }
         return false;
     }
