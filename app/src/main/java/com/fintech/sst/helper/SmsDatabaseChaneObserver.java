@@ -127,9 +127,9 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
             Pattern r = Pattern.compile(bankRegex);
             Matcher m = r.matcher(content);
             if (m.find()) {
-                String group = m.group(2);//建设银行
+                String group = m.group(2);
                 System.out.println("短信收款：" + group + "\t" + content + "\t" + m);
-                return group;
+                return group.replaceAll(",","");
             }
             System.out.println("短信收款：" + 0 + "\t" + content + "\t" + m);
         }

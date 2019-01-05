@@ -62,6 +62,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 et_successRate_ali.setText("${(info?.ok?.toString()?.toFloatOrNull()
                         ?: 0f) * 100}%")
                 switch_aisle_ali.isChecked = info?.enable == "1"
+                if (switch_aisle_ali.isChecked){
+                    if (!isServiceRunning(this@AisleManagerActivity,AliService::class.java.name)){
+                        debug(TAG,"支付宝监听服务没有启动，开始启动")
+                        startAliService()
+                    }
+                }else{
+                    stopAliService()
+                }
             }
             METHOD_WECHAT -> {
                 et_aisle_wechat.setText(info?.account ?: "")
@@ -78,6 +86,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 et_successRate_Bank.setText("${(info?.ok?.toString()?.toFloatOrNull()
                         ?: 0f) * 100}%")
                 switch_aisle_Bank.isChecked = info?.enable == "1"
+                if (switch_aisle_Bank.isChecked){
+                    if (!isServiceRunning(this@AisleManagerActivity,BankService::class.java.name)){
+                        debug(TAG,"短信监听服务没有启动，开始启动")
+                        startBankService()
+                    }
+                }else{
+                    stopBankService()
+                }
             }
         }
 //        tvUser.text = "${info?.appLoginName ?: ""}"
@@ -99,29 +115,30 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
     override fun aisleStatusResult(success: Boolean, type: String) {
         showToast(if (success) "操作成功" else "操作失败")
-        when (type) {
-            METHOD_ALI -> {
-                if (!success)
-                    switch_aisle_ali.isChecked = !switch_aisle_ali.isChecked
-//                if (success) {
-//                    lastNoticeTimeAli = System.currentTimeMillis()
-//                }
-            }
-            METHOD_WECHAT -> {
-                if (!success)
-                    switch_aisle_wechat.isChecked = !switch_aisle_wechat.isChecked
-//                if (success) {
-//                    lastNoticeTimeWeChat = System.currentTimeMillis()
-//                }
-            }
-            METHOD_BANK -> {
-                if (!success)
-                    switch_aisle_Bank.isChecked = !switch_aisle_Bank.isChecked
-//                if (success) {
-//                    lastNoticeTimeWeChat = System.currentTimeMillis()
-//                }
-            }
-        }
+        presenter.userInfo(type)
+//        when (type) {
+//            METHOD_ALI -> {
+//                if (!success)
+//                    switch_aisle_ali.isChecked = !switch_aisle_ali.isChecked
+////                if (success) {
+////                    lastNoticeTimeAli = System.currentTimeMillis()
+////                }
+//            }
+//            METHOD_WECHAT -> {
+//                if (!success)
+//                    switch_aisle_wechat.isChecked = !switch_aisle_wechat.isChecked
+////                if (success) {
+////                    lastNoticeTimeWeChat = System.currentTimeMillis()
+////                }
+//            }
+//            METHOD_BANK -> {
+//                if (!success)
+//                    switch_aisle_Bank.isChecked = !switch_aisle_Bank.isChecked
+////                if (success) {
+////                    lastNoticeTimeWeChat = System.currentTimeMillis()
+////                }
+//            }
+//        }
     }
 
     override fun aisleRefreshResult(success: Boolean) {
@@ -388,14 +405,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             setOnCheckedChangeListener { view, isChecked ->
                 if (view.isPressed)
                     presenter.aisleStatus(isChecked, METHOD_ALI)
-                if (isChecked){
-                    if (!isServiceRunning(this@AisleManagerActivity,AliService::class.java.name)){
-                        debug(TAG,"支付宝监听服务没有启动，开始启动")
-                        startAliService()
-                    }
-                }else{
-                    stopAliService()
-                }
             }
         }
         switch_aisle_wechat.apply {
@@ -408,14 +417,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             setOnCheckedChangeListener { view, isChecked ->
                 if (view.isPressed)
                     presenter.aisleStatus(isChecked, METHOD_BANK)
-                if (isChecked){
-                    if (!isServiceRunning(this@AisleManagerActivity,BankService::class.java.name)){
-                        debug(TAG,"短信监听服务没有启动，开始启动")
-                        startBankService()
-                    }
-                }else{
-                    stopBankService()
-                }
             }
         }
 
