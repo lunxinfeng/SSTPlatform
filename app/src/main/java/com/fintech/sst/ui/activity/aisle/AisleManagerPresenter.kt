@@ -242,7 +242,12 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 playWarning()
                                 view.showHintDialog("微信连续10单不成功")
                             }
-                            t.type == 3 -> {//支付宝风控
+                            t.type == 3 -> {//微信连续10单不成功
+                                userInfo(METHOD_BANK)
+                                playWarning()
+                                view.showHintDialog("银行连续10单不成功")
+                            }
+                            t.type == 111 -> {//支付宝风控
                                 userInfo(METHOD_ALI)
                                 playWarning()
                                 view.showHintDialog("支付宝被风控")

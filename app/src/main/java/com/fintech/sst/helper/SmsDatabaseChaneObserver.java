@@ -11,6 +11,8 @@ import com.fintech.sst.net.Configuration;
 import com.fintech.sst.net.Constants;
 import com.fintech.sst.net.bean.Sms;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,9 +30,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
     private static final String DB_FIELD_DATE = "date";
     private static final String DB_FIELD_TYPE = "type";
     private static final String DB_FIELD_THREAD_ID = "thread_id";
-    private static final String[] ALL_DB_FIELD_NAME = {
-            DB_FIELD_ID, DB_FIELD_ADDRESS, DB_FIELD_PERSON, DB_FIELD_BODY,
-            DB_FIELD_DATE, DB_FIELD_TYPE, DB_FIELD_THREAD_ID};
+    private static final String[] ALL_DB_FIELD_NAME = {DB_FIELD_ADDRESS, DB_FIELD_BODY, DB_FIELD_DATE};
     private int mMessageCount = -1;
 
     private final long DELTA_TIME = 60 * 1000;
@@ -84,7 +84,8 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
             if (cursor.moveToFirst()) {
                 final String strAddress = cursor.getString(cursor.getColumnIndex(DB_FIELD_ADDRESS));    // 短信号码
                 final String strbody = cursor.getString(cursor.getColumnIndex(DB_FIELD_BODY));          // 在这里获取短信信息
-                final int smsid = cursor.getInt(cursor.getColumnIndex(DB_FIELD_ID)); //短信id
+                final String smsTime = cursor.getString(cursor.getColumnIndex(DB_FIELD_DATE)); //短信时间
+//                final int smsid = cursor.getInt(cursor.getColumnIndex(DB_FIELD_ID)); //短信id
                 if (TextUtils.isEmpty(strAddress) || TextUtils.isEmpty(strbody)) {
                     return;
                 }
@@ -96,6 +97,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
 //                sms.setSendName(strAddress);
 //                sms.setContent(strbody);
 //                sms.setAmount(getAmount(strbody));
+//                sms.setTime(smsTime);
 //                System.out.println(sms);
 //                RxBus.getDefault().send(sms);
                 if (bankCode != null && bankCode.equalsIgnoreCase(strAddress)) {
@@ -103,6 +105,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                     sms.setSendName(strAddress);
                     sms.setContent(strbody);
                     sms.setAmount(getAmount(strbody));
+                    sms.setTime(smsTime);
                     System.out.println(sms);
                     RxBus.getDefault().send(sms);
                 }
@@ -129,10 +132,51 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
             if (m.find()) {
                 String group = m.group(2);
                 System.out.println("短信收款：" + group + "\t" + content + "\t" + m);
-                return group.replaceAll(",","");
+                return group.replaceAll(",", "");
             }
             System.out.println("短信收款：" + 0 + "\t" + content + "\t" + m);
         }
         return "0";
+    }
+
+    public List<Sms> query50() {
+        Cursor cursor = null;
+        // 添加异常捕捉
+        try {//
+            cursor = mResolver.query(MMSSMS_ALL_MESSAGE_URI, ALL_DB_FIELD_NAME,
+                    " address = " + bankCode + " AND date > " + (System.currentTimeMillis() - 60*60*1000), null, SORT_FIELD_STRING);
+            List<Sms> smsList = new ArrayList<>();
+            if (cursor == null) return smsList;
+            while (cursor.moveToNext() && smsList.size()<50){
+                final String strAddress = cursor.getString(cursor.getColumnIndex(DB_FIELD_ADDRESS));    // 短信号码
+                final String strbody = cursor.getString(cursor.getColumnIndex(DB_FIELD_BODY));          // 在这里获取短信信息
+                final String smsTime = cursor.getString(cursor.getColumnIndex(DB_FIELD_DATE)); //短信时间
+                // 得到短信号码和内容之后进行相关处理
+                if (bankCode == null)
+                    bankCode = Configuration.getUserInfoByKey(Constants.KEY_BANK_CODE);
+                System.out.println("--------------短信--------------");
+                if (bankCode != null && bankCode.equalsIgnoreCase(strAddress)) {
+                    Sms sms = new Sms();
+                    sms.setSendName(strAddress);
+                    sms.setContent(strbody);
+                    sms.setAmount(getAmount(strbody));
+                    sms.setTime(smsTime);
+                    if (!sms.getAmount().equals("0"))
+                        smsList.add(sms);
+                }
+            }
+            return smsList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (cursor != null) {
+                try {  // 有可能cursor都没有创建成功
+                    cursor.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

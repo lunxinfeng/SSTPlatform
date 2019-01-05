@@ -5,13 +5,21 @@ import com.fintech.sst.helper.METHOD_BANK
 import com.fintech.sst.helper.RxBus
 import com.fintech.sst.helper.SmsObserverUtil
 import com.fintech.sst.helper.debug
+import com.fintech.sst.net.ApiProducerModule
+import com.fintech.sst.net.ApiService
 import com.fintech.sst.net.Configuration
+import com.fintech.sst.net.Constants.KEY_ACCOUNT_ID_BANK
+import com.fintech.sst.net.SignRequestBody
 import com.fintech.sst.net.bean.Sms
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class BankService : BaseService() {
+    private var checkDisposable:Disposable? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -19,10 +27,12 @@ class BankService : BaseService() {
             try {
                 subscribeSms()
                 SmsObserverUtil.registerSmsDatabaseChangeObserver(this)
+                check()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+
     }
 
     private fun subscribeSms() {
@@ -35,21 +45,7 @@ class BankService : BaseService() {
                     }
 
                     override fun onNext(t: Sms) {
-                        val notice = Notice()
-                        notice.content = t.content
-//                notice.saveTime = notification.`when`
-                        notice.status = 2
-                        notice.tag = ""
-                        notice.noticeId = 0
-                        notice.title = "银行通知"
-
-                        notice.packageName = t.sendName
-                        notice.type = METHOD_BANK.toInt()
-                        notice.orderNo = ""
-                        notice.amount = t.amount
-                        notice.mark = ""
-                        if (notice.amount.toFloatOrNull() != 0f)
-                            notices.offer(notice)
+                        addToNoticeList(t)
                     }
 
                     override fun onComplete() {
@@ -66,7 +62,57 @@ class BankService : BaseService() {
                 })
     }
 
+    private fun addToNoticeList(t: Sms) {
+        val notice = Notice()
+        notice.content = t.content
+        notice.saveTime = t.time.toLong()
+        notice.status = 2
+        notice.tag = ""
+        notice.noticeId = 0
+        notice.title = "银行通知"
+
+        notice.packageName = t.sendName
+        notice.type = METHOD_BANK.toInt()
+        notice.orderNo = ""
+        notice.amount = t.amount
+        notice.mark = ""
+        if (notice.amount.toFloatOrNull() != 0f)
+            notices.offer(notice)
+    }
+
+    private fun check(){
+        checkDisposable = Observable.interval(4 * 60 * 1000, TimeUnit.MILLISECONDS)
+                .flatMap {
+                    val request = HashMap<String, String>()
+                    request["accountId"] = Configuration.getUserInfoByKey(KEY_ACCOUNT_ID_BANK)
+                    ApiProducerModule.create(ApiService::class.java).smsList(SignRequestBody(request).sign(METHOD_BANK))
+                }
+                .subscribe{ result ->
+                    println("--------------尝试补单---------------")
+                    val listSql = SmsObserverUtil.mSmsDBChangeObserver.query50()
+                    val listNet = mutableListOf<Sms>()
+                    result.result.forEach {
+                        val time = it.split(",")[0]
+                        val amount = it.split(",")[1]
+
+                        listNet.add(Sms().apply {
+                            this.time = time
+                            this.amount = amount
+                        })
+                    }
+
+                    listSql.removeAll(listNet)
+
+                    listSql.forEach {
+                        println("自动补单$it")
+                        addToNoticeList(it)
+                    }
+                }
+    }
+
     override fun onDestroy() {
+        checkDisposable?.dispose()
+        checkDisposable = null
         SmsObserverUtil.unregisterSmsDatabaseChangeObserver(this)
         super.onDestroy()
     }

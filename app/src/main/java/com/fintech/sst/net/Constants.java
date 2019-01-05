@@ -64,5 +64,6 @@ public class Constants {
     public static final String KEY_LOGIN_TOKEN_BANK = "loginTokenBANK";
     public static final String KEY_BANK_CODE = "bankCode";
     public static final String KEY_BANK_REGEX = "bankRegex";
+    public static final String KEY_ACCOUNT_ID_BANK = "accountIdBank";
 
 }

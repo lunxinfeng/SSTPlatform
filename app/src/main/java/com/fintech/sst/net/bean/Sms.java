@@ -4,6 +4,15 @@ public class Sms {
     private String sendName;
     private String content;
     private String amount;
+    private String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getSendName() {
         return sendName;
@@ -35,6 +44,15 @@ public class Sms {
                 "sendName='" + sendName + '\'' +
                 ", content='" + content + '\'' +
                 ", amount='" + amount + '\'' +
+                ", time='" + time + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Sms){
+            return ((Sms) obj).time.equals(time) && Float.parseFloat(((Sms) obj).amount) == Float.parseFloat(amount);
+        }
+        return super.equals(obj);
     }
 }

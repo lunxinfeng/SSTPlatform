@@ -30,8 +30,16 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() {
-        val info = 1.00
-        println((info?.toString()?.toFloatOrNull() ?: 0f) * 100)
+//        val info = 1.00
+//        println((info?.toString()?.toFloatOrNull() ?: 0f) * 100)
+        val list1 = mutableListOf(1,2)
+        val list2 = mutableListOf(2,3,4,5,6)
+        list1.removeAll(list2)
+        println(list1)
+
+        val s1 = "1.0000"
+        val s2 = "1"
+        println(s1.toFloat() == s2.toFloat())
     }
 
     @Test
@@ -41,13 +49,17 @@ class ExampleUnitTest {
         var s5 = "您尾号0891卡12月26日14:55快捷支付收入(钟宇支付宝转账支付宝)1元，余额4元。【工商银行】"
         s5 = "您尾号0891卡12月26日14:55快捷支付收入(钟宇支付宝转账支付宝)1,999,999,998元，余额411.50元。【工商银行】"
         val s6 = "【中国农业银行】您尾号8114账户01月03日15:07完成代付交易人民币10.00，余额565.74。"
+        var s7 = "尾号4501账户23:15存入99.99元，余额6062.71元，摘要:胡亮支付宝转账 胡亮支付宝转账。[光大银行]"
+        s7 = "尾号4501账户23:15存入100元，余额7726.7元，摘要:胡亮支付宝转账 胡亮支付宝转账。[光大银行]"
+        val s8 = "【邮储银行】19年01月05日09:45您尾号044账户提现金额30.00元，余额10512.01元。"
 
 //        var pattern = "人民币(\\d+\\.?\\d{0,2})元,活期余额(\\d+\\.?\\d{0,2})元。"
 //        var pattern = "(.*)转入(\\d+\\.?\\d{0,2})元,交易后余额为(\\d+\\.?\\d{0,2})元。【交通银行】"
-        var pattern = "收入(.*)\\)(\\d+(,\\d+)*(\\.\\d{0,2})?)元，余额(\\d+(,\\d+)*(\\.\\d{0,2})?)元。【工商银行】"
+//        var pattern = "收入(.*)\\)(\\d+(,\\d+)*(\\.\\d{0,2})?)元，余额(\\d+(,\\d+)*(\\.\\d{0,2})?)元。【工商银行】"
 //        var pattern = "(.*)人民币(\\d+\\.?\\d{0,2})，余额(\\d+\\.?\\d{0,2})。"
+        var pattern = "(.*)存入(\\d+\\.?\\d{0,2})元，余额(\\d+\\.?\\d{0,2})元"
         var r = Pattern.compile(pattern)
-        val m = r.matcher(s5)
+        val m = r.matcher(s7)
         if (m.find()) {
             println(m)
             val group = m.group(2)

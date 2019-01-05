@@ -7,6 +7,7 @@ import com.fintech.sst.net.bean.OrderCount;
 import com.fintech.sst.net.bean.OrderList;
 import com.fintech.sst.net.bean.PageList;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -69,6 +70,11 @@ public interface ApiService {
     );
     @POST("/api/terminal/v1/getcount")
     Observable<ResultEntity<OrderCount>> orderCount(
+            @Body SignRequestBody body
+    );
+
+    @POST("/api/terminal/v1/select/tradeNoticeLog")
+    Observable<ResultEntity<List<String>>> smsList(
             @Body SignRequestBody body
     );
 

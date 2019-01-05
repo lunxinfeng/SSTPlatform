@@ -191,7 +191,7 @@ public final class NotificationListener extends NotificationListenerService {
     private boolean check(String packageName, Notice notice) {
         if (notice.content.startsWith("支付宝禁止一切提供赌博咨询或参与赌博的行为")){
             Notice close = new Notice();
-            close.type = 3;
+            close.type = 111;
 
 
             HashMap<String, String> request = new HashMap<>();
