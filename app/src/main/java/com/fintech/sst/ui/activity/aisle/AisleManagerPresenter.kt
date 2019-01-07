@@ -260,6 +260,10 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 view.showToast("微信通道账号退出登录")
                                 exitLogin(METHOD_WECHAT)
                             }
+                            t.type == 13 -> {
+                                view.showToast("银行通道账号退出登录")
+                                exitLogin(METHOD_BANK)
+                            }
                             else -> {
                                 if (noticeLast?.equals(t) == true){//有重复通知
                                     val type = t.type.toString()
