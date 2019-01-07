@@ -67,8 +67,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                         debug(TAG,"支付宝监听服务没有启动，开始启动")
                         startAliService()
                     }
-                }else{
-                    stopAliService()
                 }
             }
             METHOD_WECHAT -> {
@@ -91,8 +89,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                         debug(TAG,"短信监听服务没有启动，开始启动")
                         startBankService()
                     }
-                }else{
-                    stopBankService()
                 }
             }
         }
@@ -360,14 +356,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 //        startHeartService()
 
         tvLoginAli.setOnClickListener {
-//            val notice = Notice().apply {
-//                type = 1001
-//                content = "成功收款5.00元"
-//                amount = "5.0"
-//                saveTime = 1111111111111111L
-//            }
-//            RxBus.getDefault().send(notice)
-//            RxBus.getDefault().send(notice)
             presenter.aliLogin()
         }
         tvLoginAli.setOnLongClickListener { accountLogin(METHOD_ALI) }
