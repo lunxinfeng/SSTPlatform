@@ -50,7 +50,7 @@
     <string name="showAll">全部显示</string>
     <string name="hide">隐藏</string>
     <string name="exit">退出</string>
-    <string name="version">2019.1.7</string>
+    <string name="version">2019.1.8</string>
     <string name="check">校对重复通知</string>
     <string-array name="close_time">
         <item>1分钟</item>

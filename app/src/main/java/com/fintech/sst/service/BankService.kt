@@ -15,6 +15,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -82,31 +83,38 @@ class BankService : BaseService() {
 
     private fun check(){
         checkDisposable = Observable.interval(4 * 60 * 1000, TimeUnit.MILLISECONDS)
-                .flatMap {
+                .map {
+                    val listSql = SmsObserverUtil.mSmsDBChangeObserver.query50()
+                    listSql
+                }
+                .delay(5000, TimeUnit.MILLISECONDS)
+                .subscribe{ listSql ->
                     val request = HashMap<String, String>()
                     request["accountId"] = Configuration.getUserInfoByKey(KEY_ACCOUNT_ID_BANK)
                     ApiProducerModule.create(ApiService::class.java).smsList(SignRequestBody(request).sign(METHOD_BANK))
-                }
-                .subscribe{ result ->
-                    println("--------------尝试补单---------------")
-                    val listSql = SmsObserverUtil.mSmsDBChangeObserver.query50()
-                    val listNet = mutableListOf<Sms>()
-                    result.result.forEach {
-                        val time = it.split(",")[0]
-                        val amount = it.split(",")[1]
+                            .subscribeOn(Schedulers.io())
+                            .map { result ->
+                                val listNet = mutableListOf<Sms>()
+                                result.result.forEach {
+                                    val time = it.split(",")[0]
+                                    val amount = it.split(",")[1]
 
-                        listNet.add(Sms().apply {
-                            this.time = time
-                            this.amount = amount
-                        })
-                    }
+                                    listNet.add(Sms().apply {
+                                        this.time = time
+                                        this.amount = amount
+                                    })
+                                }
+                                listNet
+                            }
+                            .subscribe { it ->
 
-                    listSql.removeAll(listNet)
+                                listSql.removeAll(it)
 
-                    listSql.forEach {
-                        println("自动补单$it")
-                        addToNoticeList(it)
-                    }
+                                listSql.forEach {
+                                    println("自动补单$it")
+                                    addToNoticeList(it)
+                                }
+                            }
                 }
     }
 

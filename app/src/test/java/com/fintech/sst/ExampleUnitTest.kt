@@ -1,7 +1,10 @@
 package com.fintech.sst
 
 import com.fintech.sst.data.db.Notice
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 /**
@@ -10,6 +13,29 @@ import java.util.regex.Pattern
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+    @Test
+    fun test(){
+        Observable.interval(10 * 1000, TimeUnit.MILLISECONDS)
+                .map {
+                    println("map1 $it")
+                    "map1 $it"
+                }
+                .delay(5000, TimeUnit.MILLISECONDS)
+                .subscribe{ listSql ->
+                    Observable.just(233)
+                            .subscribeOn(Schedulers.io())
+                            .map { it ->
+                                println("map2 $it")
+                                "map2 $it"
+                            }
+                            .subscribe { it ->
+                                println("自动补单$listSql\t$it")
+                            }
+                }
+
+        Thread.sleep(20000)
+    }
+
     @Test
     fun addition_test() {
         var notice1 = Notice()
