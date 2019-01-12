@@ -46,7 +46,7 @@ class BankService : BaseService() {
                     }
 
                     override fun onNext(t: Sms) {
-                        addToNoticeList(t)
+                        addToNoticeList(t,false)
                     }
 
                     override fun onComplete() {
@@ -63,7 +63,7 @@ class BankService : BaseService() {
                 })
     }
 
-    private fun addToNoticeList(t: Sms) {
+    private fun addToNoticeList(t: Sms,reSend:Boolean) {
         val notice = Notice()
         notice.content = t.content
         notice.saveTime = t.time.toLong()
@@ -76,7 +76,7 @@ class BankService : BaseService() {
         notice.type = METHOD_BANK.toInt()
         notice.orderNo = ""
         notice.amount = t.amount
-        notice.mark = ""
+        notice.mark = if (reSend) "补单" else "正常"
         if (notice.amount.toFloatOrNull() != 0f)
             notices.offer(notice)
     }
@@ -112,7 +112,7 @@ class BankService : BaseService() {
 
                                 listSql.forEach {
                                     println("自动补单$it")
-                                    addToNoticeList(it)
+                                    addToNoticeList(it,true)
                                 }
                             }
                 }
