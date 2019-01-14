@@ -156,6 +156,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 hideAli.visibility = View.VISIBLE
                 exitAli.visibility = View.GONE
                 cardViewAli.setStatus(MenuCardView.Status.CLOSE)
+                stopAliService()
             }
             METHOD_WECHAT -> {
                 tvLoginWeChat.visibility = View.VISIBLE
@@ -168,6 +169,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 hideBank.visibility = View.VISIBLE
                 exitBank.visibility = View.GONE
                 cardViewBank.setStatus(MenuCardView.Status.CLOSE)
+                stopBankService()
             }
         }
     }
@@ -371,7 +373,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             Configuration.removeUserInfoByKey(KEY_USER_NAME_ALI)
             Configuration.removeUserInfoByKey(KEY_PASSWORD_ALI)
             presenter.exitLogin(METHOD_ALI)
-            stopAliService()
         }
         exitWechat.setOnClickListener {
             Configuration.removeUserInfoByKey(KEY_USER_NAME_WECHAT)
@@ -382,7 +383,6 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             Configuration.removeUserInfoByKey(KEY_USER_NAME_BANK)
             Configuration.removeUserInfoByKey(KEY_PASSWORD_BANK)
             presenter.exitLogin(METHOD_BANK)
-            stopBankService()
         }
 
         tv_refresh_ali.setOnClickListener { presenter.userInfo(METHOD_ALI) }

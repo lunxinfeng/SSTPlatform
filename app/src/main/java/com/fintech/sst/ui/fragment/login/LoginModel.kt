@@ -27,6 +27,7 @@ class LoginModel: DataSource {
         private const val KEY_MAX_NUM = "maxNum"
         private const val KEY_CODE = "bankAuthCode"
         private const val KEY_REGEX = "regex"
+        private const val KEY_TYPE = "dateFrt"
         private const val KEY_ACCOUNT_ID = "accountId"
     }
 
@@ -121,6 +122,7 @@ class LoginModel: DataSource {
                 Configuration.putUserInfo(KEY_MAX_NUM_BANK, result[KEY_MAX_NUM])
                 Configuration.putUserInfo(KEY_BANK_CODE, result[KEY_CODE])
                 Configuration.putUserInfo(KEY_BANK_REGEX, result[KEY_REGEX])
+                Configuration.putUserInfo(KEY_BANK_TYPE, result[KEY_TYPE])
                 Configuration.putUserInfo(KEY_ACCOUNT_ID_BANK, result[KEY_ACCOUNT_ID])
             }
         }

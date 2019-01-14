@@ -269,7 +269,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                     val type = t.type.toString()
                                     aisleStatus(false,type)
                                     playWarning()
-                                    view.showHintDialog("${if (type == METHOD_ALI) "支付宝" else if (type == METHOD_WECHAT) "微信" else "未知通道"}有重复通知")
+                                    view.showHintDialog("${if (type == METHOD_ALI) "支付宝" else if (type == METHOD_WECHAT) "微信" else if (type == METHOD_BANK) "银行通道" else "未知通道"}有重复通知")
                                 }
 
                                 view.updateNoticeList(t)

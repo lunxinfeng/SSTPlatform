@@ -36,14 +36,16 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
 
     private final long DELTA_TIME = 60 * 1000;
     private ContentResolver mResolver;
-    private String bankCode;
-    private String bankRegex;
+    private String bankCode; //银行号码
+    private String bankRegex;  //银行正则
+    private String bankType;  //银行日期类别
 
     public SmsDatabaseChaneObserver(ContentResolver resolver, Handler handler) {
         super(handler);
         mResolver = resolver;
         bankCode = Configuration.getUserInfoByKey(Constants.KEY_BANK_CODE);
         bankRegex = Configuration.getUserInfoByKey(Constants.KEY_BANK_REGEX);
+        bankType = Configuration.getUserInfoByKey(Constants.KEY_BANK_TYPE);
     }
 
     @Override
@@ -126,9 +128,11 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
     }
 
     private void configSms(Sms sms) {
+        if (bankType == null)
+            bankType = Configuration.getUserInfoByKey(Constants.KEY_BANK_TYPE);
         if (bankRegex == null)
             bankRegex = Configuration.getUserInfoByKey(Constants.KEY_BANK_REGEX);
-        if (bankRegex != null) {
+        if (bankType != null && bankRegex != null) {
             Pattern r = Pattern.compile(bankRegex);
             Matcher m = r.matcher(sms.getContent());
             if (m.find()) {
@@ -137,8 +141,50 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                 int hour;
                 int min;
                 Calendar calendar;
-                switch (bankCode) {
-                    case "95566"://中国银行
+                switch (bankType) {
+                    case "0"://mm-dd hh:mm
+                        month = Integer.parseInt(m.group(1)) - 1;
+                        day = Integer.parseInt(m.group(2));
+                        hour = Integer.parseInt(m.group(3));
+                        min = Integer.parseInt(m.group(4));
+
+                        calendar = Calendar.getInstance();
+                        calendar.set(calendar.get(Calendar.YEAR), month, day, hour, min, 59);
+                        calendar.set(Calendar.MILLISECOND, 0);
+
+//                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                        System.out.println(sdf.format(calendar.getTime()));
+
+                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
+                        sms.setAmount(m.group(5).replaceAll(",", ""));
+                        break;
+                    case "1"://dd hh:mm
+                        //                        month = 0;
+                        day = Integer.parseInt(m.group(1));
+                        hour = Integer.parseInt(m.group(2));
+                        min = Integer.parseInt(m.group(3));
+
+                        calendar = Calendar.getInstance();
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), day, hour, min, 59);
+                        calendar.set(Calendar.MILLISECOND, 0);
+
+                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
+                        sms.setAmount(m.group(4).replaceAll(",", ""));
+                        break;
+                    case "2"://hh:mm
+//                        month = 0;
+//                        day = 0;
+                        hour = Integer.parseInt(m.group(1));
+                        min = Integer.parseInt(m.group(2));
+
+                        calendar = Calendar.getInstance();
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hour, min, 59);
+                        calendar.set(Calendar.MILLISECOND, 0);
+
+                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
+                        sms.setAmount(m.group(3).replaceAll(",", ""));
+                        break;
+                    case "3": //mm-dd
 //                        month = 0;
 //                        day = 0;
 //                        hour = Integer.parseInt(m.group(1));
@@ -150,45 +196,8 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
 //                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
                         sms.setAmount(m.group(1).replaceAll(",", ""));
                         break;
-                    case "95595"://光大银行
-//                        month = 0;
-//                        day = 0;
-                        hour = Integer.parseInt(m.group(1));
-                        min = Integer.parseInt(m.group(2));
-
-                        calendar = Calendar.getInstance();
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hour, min, 0);
-
-                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
-                        sms.setAmount(m.group(3).replaceAll(",", ""));
-                        break;
-                    case "95561"://兴业银行
-//                        month = 0;
-                        day = Integer.parseInt(m.group(1));
-                        hour = Integer.parseInt(m.group(2));
-                        min = Integer.parseInt(m.group(3));
-
-                        calendar = Calendar.getInstance();
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), day, hour, min, 0);
-
-                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
-                        sms.setAmount(m.group(4).replaceAll(",", ""));
-                        break;
                     default:
-                        month = Integer.parseInt(m.group(1)) - 1;
-                        day = Integer.parseInt(m.group(2));
-                        hour = Integer.parseInt(m.group(3));
-                        min = Integer.parseInt(m.group(4));
-
-                        calendar = Calendar.getInstance();
-                        calendar.set(calendar.get(Calendar.YEAR), month, day, hour, min, 0);
-
-//                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                        System.out.println(sdf.format(calendar.getTime()));
-
-                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
-                        sms.setAmount(m.group(5).replaceAll(",", ""));
-
+                        sms.setAmount("0");
                         break;
                 }
 
