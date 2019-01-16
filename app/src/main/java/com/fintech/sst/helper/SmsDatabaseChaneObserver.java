@@ -168,7 +168,14 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), day, hour, min, 59);
                         calendar.set(Calendar.MILLISECOND, 0);
 
-                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
+                        long time;
+                        if (calendar.getTimeInMillis() > System.currentTimeMillis()){
+                            time = calendar.getTimeInMillis() - 24 * 60 * 60 * 1000;
+                        }else{
+                            time = calendar.getTimeInMillis();
+                        }
+
+                        sms.setTime(String.valueOf(time));
                         sms.setAmount(m.group(4).replaceAll(",", ""));
                         break;
                     case "2"://hh:mm
@@ -181,7 +188,13 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hour, min, 59);
                         calendar.set(Calendar.MILLISECOND, 0);
 
-                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
+                        if (calendar.getTimeInMillis() > System.currentTimeMillis()){
+                            time = calendar.getTimeInMillis() - 24 * 60 * 60 * 1000;
+                        }else{
+                            time = calendar.getTimeInMillis();
+                        }
+
+                        sms.setTime(String.valueOf(time));
                         sms.setAmount(m.group(3).replaceAll(",", ""));
                         break;
                     case "3": //mm-dd
