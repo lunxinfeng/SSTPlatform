@@ -12,10 +12,10 @@ import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.RxBus
 import com.fintech.sst.helper.debug
 import com.fintech.sst.net.*
-import com.fintech.sst.xposed.AlipayHook
-import com.fintech.sst.xposed.AlipayHook.BILLRECEIVED_ACTION
-import com.fintech.sst.xposed.Message
-import com.fintech.sst.xposed.PayHelperUtils
+import com.fintech.sst.other.xposed.AlipayHook
+import com.fintech.sst.other.xposed.AlipayHook.BILLRECEIVED_ACTION
+import com.fintech.sst.other.xposed.Message
+import com.fintech.sst.other.xposed.PayHelperUtils
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable

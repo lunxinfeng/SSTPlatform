@@ -302,7 +302,6 @@ public class HeartService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         debug(TAG, "=======onDestroy======");
         if (disposableAli != null)
             disposableAli.dispose();
@@ -310,6 +309,7 @@ public class HeartService extends Service {
             disposableWeChat.dispose();
         if (disposableBank != null)
             disposableBank.dispose();
+        super.onDestroy();
     }
 
     @Override

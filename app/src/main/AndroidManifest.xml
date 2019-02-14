@@ -73,7 +73,7 @@
             android:name="com.fintech.match.pay_2.wxapi.WXEntryActivity"
             android:exported="true"
             android:theme="@style/App_WXEntry" />
-        <activity android:name=".xposed.XposedActivity">
+        <activity android:name="com.fintech.sst.other.xposed.XposedActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->

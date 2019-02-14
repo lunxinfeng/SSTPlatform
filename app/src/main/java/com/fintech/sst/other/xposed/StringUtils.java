@@ -1,4 +1,4 @@
-package com.fintech.sst.xposed;
+package com.fintech.sst.other.xposed;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;

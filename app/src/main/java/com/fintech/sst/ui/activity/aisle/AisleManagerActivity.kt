@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.InputType
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -24,6 +25,9 @@ import com.fintech.sst.net.Constants
 import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.bean.AisleInfo
+import com.fintech.sst.other.netty.NettyConnectionFactory
+import com.fintech.sst.other.netty.SimpleServerMessageHandler
+import com.fintech.sst.other.netty.TcpConnection
 import com.fintech.sst.service.AliService
 import com.fintech.sst.service.BankService
 import com.fintech.sst.service.HeartService
@@ -358,10 +362,29 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 //        startHeartService()
 
         tvLoginAli.setOnClickListener {
-            presenter.aliLogin()
+//            presenter.aliLogin()
+            val ACTION_CONNECT = "com.chuxin.socket.ACTION_CONNECT"
+            val intent = Intent(ACTION_CONNECT)
+            val money = "0.01"
+            val mark = "测试"
+            if (!TextUtils.isEmpty(money)) {
+                intent.putExtra("money", money)
+            }
+            if (!TextUtils.isEmpty(mark)) {
+                intent.putExtra("mark", mark)
+            }
+            sendBroadcast(intent)
         }
         tvLoginAli.setOnLongClickListener { accountLogin(METHOD_ALI) }
-        tvLoginWeChat.setOnClickListener { presenter.wechatLogin() }
+        tvLoginWeChat.setOnClickListener {
+//            presenter.wechatLogin()
+            val tcpConnection = TcpConnection()
+            tcpConnection.setHost("192.168.1.113")
+            tcpConnection.setAuthToken("12345")
+            tcpConnection.setPort(1995)
+            val simpleServerMessageHandler = SimpleServerMessageHandler(context)
+            simpleServerMessageHandler.setNettyConnectionFactory(NettyConnectionFactory(tcpConnection, simpleServerMessageHandler, context))
+        }
         tvLoginWeChat.setOnLongClickListener { accountLogin(METHOD_WECHAT) }
         tvLoginBank.setOnClickListener { accountLogin(METHOD_BANK) }
 
