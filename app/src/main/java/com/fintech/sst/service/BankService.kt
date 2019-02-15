@@ -1,5 +1,10 @@
 package com.fintech.sst.service
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import com.alibaba.fastjson.JSON
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.METHOD_BANK
 import com.fintech.sst.helper.RxBus
@@ -11,16 +16,20 @@ import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.KEY_ACCOUNT_ID_BANK
 import com.fintech.sst.net.SignRequestBody
 import com.fintech.sst.net.bean.Sms
+import com.fintech.sst.other.netty.*
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.apache.commons.lang3.StringUtils
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class BankService : BaseService() {
-    private var checkDisposable:Disposable? = null
+    private var checkDisposable: Disposable? = null
+    private var simpleServerMessageHandler: SimpleServerMessageHandler? = null
+    private val billReceiver = YunShanFuReceiver()
 
     override fun onCreate() {
         super.onCreate()
@@ -29,11 +38,73 @@ class BankService : BaseService() {
                 subscribeSms()
                 SmsObserverUtil.registerSmsDatabaseChangeObserver(this)
                 check()
+
+                //云闪付
+                val intentFilter = IntentFilter()
+                intentFilter.addAction("com.chuxin.socket.ACTION_NOTIFI")
+                registerReceiver(billReceiver, intentFilter)
+                connectNetty()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+    }
 
+    inner class YunShanFuReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action?.contentEquals("com.chuxin.socket.ACTION_NOTIFI") == true) {
+                var message = intent.getStringExtra("message")
+                log(message)
+
+                if (message.startsWith("yunshanfuqrcode:")) {
+                    message = message.substring("yunshanfuqrcode:".length, message.length)
+                    log("XposedData已生成二维码，准备回传平台: $message")
+                    val resObj = JSON.parseObject(message)
+                    val sessionKey = resObj.getString("sessionkey")
+                    log("XposedData生成二维码sessionKey: $sessionKey")
+                    val resPay = getUserPayByKey(sessionKey)
+                    if (resPay != null) {
+                        log("XposedData生成二维码userPayStr: " + JSON.toJSONString(resPay))
+                        simpleServerMessageHandler?.requeyPayHandler(resPay, resObj)
+                    }
+                    val paramsObj = resObj.getJSONObject("params")
+                    log("XposedData生成二维码Image: " + paramsObj?.toJSONString())
+//                    if (customImageDialog != null && paramsObj != null && paramsObj.containsKey("certificate")) {
+//                        customImageDialog.show()
+//                        customImageDialog.setImageViewByUrl(paramsObj.getString("certificate"))
+//                        printMsg("XposedData生成二维码Image成功: " + paramsObj.toJSONString())
+//                    }
+                }
+            }
+        }
+
+        private fun getUserPayByKey(key: String): UserPay? {
+            try {
+                if (StringUtils.isNotBlank(key)) {
+                    val userPayJson = AbSharedUtil.getString(this@BankService, key)
+                    if (StringUtils.isNotBlank(userPayJson)) {
+                        return JSON.parseObject<UserPay>(userPayJson, UserPay::class.java)
+                    }
+                }
+            } catch (e: Exception) {
+                log("XposedData获取缓存信息异常: " + e.message)
+            }
+            return null
+        }
+    }
+
+    private fun connectNetty() {
+        val tcpConnection = TcpConnection()
+        tcpConnection.host = "192.168.1.113"
+        tcpConnection.authToken = "266"
+        tcpConnection.port = 1995
+        simpleServerMessageHandler = SimpleServerMessageHandler(this)
+        simpleServerMessageHandler?.nettyConnectionFactory = NettyConnectionFactory(tcpConnection, simpleServerMessageHandler, this)
+    }
+
+    private fun disConnectNetty() {
+        simpleServerMessageHandler?.nettyConnectionFactory?.closeCurrentChannel()
+        simpleServerMessageHandler?.nettyConnectionFactory?.closeChannel()
     }
 
     private fun subscribeSms() {
@@ -46,7 +117,7 @@ class BankService : BaseService() {
                     }
 
                     override fun onNext(t: Sms) {
-                        addToNoticeList(t,false)
+                        addToNoticeList(t, false)
                     }
 
                     override fun onComplete() {
@@ -63,7 +134,7 @@ class BankService : BaseService() {
                 })
     }
 
-    private fun addToNoticeList(t: Sms,reSend:Boolean) {
+    private fun addToNoticeList(t: Sms, reSend: Boolean) {
         val notice = Notice()
         notice.content = t.content
         notice.saveTime = t.time.toLong()
@@ -81,14 +152,14 @@ class BankService : BaseService() {
             notices.offer(notice)
     }
 
-    private fun check(){
+    private fun check() {
         checkDisposable = Observable.interval(4 * 60 * 1000, TimeUnit.MILLISECONDS)
                 .map {
                     val listSql = SmsObserverUtil.mSmsDBChangeObserver.query50()
                     listSql
                 }
                 .delay(5000, TimeUnit.MILLISECONDS)
-                .subscribe{ listSql ->
+                .subscribe { listSql ->
                     val request = HashMap<String, String>()
                     request["accountId"] = Configuration.getUserInfoByKey(KEY_ACCOUNT_ID_BANK)
                     ApiProducerModule.create(ApiService::class.java).smsList(SignRequestBody(request).sign(METHOD_BANK))
@@ -112,7 +183,7 @@ class BankService : BaseService() {
 
                                 listSql.forEach {
                                     println("自动补单$it")
-                                    addToNoticeList(it,true)
+                                    addToNoticeList(it, true)
                                 }
                             }
                 }
@@ -122,6 +193,9 @@ class BankService : BaseService() {
         checkDisposable?.dispose()
         checkDisposable = null
         SmsObserverUtil.unregisterSmsDatabaseChangeObserver(this)
+
+        disConnectNetty()
+        unregisterReceiver(billReceiver)
         super.onDestroy()
     }
 }

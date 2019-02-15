@@ -37,7 +37,6 @@ public class NettyConnectionFactory implements ChannelFutureListener {
     private Context context;
 
     public NettyConnectionFactory(TcpConnection var1, ServerMessageHandler var2, Context context) {
-        Log.i(NettyConnectionFactory.class.getSimpleName(),"Ready to init the tcpNettyConnectionFactory");
         this.connection = var1;
         this.serverMessageHandler = var2;
         this.context = context;
@@ -49,17 +48,14 @@ public class NettyConnectionFactory implements ChannelFutureListener {
             this.channel.close();
             this.channel.disconnect();
         }
-        Log.i(NettyConnectionFactory.class.getSimpleName(),"Start to init the tcpNettyConnectionFactory");
         try {
             this.bootstrap.connect(this.connection.getHost(), this.connection.getPort()).sync().addListener(this);
-            Log.i(NettyConnectionFactory.class.getSimpleName(),"Started the tcpNettyConnectionFactory");
         } catch (InterruptedException var2) {
             var2.printStackTrace();
         }
     }
 
     private void init() {
-        Log.i(NettyConnectionFactory.class.getSimpleName(),"Start to init the tcpNettyConnectionFactory");
         this.bootstrap = new Bootstrap();
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000);
         this.eventLoopGroup = new NioEventLoopGroup();
@@ -129,6 +125,7 @@ public class NettyConnectionFactory implements ChannelFutureListener {
     public void operationComplete(ChannelFuture var1) throws Exception {
         if (var1.isSuccess()) {
             this.channel = var1.channel();
+            System.out.println("云闪付:11");
             this.channel.writeAndFlush(Unpooled.copiedBuffer(MessageConvert.convertAuthMsg(this.connection.getAuthToken())));
             this.alreadyRetry = 0;
             this.serverMessageHandler.afterConnectionEstablished(ConnectionStatus.CONNECTION_SUCCESS);

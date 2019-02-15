@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -740,11 +739,11 @@ public class Main implements IXposedHookLoadPackage {
                 intent.putExtra("message", message);
                 mlog(message);
                 if (app == null) {
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                     if (getContext() != null)
                         getContext().sendBroadcast(intent);
                 } else {
-                    Toast.makeText(app, message, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(app, message, Toast.LENGTH_SHORT).show();
                     app.sendBroadcast(intent);
                 }
             } else if (msg.what == 2) {

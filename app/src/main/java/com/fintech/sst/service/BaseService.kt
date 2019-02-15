@@ -6,6 +6,7 @@ import android.os.IBinder
 import android.util.Log
 import com.fintech.sst.data.db.DB
 import com.fintech.sst.data.db.Notice
+import com.fintech.sst.helper.DEBUG
 import com.fintech.sst.helper.RxBus
 import com.fintech.sst.helper.debug
 import com.fintech.sst.net.*
@@ -96,5 +97,10 @@ abstract class BaseService : Service() {
                         db()
                     }
                 })
+    }
+
+    fun log(msg:String){
+        if (DEBUG)
+            println("${javaClass.simpleName}：$msg")
     }
 }

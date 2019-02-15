@@ -29,6 +29,7 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
         this.serverMessageHandler = var1;
         this.context = context;
     }
+
     private void printMsg(String mesg){
 //        if(BuildConfig.DEBUG){
             System.out.println("云闪付netty：" + mesg);
@@ -38,9 +39,10 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
         try{
             if(paramObject != null && org.apache.commons.lang3.StringUtils.isNotBlank(paramObject.toString())){
                 if(!isConnect){
-                    printMsg("接收到请求XposedData: "+paramObject.toString());
+//                    printMsg("接收到请求XposedData: "+paramObject.toString());
                 }
                 isConnect = true;
+                printMsg("接收到请求XposedData: "+paramObject.toString());
                 TcpMsg tcpMsg = JSON.parseObject(paramObject.toString(),TcpMsg.class);
                 if(tcpMsg != null){
                     TcpMsgHeader tcpMsgHeader = tcpMsg.getMsgHeader();
