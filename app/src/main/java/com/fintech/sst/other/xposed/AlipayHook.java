@@ -401,13 +401,13 @@ public class AlipayHook {
                     XposedBridge.log("mMark>>>>>:"+mMark);
                     System.out.println("红包码：" + mMark + "\t" + mMoney + "\t" + mNo);
 
-                    Intent broadCastIntent = new Intent();
-                    broadCastIntent.putExtra("bill_no", mNo);
-                    broadCastIntent.putExtra("bill_money", mMoney);
-                    broadCastIntent.putExtra("bill_mark", mMark);
-                    broadCastIntent.putExtra("bill_type", "2001");
-                    broadCastIntent.setAction(BILLRECEIVED_ACTION);
-                    context.sendBroadcast(broadCastIntent);
+//                    Intent broadCastIntent = new Intent();
+//                    broadCastIntent.putExtra("bill_no", mNo);
+//                    broadCastIntent.putExtra("bill_money", mMoney);
+//                    broadCastIntent.putExtra("bill_mark", mMark);
+//                    broadCastIntent.putExtra("bill_type", "2001");
+//                    broadCastIntent.setAction(BILLRECEIVED_ACTION);
+//                    context.sendBroadcast(broadCastIntent);
                 }
             });
 

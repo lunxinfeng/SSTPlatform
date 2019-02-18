@@ -641,209 +641,210 @@
                 </FrameLayout>
             </com.fintech.sst.ui.widget.MenuCardView>
 
-            <com.fintech.sst.ui.widget.MenuCardView
-                android:id="@+id/cardViewYun"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:elevation="5dp"
-                app:cardCornerRadius="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardViewBank"
-                app:layout_goneMarginEnd="24dp">
+            <!--<com.fintech.sst.ui.widget.MenuCardView-->
+                <!--android:id="@+id/cardViewYun"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="24dp"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:layout_marginEnd="24dp"-->
+                <!--android:elevation="5dp"-->
+                <!--android:visibility="gone"-->
+                <!--app:cardCornerRadius="5dp"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/cardViewBank"-->
+                <!--app:layout_goneMarginEnd="24dp">-->
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:background="#ff0000"
-                    android:orientation="vertical">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_gravity="end"-->
+                    <!--android:background="#ff0000"-->
+                    <!--android:orientation="vertical">-->
 
-                    <TextView
-                        android:id="@+id/hideYun"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#fbf155"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:text="@string/hide"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/hideYun"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="0dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="#fbf155"-->
+                        <!--android:gravity="center"-->
+                        <!--android:padding="16dp"-->
+                        <!--android:text="@string/hide"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="16sp" />-->
 
-                    <TextView
-                        android:id="@+id/exitYun"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="#00bc0c"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:text="@string/exit"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
-                </LinearLayout>
+                    <!--<TextView-->
+                        <!--android:id="@+id/exitYun"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="0dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="#00bc0c"-->
+                        <!--android:gravity="center"-->
+                        <!--android:padding="16dp"-->
+                        <!--android:text="@string/exit"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="16sp"-->
+                        <!--android:visibility="gone" />-->
+                <!--</LinearLayout>-->
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <!--<FrameLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
 
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/white">
+                    <!--<android.support.constraint.ConstraintLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:background="@color/white">-->
 
 
-                        <EditText
-                            android:id="@+id/et_aisle_Yun"
-                            android:layout_width="0dp"
-                            android:layout_height="46dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:ems="10"
-                            android:enabled="false"
-                            android:focusable="false"
-                            android:inputType="textPersonName"
-                            app:layout_constraintBaseline_toBaselineOf="@+id/textView2222"
-                            app:layout_constraintEnd_toStartOf="@+id/switch_aisle_Yun"
-                            app:layout_constraintStart_toEndOf="@+id/textView2222" />
+                        <!--<EditText-->
+                            <!--android:id="@+id/et_aisle_Yun"-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="46dp"-->
+                            <!--android:layout_marginStart="8dp"-->
+                            <!--android:layout_marginEnd="8dp"-->
+                            <!--android:ems="10"-->
+                            <!--android:enabled="false"-->
+                            <!--android:focusable="false"-->
+                            <!--android:inputType="textPersonName"-->
+                            <!--app:layout_constraintBaseline_toBaselineOf="@+id/textView2222"-->
+                            <!--app:layout_constraintEnd_toStartOf="@+id/switch_aisle_Yun"-->
+                            <!--app:layout_constraintStart_toEndOf="@+id/textView2222" />-->
 
-                        <TextView
-                            android:id="@+id/textView6666"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:drawableLeft="@mipmap/icon_success_rate"
-                            android:drawablePadding="10dp"
-                            android:text="@string/success_rate"
-                            android:textColor="#515151"
-                            android:textSize="14sp"
-                            app:layout_constraintStart_toStartOf="@+id/textView3333"
-                            app:layout_constraintTop_toBottomOf="@+id/textView10000" />
+                        <!--<TextView-->
+                            <!--android:id="@+id/textView6666"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="16dp"-->
+                            <!--android:drawableLeft="@mipmap/icon_success_rate"-->
+                            <!--android:drawablePadding="10dp"-->
+                            <!--android:text="@string/success_rate"-->
+                            <!--android:textColor="#515151"-->
+                            <!--android:textSize="14sp"-->
+                            <!--app:layout_constraintStart_toStartOf="@+id/textView3333"-->
+                            <!--app:layout_constraintTop_toBottomOf="@+id/textView10000" />-->
 
-                        <TextView
-                            android:id="@+id/textView2222"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="16dp"
-                            android:drawableLeft="@mipmap/icon_aisle_manger"
-                            android:drawablePadding="10dp"
-                            android:text="@string/aisle"
-                            android:textColor="#515151"
-                            android:textSize="14sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                        <!--<TextView-->
+                            <!--android:id="@+id/textView2222"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginStart="24dp"-->
+                            <!--android:layout_marginTop="16dp"-->
+                            <!--android:drawableLeft="@mipmap/icon_aisle_manger"-->
+                            <!--android:drawablePadding="10dp"-->
+                            <!--android:text="@string/aisle"-->
+                            <!--android:textColor="#515151"-->
+                            <!--android:textSize="14sp"-->
+                            <!--app:layout_constraintStart_toStartOf="parent"-->
+                            <!--app:layout_constraintTop_toTopOf="parent" />-->
 
-                        <TextView
-                            android:id="@+id/textView3333"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:drawableLeft="@mipmap/icon_amount"
-                            android:drawablePadding="10dp"
-                            android:text="@string/money_pay"
-                            android:textColor="#515151"
-                            android:textSize="14sp"
-                            app:layout_constraintStart_toStartOf="@+id/textView2222"
-                            app:layout_constraintTop_toBottomOf="@+id/textView2222" />
+                        <!--<TextView-->
+                            <!--android:id="@+id/textView3333"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="16dp"-->
+                            <!--android:drawableLeft="@mipmap/icon_amount"-->
+                            <!--android:drawablePadding="10dp"-->
+                            <!--android:text="@string/money_pay"-->
+                            <!--android:textColor="#515151"-->
+                            <!--android:textSize="14sp"-->
+                            <!--app:layout_constraintStart_toStartOf="@+id/textView2222"-->
+                            <!--app:layout_constraintTop_toBottomOf="@+id/textView2222" />-->
 
-                        <EditText
-                            android:id="@+id/et_successRate_Yun"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:ems="10"
-                            android:enabled="false"
-                            android:focusable="false"
-                            android:inputType="textPersonName"
-                            app:layout_constraintBaseline_toBaselineOf="@+id/textView6666"
-                            app:layout_constraintEnd_toEndOf="@+id/et_aisle_Yun"
-                            app:layout_constraintStart_toEndOf="@+id/textView6666" />
+                        <!--<EditText-->
+                            <!--android:id="@+id/et_successRate_Yun"-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginStart="8dp"-->
+                            <!--android:ems="10"-->
+                            <!--android:enabled="false"-->
+                            <!--android:focusable="false"-->
+                            <!--android:inputType="textPersonName"-->
+                            <!--app:layout_constraintBaseline_toBaselineOf="@+id/textView6666"-->
+                            <!--app:layout_constraintEnd_toEndOf="@+id/et_aisle_Yun"-->
+                            <!--app:layout_constraintStart_toEndOf="@+id/textView6666" />-->
 
-                        <TextView
-                            android:id="@+id/tv_refresh_Yun"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@mipmap/refresh"
-                            android:textColor="@color/colorPrimaryDark"
-                            app:layout_constraintEnd_toEndOf="@+id/switch_aisle_Yun"
-                            app:layout_constraintTop_toTopOf="@+id/textView6666" />
+                        <!--<TextView-->
+                            <!--android:id="@+id/tv_refresh_Yun"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:drawableStart="@mipmap/refresh"-->
+                            <!--android:textColor="@color/colorPrimaryDark"-->
+                            <!--app:layout_constraintEnd_toEndOf="@+id/switch_aisle_Yun"-->
+                            <!--app:layout_constraintTop_toTopOf="@+id/textView6666" />-->
 
-                        <Switch
-                            android:id="@+id/switch_aisle_Yun"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="24dp"
-                            android:background="@drawable/toggle_aisle_manager_wechat"
-                            android:checked="false"
-                            android:thumb="@null"
-                            android:track="@null"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/textView2222" />
+                        <!--<Switch-->
+                            <!--android:id="@+id/switch_aisle_Yun"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginEnd="24dp"-->
+                            <!--android:background="@drawable/toggle_aisle_manager_wechat"-->
+                            <!--android:checked="false"-->
+                            <!--android:thumb="@null"-->
+                            <!--android:track="@null"-->
+                            <!--app:layout_constraintEnd_toEndOf="parent"-->
+                            <!--app:layout_constraintTop_toTopOf="@+id/textView2222" />-->
 
-                        <EditText
-                            android:id="@+id/et_money_Yun"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:ems="10"
-                            android:enabled="false"
-                            android:focusable="false"
-                            android:inputType="textPersonName"
-                            app:layout_constraintBaseline_toBaselineOf="@+id/textView3333"
-                            app:layout_constraintEnd_toEndOf="@+id/et_aisle_Yun"
-                            app:layout_constraintStart_toEndOf="@+id/textView3333" />
+                        <!--<EditText-->
+                            <!--android:id="@+id/et_money_Yun"-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginStart="8dp"-->
+                            <!--android:ems="10"-->
+                            <!--android:enabled="false"-->
+                            <!--android:focusable="false"-->
+                            <!--android:inputType="textPersonName"-->
+                            <!--app:layout_constraintBaseline_toBaselineOf="@+id/textView3333"-->
+                            <!--app:layout_constraintEnd_toEndOf="@+id/et_aisle_Yun"-->
+                            <!--app:layout_constraintStart_toEndOf="@+id/textView3333" />-->
 
-                        <TextView
-                            android:id="@+id/textView10000"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:drawableStart="@mipmap/icon_amount"
-                            android:drawablePadding="10dp"
-                            android:text="@string/money_notice"
-                            android:textColor="#515151"
-                            android:textSize="14sp"
-                            app:layout_constraintStart_toStartOf="@+id/textView3333"
-                            app:layout_constraintTop_toBottomOf="@+id/textView3333" />
+                        <!--<TextView-->
+                            <!--android:id="@+id/textView10000"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="16dp"-->
+                            <!--android:drawableStart="@mipmap/icon_amount"-->
+                            <!--android:drawablePadding="10dp"-->
+                            <!--android:text="@string/money_notice"-->
+                            <!--android:textColor="#515151"-->
+                            <!--android:textSize="14sp"-->
+                            <!--app:layout_constraintStart_toStartOf="@+id/textView3333"-->
+                            <!--app:layout_constraintTop_toBottomOf="@+id/textView3333" />-->
 
-                        <EditText
-                            android:id="@+id/et_money_notice_Yun"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:ems="10"
-                            android:enabled="false"
-                            android:focusable="false"
-                            android:inputType="number"
-                            android:text="0.0"
-                            android:textColor="@color/red"
-                            android:textStyle="bold"
-                            app:layout_constraintBaseline_toBaselineOf="@+id/textView10000"
-                            app:layout_constraintEnd_toEndOf="@+id/et_money_Yun"
-                            app:layout_constraintStart_toEndOf="@+id/textView10000" />
-                    </android.support.constraint.ConstraintLayout>
+                        <!--<EditText-->
+                            <!--android:id="@+id/et_money_notice_Yun"-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginStart="8dp"-->
+                            <!--android:ems="10"-->
+                            <!--android:enabled="false"-->
+                            <!--android:focusable="false"-->
+                            <!--android:inputType="number"-->
+                            <!--android:text="0.0"-->
+                            <!--android:textColor="@color/red"-->
+                            <!--android:textStyle="bold"-->
+                            <!--app:layout_constraintBaseline_toBaselineOf="@+id/textView10000"-->
+                            <!--app:layout_constraintEnd_toEndOf="@+id/et_money_Yun"-->
+                            <!--app:layout_constraintStart_toEndOf="@+id/textView10000" />-->
+                    <!--</android.support.constraint.ConstraintLayout>-->
 
-                    <TextView
-                        android:id="@+id/tvLoginYun"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/bank_bg"
-                        android:drawableStart="@mipmap/logo_bank"
-                        android:drawablePadding="32dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="50dp"
-                        android:text="@string/yun_login"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tvLoginYun"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:background="@color/bank_bg"-->
+                        <!--android:drawableStart="@mipmap/logo_bank"-->
+                        <!--android:drawablePadding="32dp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:paddingStart="50dp"-->
+                        <!--android:text="@string/yun_login"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="20sp" />-->
 
-                </FrameLayout>
-            </com.fintech.sst.ui.widget.MenuCardView>
+                <!--</FrameLayout>-->
+            <!--</com.fintech.sst.ui.widget.MenuCardView>-->
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -859,7 +860,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardViewYun"
+                app:layout_constraintTop_toBottomOf="@+id/cardViewBank"
                 app:layout_goneMarginTop="16dp" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

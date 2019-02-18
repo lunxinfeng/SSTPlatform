@@ -1,6 +1,7 @@
 package com.fintech.sst.other.xposed;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
@@ -20,6 +21,8 @@ import java.util.HashMap;
 
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+
+import static com.fintech.sst.other.xposed.AlipayHook.BILLRECEIVED_ACTION;
 
 public class ReceiveCrowdTask extends AsyncTask {
     ClassLoader classLoader;
@@ -121,6 +124,17 @@ public class ReceiveCrowdTask extends AsyncTask {
             Object giftCrowdInfo = XposedHelpers.getObjectField(re, "giftCrowdInfo");
             String remark = (String) XposedHelpers.getObjectField(giftCrowdInfo, "remark");
             XposedBridge.log("re:" + JSON.toJSONString(re));
+
+
+            Intent broadCastIntent = new Intent();
+            broadCastIntent.putExtra("bill_no", crowdNo);
+            broadCastIntent.putExtra("bill_money", receiveAmount);
+            broadCastIntent.putExtra("bill_mark", remark);
+            broadCastIntent.putExtra("bill_type", "2001");
+            broadCastIntent.setAction(BILLRECEIVED_ACTION);
+            context.sendBroadcast(broadCastIntent);
+
+
 
             Class fa = classLoader.loadClass("com.alipay.mobile.redenvelope.proguard.f.a");
             Object faObj = XposedHelpers.newInstance(fa);
