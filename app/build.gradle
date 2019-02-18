@@ -39,6 +39,7 @@ android {
         }
     }
     kapt { generateStubs = true }
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {

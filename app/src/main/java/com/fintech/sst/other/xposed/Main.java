@@ -53,6 +53,9 @@ public class Main implements IXposedHookLoadPackage {
     public static boolean QQ_WALLET_ISHOOK = false;
 
 
+    public static String mSignkey = "";//密钥
+    public static String mNotifyurl = "";//地址
+
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         XposedBridge.log("lxf handleLoadPackage: " + lpparam.packageName);
 
@@ -101,8 +104,11 @@ public class Main implements IXposedHookLoadPackage {
                             StartAlipayReceived startAlipay = new StartAlipayReceived();
                             IntentFilter intentFilter = new IntentFilter();
                             intentFilter.addAction("com.payhelper.alipay.start");
+
+                            intentFilter.addAction("com.payhelper.alipay.setData");
+
                             context.registerReceiver(startAlipay, intentFilter);
-                            XposedBridge.log("handleLoadPackage: " + packageName);
+                            XposedBridge.log("支付宝Hook成功，当前支付宝版本:" + PayHelperUtils.getVerName(context));
                             PayHelperUtils.sendmsg(context, "支付宝Hook成功，当前支付宝版本:" + PayHelperUtils.getVerName(context));
                             new AlipayHook().hook(appClassLoader, context);
                         }
@@ -175,11 +181,20 @@ public class Main implements IXposedHookLoadPackage {
         @Override
         public void onReceive(Context context, Intent intent) {
             XposedBridge.log("启动支付宝Activity");
-            Intent intent2 = new Intent(context, XposedHelpers.findClass("com.alipay.mobile.payee.ui.PayeeQRSetMoneyActivity", context.getClassLoader()));
-            intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent2.putExtra("mark", intent.getStringExtra("mark"));
-            intent2.putExtra("money", intent.getStringExtra("money"));
-            context.startActivity(intent2);
+
+            if (intent.getAction().equals("com.payhelper.alipay.start")) {
+                Intent intent2 = new Intent(context, XposedHelpers.findClass("com.alipay.mobile.payee.ui.PayeeQRSetMoneyActivity", context.getClassLoader()));
+                intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent2.putExtra("mark", intent.getStringExtra("mark"));
+                intent2.putExtra("money", intent.getStringExtra("money"));
+                context.startActivity(intent2);
+            } else {
+                String sign = intent.getStringExtra("sign");
+                String notifyurl = intent.getStringExtra("notifyurl");
+                mSignkey = sign;
+                mNotifyurl = notifyurl;
+                XposedBridge.log(mSignkey+"------llllll==="+mNotifyurl);
+            }
         }
     }
 
