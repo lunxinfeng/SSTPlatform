@@ -11,8 +11,8 @@ public class Constants {
             = MediaType.parse("application/json; charset=utf-8");
 
 //    public static final String baseUrl = "https://api.pay.hccf8.com";
-    public static String baseUrl = "http://api.3721sz.com";
-//    public static String baseUrl = "http://api.trueinfo.cn";
+//    public static String baseUrl = "http://api.3721sz.com";
+    public static String baseUrl = "http://api.trueinfo.cn";
 
     public static final int RC_PERMISSION = 110;
     public static final int ALL_PERMISSION = 122;
@@ -66,5 +66,17 @@ public class Constants {
     public static final String KEY_BANK_REGEX = "bankRegex";
     public static final String KEY_BANK_TYPE = "bankType";
     public static final String KEY_ACCOUNT_ID_BANK = "accountIdBank";
+
+
+    public static final String KEY_MCH_ID_YUN = "mchIdYUN";
+    public static final String KEY_USER_NAME_YUN = "userNameYUN";
+    public static final String KEY_PASSWORD_YUN = "passwordYUN";
+    public static final String KEY_ACCOUNT_YUN = "accountYUN";
+    public static final String KEY_ALLOW_LOAD_YUN = "allowLoadYUN";
+    public static final String KEY_BEGIN_NUM_YUN = "beginNumYUN";
+    public static final String KEY_END_NUM_YUN = "endNumYUN";
+    public static final String KEY_MAX_NUM_YUN = "maxNumYUN";
+    public static final String KEY_LOGIN_TOKEN_YUN = "loginTokenYUN";
+    public static final String KEY_ACCOUNT_ID_YUN = "accountIdYUN";
 
 }

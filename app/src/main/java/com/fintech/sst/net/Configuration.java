@@ -11,13 +11,16 @@ import static com.fintech.sst.net.Constants.KEY_ADDRESS;
 import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_ALI;
 import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_BANK;
 import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_WECHAT;
+import static com.fintech.sst.net.Constants.KEY_LOGIN_TOKEN_YUN;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_BANK;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_YUN;
 import static com.fintech.sst.net.Constants.KEY_SP_;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_BANK;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_YUN;
 
 
 /**
@@ -67,6 +70,11 @@ public class Configuration {
                 key_sp_.userName = sp.getString(KEY_USER_NAME_BANK, "");
                 key_sp_.loginToken = sp.getString(KEY_LOGIN_TOKEN_BANK, "");
                 break;
+            case ExpansionKt.METHOD_YUN:
+                key_sp_.mchId = sp.getString(KEY_MCH_ID_YUN, "");
+                key_sp_.userName = sp.getString(KEY_USER_NAME_YUN, "");
+                key_sp_.loginToken = sp.getString(KEY_LOGIN_TOKEN_YUN, "");
+                break;
         }
 
         return key_sp_;
@@ -92,6 +100,10 @@ public class Configuration {
                 edit.remove(KEY_MCH_ID_BANK);
                 edit.remove(KEY_LOGIN_TOKEN_BANK);
                 break;
+            case ExpansionKt.METHOD_YUN:
+                edit.remove(KEY_MCH_ID_YUN);
+                edit.remove(KEY_LOGIN_TOKEN_YUN);
+                break;
         }
         return edit.commit();
     }
@@ -104,6 +116,8 @@ public class Configuration {
                 return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_WECHAT));
             case ExpansionKt.METHOD_BANK:
                 return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_BANK));
+            case ExpansionKt.METHOD_YUN:
+                return TextUtils.isEmpty(Configuration.getUserInfoByKey(KEY_LOGIN_TOKEN_YUN));
         }
         return false;
     }

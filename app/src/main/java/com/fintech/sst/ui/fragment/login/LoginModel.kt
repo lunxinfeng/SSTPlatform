@@ -5,6 +5,7 @@ import com.fintech.sst.data.DataSource
 import com.fintech.sst.helper.METHOD_ALI
 import com.fintech.sst.helper.METHOD_BANK
 import com.fintech.sst.helper.METHOD_WECHAT
+import com.fintech.sst.helper.METHOD_YUN
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ResultEntity
@@ -124,6 +125,20 @@ class LoginModel: DataSource {
                 Configuration.putUserInfo(KEY_BANK_REGEX, result[KEY_REGEX])
                 Configuration.putUserInfo(KEY_BANK_TYPE, result[KEY_TYPE])
                 Configuration.putUserInfo(KEY_ACCOUNT_ID_BANK, result[KEY_ACCOUNT_ID])
+            }
+            METHOD_YUN -> {
+                Configuration.putUserInfo(KEY_MCH_ID_YUN, result[KEY_MCH_ID])
+                Configuration.putUserInfo(KEY_USER_NAME_YUN, result[KEY_USER_NAME])
+                if (password != "")
+                    Configuration.putUserInfo(KEY_PASSWORD_YUN, password)
+                Configuration.putUserInfo(KEY_LOGIN_TOKEN_YUN, result[KEY_LOGIN_TOKEN])
+
+                Configuration.putUserInfo(KEY_ACCOUNT_YUN, result[KEY_ACCOUNT])
+                Configuration.putUserInfo(KEY_ALLOW_LOAD_YUN, result[KEY_ALLOW_LOAD])
+                Configuration.putUserInfo(KEY_BEGIN_NUM_YUN, result[KEY_BEGIN_NUM])
+                Configuration.putUserInfo(KEY_END_NUM_YUN, result[KEY_END_NUM])
+                Configuration.putUserInfo(KEY_MAX_NUM_YUN, result[KEY_MAX_NUM])
+                Configuration.putUserInfo(KEY_ACCOUNT_ID_YUN, result[KEY_ACCOUNT_ID])
             }
         }
     }

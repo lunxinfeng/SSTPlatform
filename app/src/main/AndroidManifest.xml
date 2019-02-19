@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     <uses-permission android:name="android.permission.READ_SMS" />
 
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -73,7 +72,7 @@
             android:name="com.fintech.match.pay_2.wxapi.WXEntryActivity"
             android:exported="true"
             android:theme="@style/App_WXEntry" />
-        <activity android:name="com.fintech.sst.other.xposed.XposedActivity">
+        <activity android:name=".other.xposed.XposedActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -90,7 +89,11 @@
         <service
             android:name=".service.BankService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+        <service
+            android:name=".service.YunService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

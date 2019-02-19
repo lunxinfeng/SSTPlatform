@@ -24,6 +24,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark_bank</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="App_Yun" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary_yun</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_yun</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <style name="dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>

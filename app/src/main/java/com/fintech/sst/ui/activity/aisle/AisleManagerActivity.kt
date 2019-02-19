@@ -27,6 +27,7 @@ import com.fintech.sst.net.bean.AisleInfo
 import com.fintech.sst.service.AliService
 import com.fintech.sst.service.BankService
 import com.fintech.sst.service.HeartService
+import com.fintech.sst.service.YunService
 import com.fintech.sst.ui.activity.config.ConfigActivity
 import com.fintech.sst.ui.activity.login.LoginActivity
 import com.fintech.sst.ui.activity.notice.NoticeListActivity
@@ -88,6 +89,20 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                     if (!isServiceRunning(this@AisleManagerActivity,BankService::class.java.name)){
                         debug(TAG,"短信监听服务没有启动，开始启动")
                         startBankService()
+                    }
+                }
+            }
+            METHOD_YUN -> {
+                et_aisle_Yun.setText(info?.account ?: "")
+                et_money_Yun.setText(info?.realAmount.toString())
+                et_money_notice_Yun.setText(info?.tradeNoticeLogAmount.toString())
+                et_successRate_Yun.setText("${(info?.ok?.toString()?.toFloatOrNull()
+                        ?: 0f) * 100}%")
+                switch_aisle_Yun.isChecked = info?.enable == "1"
+                if (switch_aisle_Yun.isChecked){
+                    if (!isServiceRunning(this@AisleManagerActivity,YunService::class.java.name)){
+                        debug(TAG,"云闪付监听服务没有启动，开始启动")
+                        startYunService()
                     }
                 }
             }
@@ -171,18 +186,26 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 cardViewBank.setStatus(MenuCardView.Status.CLOSE)
                 stopBankService()
             }
+            METHOD_YUN -> {
+                tvLoginYun.visibility = View.VISIBLE
+                hideYun.visibility = View.VISIBLE
+                exitYun.visibility = View.GONE
+                cardViewYun.setStatus(MenuCardView.Status.CLOSE)
+                stopYunService()
+            }
         }
     }
 
     override fun checkOrderType() {
         MaterialDialog(this)
                 .listItems(
-                        items = listOf("支付宝通道", "微信通道", "银行通道"),
+                        items = listOf("支付宝通道", "微信通道", "银行通道", "云闪付通道"),
                         selection = { dialog, index, _ ->
                             when (index) {
                                 0 -> toOrderList(METHOD_ALI)
                                 1 -> toOrderList(METHOD_WECHAT)
                                 2 -> toOrderList(METHOD_BANK)
+                                3 -> toOrderList(METHOD_YUN)
                             }
                             dialog.dismiss()
                         }
@@ -383,10 +406,12 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         }
         tvLoginWeChat.setOnLongClickListener { accountLogin(METHOD_WECHAT) }
         tvLoginBank.setOnClickListener { accountLogin(METHOD_BANK) }
+        tvLoginYun.setOnClickListener { accountLogin(METHOD_YUN) }
 
         hideAli.setOnClickListener { viewHideOrShow(cardViewAli, false) }
         hideWechat.setOnClickListener { viewHideOrShow(cardViewWechat, false) }
         hideBank.setOnClickListener { viewHideOrShow(cardViewBank, false) }
+        hideYun.setOnClickListener { viewHideOrShow(cardViewYun, false) }
 
         exitAli.setOnClickListener {
             Configuration.removeUserInfoByKey(KEY_USER_NAME_ALI)
@@ -403,10 +428,16 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             Configuration.removeUserInfoByKey(KEY_PASSWORD_BANK)
             presenter.exitLogin(METHOD_BANK)
         }
+        exitYun.setOnClickListener {
+            Configuration.removeUserInfoByKey(KEY_USER_NAME_YUN)
+            Configuration.removeUserInfoByKey(KEY_PASSWORD_YUN)
+            presenter.exitLogin(METHOD_YUN)
+        }
 
         tv_refresh_ali.setOnClickListener { presenter.userInfo(METHOD_ALI) }
         tv_refresh_wechat.setOnClickListener { presenter.userInfo(METHOD_WECHAT) }
         tv_refresh_Bank.setOnClickListener { presenter.userInfo(METHOD_BANK) }
+        tv_refresh_Yun.setOnClickListener { presenter.userInfo(METHOD_YUN) }
 
         switch_aisle_ali.apply {
             setOnCheckedChangeListener { view, isChecked ->
@@ -426,6 +457,12 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                     presenter.aisleStatus(isChecked, METHOD_BANK)
             }
         }
+        switch_aisle_Yun.apply {
+            setOnCheckedChangeListener { view, isChecked ->
+                if (view.isPressed)
+                    presenter.aisleStatus(isChecked, METHOD_YUN)
+            }
+        }
 
         textView22.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_ali.isChecked)
@@ -440,6 +477,11 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         textView222.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_Bank.isChecked)
                 presenter.toAisleManager(METHOD_BANK)
+            false
+        }
+        textView2222.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_Yun.isChecked)
+                presenter.toAisleManager(METHOD_YUN)
             false
         }
 
@@ -489,6 +531,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 viewHideOrShow(cardViewAli, true)
                 viewHideOrShow(cardViewWechat, true)
                 viewHideOrShow(cardViewBank, true)
+                viewHideOrShow(cardViewYun, true)
             }
             R.id.action_order_manager -> {
                 presenter.toOrder()
@@ -593,6 +636,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         startService(Intent(this, BankService::class.java))
     }
 
+    private fun stopYunService() {
+        stopService(Intent(this, YunService::class.java))
+    }
+
+    private fun startYunService() {
+        startService(Intent(this, YunService::class.java))
+    }
+
     @AfterPermissionGranted(Constants.ALL_PERMISSION)
     fun requestAllPermission() {
         if (!EasyPermissions.hasPermissions(this, *Constants.PERMISSIONS_GROUP)) {
@@ -644,6 +695,11 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 tvLoginBank.visibility = View.GONE
                 hideBank.visibility = View.GONE
                 exitBank.visibility = View.VISIBLE
+            }
+            METHOD_YUN -> {
+                tvLoginYun.visibility = View.GONE
+                hideYun.visibility = View.GONE
+                exitYun.visibility = View.VISIBLE
             }
         }
         startHeartService()
