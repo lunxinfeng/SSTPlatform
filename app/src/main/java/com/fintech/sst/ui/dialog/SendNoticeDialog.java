@@ -55,8 +55,11 @@ public class SendNoticeDialog extends Dialog {
 
         final RadioButton rb_ali = findViewById(R.id.rb_ali);
         final RadioButton rb_wechat = findViewById(R.id.rb_wechat);
+        final RadioButton rb_bank = findViewById(R.id.rb_bank);
+        final RadioButton rb_yun = findViewById(R.id.rb_yun);
         final EditText etAccount = findViewById(R.id.et_amount);
         final EditText etTime = findViewById(R.id.et_time);
+        final EditText etMark = findViewById(R.id.et_mark);
         final Button btnTime = findViewById(R.id.btnTime);
         final Button btnY = findViewById(R.id.btnY);
         Button btnN = findViewById(R.id.btnN);
@@ -86,6 +89,35 @@ public class SendNoticeDialog extends Dialog {
                     if (TextUtils.isEmpty(etAccount.getText())) return;
                     notice.amount = getAmount(etAccount.getText().toString());
                     notice.content = "微信支付: 微信支付收款"+ notice.amount +"元";
+                    notice.mark = etMark.getText().toString();
+                }
+            }
+        });
+        rb_bank.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    notice.title = "银行支付";
+                    notice.packageName = "";
+                    notice.type = 3001;
+                    if (TextUtils.isEmpty(etAccount.getText())) return;
+                    notice.amount = getAmount(etAccount.getText().toString());
+                    notice.content = "银行收款"+ notice.amount +"元";
+                    notice.mark = etMark.getText().toString();
+                }
+            }
+        });
+        rb_yun.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    notice.title = "云闪付支付";
+                    notice.packageName = "com.unionpay";
+                    notice.type = 4001;
+                    if (TextUtils.isEmpty(etAccount.getText())) return;
+                    notice.amount = getAmount(etAccount.getText().toString());
+                    notice.content = "云闪付收款"+ notice.amount +"元";
+                    notice.mark = etMark.getText().toString();
                 }
             }
         });
@@ -104,6 +136,24 @@ public class SendNoticeDialog extends Dialog {
 
                 if (rb_wechat.isChecked())
                     notice.content = "微信支付: 微信支付收款"+ notice.amount +"元";
+
+                btnY.setEnabled(!TextUtils.isEmpty(s));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        etMark.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                notice.mark = s.toString();
 
                 btnY.setEnabled(!TextUtils.isEmpty(s));
             }

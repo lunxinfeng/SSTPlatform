@@ -50,7 +50,7 @@
     <string name="showAll">全部显示</string>
     <string name="hide">隐藏</string>
     <string name="exit">退出</string>
-    <string name="version">2019.2.18.1</string>
+    <string name="version">2019.2.21</string>
     <string name="check">校对重复通知</string>
     <string name="yun_login">云闪付登陆</string>
     <string-array name="close_time">

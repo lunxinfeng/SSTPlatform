@@ -3,7 +3,9 @@ package com.fintech.sst.ui.fragment.notice
 import android.arch.lifecycle.LifecycleObserver
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.METHOD_ALI
+import com.fintech.sst.helper.METHOD_BANK
 import com.fintech.sst.helper.METHOD_WECHAT
+import com.fintech.sst.helper.METHOD_YUN
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,6 +39,8 @@ class NoticePresenter(val view: NoticeContract.View,
         val type = when(notice.type){
             2001 -> METHOD_ALI
             1001 -> METHOD_WECHAT
+            3001 -> METHOD_BANK
+            4001 -> METHOD_YUN
             else -> "0"
         }
         model.sendNotice(notice,type)
