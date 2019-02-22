@@ -1,7 +1,10 @@
 package com.fintech.sst.service
 
 import com.fintech.sst.data.db.Notice
-import com.fintech.sst.helper.*
+import com.fintech.sst.helper.METHOD_BANK
+import com.fintech.sst.helper.RxBus
+import com.fintech.sst.helper.SmsObserverUtil
+import com.fintech.sst.helper.debug
 import com.fintech.sst.net.ApiProducerModule
 import com.fintech.sst.net.ApiService
 import com.fintech.sst.net.Configuration
@@ -22,7 +25,7 @@ class BankService : BaseService() {
 
     override fun onCreate() {
         super.onCreate()
-        if (Configuration.isLogin(METHOD_BANK) || Configuration.isLogin(METHOD_YUN)) {
+        if (Configuration.isLogin(METHOD_BANK)) {
             try {
                 subscribeSms()
                 SmsObserverUtil.registerSmsDatabaseChangeObserver(this)
@@ -93,7 +96,7 @@ class BankService : BaseService() {
                             .subscribeOn(Schedulers.io())
                             .map { result ->
                                 val listNet = mutableListOf<Sms>()
-                                result.result.forEach {
+                                result.result?.forEach {
                                     val time = it.split(",")[0]
                                     val amount = it.split(",")[1]
 

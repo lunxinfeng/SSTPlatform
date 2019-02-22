@@ -229,7 +229,8 @@ public class HeartService extends Service {
                     @Override
                     public void onNext(ResultEntity<Boolean> booleanResultEntity) {
                         debug(TAG, "=======heartBeat " + type + " onNext======");
-                        if (booleanResultEntity.getCode().equals("20001") && (booleanResultEntity.getMsg().contains("签名错误") || booleanResultEntity.getMsg().contains("未登录"))) {
+                        if (booleanResultEntity.getCode().equals("20001") && (booleanResultEntity.getMsg().contains("签名错误") ||
+                                booleanResultEntity.getMsg().contains("未登录") || booleanResultEntity.getMsg().contains("参数缺失"))) {
                             Notice notice = new Notice();
                             int noticeType = 0;
                             switch (type) {

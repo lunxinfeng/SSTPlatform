@@ -18,6 +18,7 @@ class NoticeAdapter(layoutId:Int, data:List<Notice>?): BaseQuickAdapter<Notice, 
                     1001 -> "微信通知"
                     2001 -> "支付宝通知"
                     3001 -> "银行通知"
+                    4001 -> "云闪付"
                     else -> "未知"
                 })
     }

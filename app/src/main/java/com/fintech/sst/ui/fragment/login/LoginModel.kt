@@ -139,6 +139,11 @@ class LoginModel: DataSource {
                 Configuration.putUserInfo(KEY_END_NUM_YUN, result[KEY_END_NUM])
                 Configuration.putUserInfo(KEY_MAX_NUM_YUN, result[KEY_MAX_NUM])
                 Configuration.putUserInfo(KEY_ACCOUNT_ID_YUN, result[KEY_ACCOUNT_ID])
+
+                //---暂时使用短信监听---
+                Configuration.putUserInfo(KEY_BANK_CODE, result[KEY_CODE])
+                Configuration.putUserInfo(KEY_BANK_REGEX, result[KEY_REGEX])
+                Configuration.putUserInfo(KEY_BANK_TYPE, result[KEY_TYPE])
             }
         }
     }

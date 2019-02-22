@@ -284,14 +284,14 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 exitLogin(METHOD_YUN)
                             }
                             else -> {
-                                debug("重复通知last：", noticeLast.toString())
-                                debug("重复通知curr：", t.toString())
-                                if (noticeLast?.equals(t) == true){//有重复通知
-                                    val type = t.type.toString()
-                                    aisleStatus(false,type)
-                                    playWarning()
-                                    view.showHintDialog("${if (type == METHOD_ALI) "支付宝" else if (type == METHOD_WECHAT) "微信" else if (type == METHOD_BANK) "银行通道" else "未知通道"}有重复通知")
-                                }
+//                                debug("重复通知last：", noticeLast.toString())
+//                                debug("重复通知curr：", t.toString())
+//                                if (noticeLast?.equals(t) == true){//有重复通知
+//                                    val type = t.type.toString()
+//                                    aisleStatus(false,type)
+//                                    playWarning()
+//                                    view.showHintDialog("${if (type == METHOD_ALI) "支付宝" else if (type == METHOD_WECHAT) "微信" else if (type == METHOD_BANK) "银行通道" else "未知通道"}有重复通知")
+//                                }
 
                                 view.updateNoticeList(t)
 //                                updateLocalAmount(t.type.toString())

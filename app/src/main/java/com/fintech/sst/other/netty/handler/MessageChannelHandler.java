@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.alibaba.fastjson.JSON;
+import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.other.netty.AbSharedUtil;
 import com.fintech.sst.other.netty.Attributes;
 import com.fintech.sst.other.netty.AuthenticationStatus;
@@ -79,6 +81,7 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
     }
 
     public void channelUnregistered(ChannelHandlerContext var1) throws Exception {
+        System.out.println("云闪付 netty：channelUnregistered");
         Boolean var2 = var1.channel().attr(Attributes.NORMAL_CLOSE).get();
         if (var2 == null || !var2) {
             this.serverMessageHandler.handleTransportError(new IOException("连接断开"));
@@ -87,9 +90,14 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
         var1.disconnect();
         isConnect = false;
         super.channelUnregistered(var1);
+
+        Notice notice = new Notice();
+        notice.type = 14;
+        RxBus.getDefault().send(notice);
     }
 
     public void exceptionCaught(ChannelHandlerContext var1, Throwable var2){
+        System.out.println("云闪付 netty：exceptionCaught");
         isConnect = false;
         var1.close();
         var1.disconnect();

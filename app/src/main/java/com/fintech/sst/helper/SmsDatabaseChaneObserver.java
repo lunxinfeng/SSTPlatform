@@ -64,9 +64,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                     null, null, SORT_FIELD_STRING);
             if (cursor == null) return;
             final int count = cursor.getCount();
-            System.out.println("--------------短信count--------------");
-            System.out.println(count);
-            System.out.println(mMessageCount);
+            System.out.println("--------------短信count-----" +count +"\t" + mMessageCount+"---------");
             if (count <= mMessageCount) {
                 mMessageCount = count;
                 return;
@@ -95,7 +93,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                 // 得到短信号码和内容之后进行相关处理
                 if (bankCode == null)
                     bankCode = Configuration.getUserInfoByKey(Constants.KEY_BANK_CODE);
-                System.out.println("--------------短信--------------");
+                System.out.println("--------------短信----" + bankCode + "\t" + strAddress +  "----------");
 //                Sms sms = new Sms();
 //                sms.setSendName(strAddress);
 //                sms.setContent(strbody);
@@ -110,7 +108,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                     sms.setTime(smsTime);
                     configSms(sms);
 //                    sms.setAmount(getAmount(strbody));
-                    System.out.println(sms);
+                    System.out.println("短信:" + sms);
                     RxBus.getDefault().send(sms);
                 }
             }

@@ -522,6 +522,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         menuShowAll = menu?.findItem(R.id.action_show_all)
         menuShowAll?.isVisible = false
         viewHideOrShow(cardViewWechat, false)
+        viewHideOrShow(cardViewBank, false)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -638,12 +639,10 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
     private fun stopYunService() {
         stopService(Intent(this, YunService::class.java))
-        stopService(Intent(this, BankService::class.java))
     }
 
     private fun startYunService() {
         startService(Intent(this, YunService::class.java))
-        startService(Intent(this, BankService::class.java))
     }
 
     @AfterPermissionGranted(Constants.ALL_PERMISSION)
