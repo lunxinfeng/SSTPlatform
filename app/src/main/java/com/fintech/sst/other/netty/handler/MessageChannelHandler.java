@@ -5,7 +5,9 @@ import android.content.Intent;
 
 import com.alibaba.fastjson.JSON;
 import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.helper.ExpansionKt;
 import com.fintech.sst.helper.RxBus;
+import com.fintech.sst.net.Configuration;
 import com.fintech.sst.other.netty.AbSharedUtil;
 import com.fintech.sst.other.netty.Attributes;
 import com.fintech.sst.other.netty.AuthenticationStatus;
@@ -94,15 +96,17 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
         var1.disconnect();
         isConnect = false;
 
-        Notice notice = new Notice();
-        notice.type = 15;
-        RxBus.getDefault().send(notice);
-        var1.channel().eventLoop().schedule(new Runnable() {
-            @Override
-            public void run() {
-                nettyConnectionFactory.createChannel();
-            }
-        },5000,TimeUnit.MILLISECONDS);
+        if (Configuration.isLogin(ExpansionKt.METHOD_YUN)){
+            Notice notice = new Notice();
+            notice.type = 15;
+            RxBus.getDefault().send(notice);
+            var1.channel().eventLoop().schedule(new Runnable() {
+                @Override
+                public void run() {
+                    nettyConnectionFactory.createChannel();
+                }
+            },5000,TimeUnit.MILLISECONDS);
+        }
         super.channelUnregistered(var1);
     }
 
