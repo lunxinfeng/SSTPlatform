@@ -9,6 +9,7 @@ import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.other.netty.AbSharedUtil;
 import com.fintech.sst.other.netty.Attributes;
 import com.fintech.sst.other.netty.AuthenticationStatus;
+import com.fintech.sst.other.netty.NettyConnectionFactory;
 import com.fintech.sst.other.netty.ServerMessageHandler;
 import com.fintech.sst.other.netty.TcpMsg;
 import com.fintech.sst.other.netty.TcpMsgBody;
@@ -16,6 +17,7 @@ import com.fintech.sst.other.netty.TcpMsgHeader;
 import com.fintech.sst.other.netty.UserPay;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -26,10 +28,12 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
     private Context context;
     private ServerMessageHandler serverMessageHandler;
     private boolean isConnect = false;
+    private NettyConnectionFactory nettyConnectionFactory;
 
-    public MessageChannelHandler(ServerMessageHandler var1,Context context) {
+    public MessageChannelHandler(ServerMessageHandler var1,Context context,NettyConnectionFactory nettyConnectionFactory) {
         this.serverMessageHandler = var1;
         this.context = context;
+        this.nettyConnectionFactory = nettyConnectionFactory;
     }
 
     private void printMsg(String mesg){
@@ -89,11 +93,17 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
         var1.close();
         var1.disconnect();
         isConnect = false;
-        super.channelUnregistered(var1);
 
         Notice notice = new Notice();
-        notice.type = 14;
+        notice.type = 15;
         RxBus.getDefault().send(notice);
+        var1.channel().eventLoop().schedule(new Runnable() {
+            @Override
+            public void run() {
+                nettyConnectionFactory.createChannel();
+            }
+        },5000,TimeUnit.MILLISECONDS);
+        super.channelUnregistered(var1);
     }
 
     public void exceptionCaught(ChannelHandlerContext var1, Throwable var2){

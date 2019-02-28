@@ -24,6 +24,9 @@ import org.json.JSONObject;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -162,11 +165,19 @@ public class Main implements IXposedHookLoadPackage {
                     XposedBridge.hookAllMethods(upPushEventReceiverMiui, "onNotificationMessageArrived", xc_methodHookNotificationMessageArrived);
                     MIHOOK = true;
                     XposedBridge.log("MIUI 通知");
-                    //HttpHook.initAllHooks(loadPackageParam);
+                    mlog("");
+                    mlog("==================网络记录===============");
+                    HttpHook.initAllHooks(lpparam);
+                    mlog("==================网络记录===============");
+                    mlog("");
                 }
+
+
             } catch (XposedHelpers.ClassNotFoundError e) {
+                XposedBridge.log(e.toString());
                 XposedBridge.log("非 MIUI 通知");
             }
+
             XposedBridge.log("loadPackageParam.processName =" + lpparam.processName);
             mClassLoader = lpparam.classLoader;
             XposedHelpers.findAndHookMethod(ClassLoader.class, "loadClass", String.class, xc_methodHookReceiverMiui);
@@ -268,31 +279,35 @@ public class Main implements IXposedHookLoadPackage {
         @Override
         protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
             super.beforeHookedMethod(param);
-            XposedBridge.log("UPPushEventReceiverMiui onNotificationMessageArrived");
-            if (param.args != null && param.args.length > 0) {
-                XposedBridge.log("handleLoadPackage-->onNotificationMessageArrived" + new Gson().toJson(param.args[1]));
-                String s = (String) XposedHelpers.getObjectField(param.args[1], "c");
-                XposedBridge.log("handleLoadPackage-->动账通知" + s);
-                JSONObject object = new JSONObject(s);
-                JSONObject body = object.optJSONObject("body");
-                String mTitle = body.optString("title");
-                String mContent = body.optString("mContent");
-                mlog("UPPushEventReceiverMiuimContent: " + mContent);
-                if (mTitle.contains("动账通知") && mContent.contains("向您付款")) {
-                    String pre = mContent.split("元,")[0];
-                    String parts[] = pre.split("通过扫码向您付款");
-                    if (parts.length == 2) {
-                        final String u = parts[0];
-                        final String m = parts[1];
-                        mlog("New Push Msg u:" + u + " m:" + m);
-                        Intent intent = new Intent(checkOrder);
-                        intent.putExtra("name", u);
-                        intent.putExtra("title", m);
-                        if (getContext() != null) {
-                            getContext().sendBroadcast(intent);
+            try{
+                XposedBridge.log("UPPushEventReceiverMiui onNotificationMessageArrived");
+                if (param.args != null && param.args.length > 0) {
+                    XposedBridge.log("handleLoadPackage-->onNotificationMessageArrived" + new Gson().toJson(param.args[1]));
+                    String s = (String) XposedHelpers.getObjectField(param.args[1], "c");
+                    XposedBridge.log("handleLoadPackage-->动账通知" + s);
+                    JSONObject object = new JSONObject(s);
+                    JSONObject body = object.optJSONObject("body");
+                    String mTitle = body.optString("title");
+                    String mContent = body.optString("mContent");
+                    mlog("UPPushEventReceiverMiuimContent: " + mContent);
+                    if (mTitle.contains("动账通知") && mContent.contains("向您付款")) {
+                        String pre = mContent.split("元,")[0];
+                        String parts[] = pre.split("通过扫码向您付款");
+                        if (parts.length == 2) {
+                            final String u = parts[0];
+                            final String m = parts[1];
+                            mlog("New Push Msg u:" + u + " m:" + m);
+                            Intent intent = new Intent(checkOrder);
+                            intent.putExtra("name", u);
+                            intent.putExtra("title", m);
+                            if (getContext() != null) {
+                                getContext().sendBroadcast(intent);
+                            }
                         }
                     }
                 }
+            }catch (Exception e){
+                mlog("UPPushEventReceiverMiuimContent异常信息为: " + e.getMessage());
             }
         }
     };
@@ -312,30 +327,34 @@ public class Main implements IXposedHookLoadPackage {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         super.beforeHookedMethod(param);
-                        XposedBridge.log("UPPushEventReceiverMiui onNotificationMessageArrived");
-                        if (param.args != null && param.args.length > 0) {
-                            XposedBridge.log("onNotificationMessageArrived" + new Gson().toJson(param.args[1]));
-                            String s = (String) XposedHelpers.getObjectField(param.args[1], "c");
-                            mlog("onNotificationMessageArrived动账通知: " + s);
-                            JSONObject object = new JSONObject(s);
-                            JSONObject body = object.optJSONObject("body");
-                            String mTitle = body.optString("title");
-                            String mContent = body.optString("mContent");
-                            mlog("onNotificationMessageArrivedmContent: " + mContent);
-                            if (mTitle.contains("动账通知") && mContent.contains("向您付款")) {
-                                String pre = mContent.split("元,")[0];
-                                String parts[] = pre.split("通过扫码向您付款");
-                                if (parts.length == 2) {
-                                    final String u = parts[0];
-                                    final String m = parts[1];
-                                    mlog("New Push Msg u:" + u + " m:" + m);
-                                    Intent intent = new Intent(checkOrder);
-                                    intent.putExtra("name", u);
-                                    intent.putExtra("title", m);
-                                    if (getContext() != null)
-                                        getContext().sendBroadcast(intent);
+                        try{
+                            XposedBridge.log("UPPushEventReceiverMiui onNotificationMessageArrived");
+                            if (param.args != null && param.args.length > 0) {
+                                XposedBridge.log("onNotificationMessageArrived" + new Gson().toJson(param.args[1]));
+                                String s = (String) XposedHelpers.getObjectField(param.args[1], "c");
+                                mlog("onNotificationMessageArrived动账通知: " + s);
+                                JSONObject object = new JSONObject(s);
+                                JSONObject body = object.optJSONObject("body");
+                                String mTitle = body.optString("title");
+                                String mContent = body.optString("mContent");
+                                mlog("onNotificationMessageArrivedmContent: " + mContent);
+                                if (mTitle.contains("动账通知") && mContent.contains("向您付款")) {
+                                    String pre = mContent.split("元,")[0];
+                                    String parts[] = pre.split("通过扫码向您付款");
+                                    if (parts.length == 2) {
+                                        final String u = parts[0];
+                                        final String m = parts[1];
+                                        mlog("New Push Msg u:" + u + " m:" + m);
+                                        Intent intent = new Intent(checkOrder);
+                                        intent.putExtra("name", u);
+                                        intent.putExtra("title", m);
+                                        if (getContext() != null)
+                                            getContext().sendBroadcast(intent);
+                                    }
                                 }
                             }
+                        }catch (Exception e){
+                            mlog("onNotificationMessageArrived动账通知异常，信息为： " + e.getMessage());
                         }
                     }
                 });
@@ -367,30 +386,28 @@ public class Main implements IXposedHookLoadPackage {
             @Override
             protected void beforeHookedMethod(final MethodHookParam param) throws Throwable {
                 XposedBridge.log("UPPushService a");
-                if (param.args != null && param.args.length > 0) {
-                    Object uPPushMessage = param.args[0];
-                    Object mText = XposedHelpers.callMethod(uPPushMessage, "getText");
-                    String re = new Gson().toJson(mText);
-                    XposedBridge.log("hookPushServicemText =" + re);
-                    if (TextUtils.isEmpty(re)) return;
-                    JSONObject object = new JSONObject(re);
-                    String mTitle = object.getString("mTitle");
-                    String mContent = object.getString("mContent");
-                    mlog("hookPushServicemTextmContent: " + mContent);
-                    if (mTitle.contains("动账通知") && mContent.contains("通过扫码向您付款")) {
-                        String pre = mContent.split("元,")[0];
-                        String parts[] = pre.split("通过扫码向您付款");
-                        if (parts.length == 2) {
-                            final String u = parts[0];
-                            final String m = parts[1];
-                            mlog("新消息提醒，用户【" + u + "】-- 金额【" + m + "】");
+                try{
+                    if (param.args != null && param.args.length > 0) {
+                        Object uPPushMessage = param.args[0];
+                        Object mText = XposedHelpers.callMethod(uPPushMessage, "getText");
+                        String re = new Gson().toJson(mText);
+                        XposedBridge.log("hookPushServicemText =" + re);
+                        if (TextUtils.isEmpty(re)) return;
+                        JSONObject object = new JSONObject(re);
+                        String mTitle = object.getString("mTitle");
+                        String mContent = object.getString("mContent");
+                        mlog("hookPushServicemTextmContent: " + mContent);
+                        if (mTitle.contains("动账通知") && mContent.contains("入账")) {
+                            mlog("新消息提醒，无支付用户信息，需要获取订单列表..........");
                             Intent intent = new Intent(checkOrder);
-                            intent.putExtra("name", u);
-                            intent.putExtra("title", m);
+                            intent.putExtra("name", "");
+                            intent.putExtra("title", "");
                             if (getContext() != null)
                                 getContext().sendBroadcast(intent);
                         }
                     }
+                }catch (Exception e){
+                    mlog("hookPushServicemTextmContent异常: " + e.getMessage());
                 }
             }
         });
@@ -601,6 +618,7 @@ public class Main implements IXposedHookLoadPackage {
                             String DecRsp = Dec(RSP);
                             mlog("获取到的订单列表(解密订单):" + str2 + " DecRSP=>" + DecRsp);
                             JSONArray o = new JSONObject(DecRsp).getJSONObject("params").getJSONArray("uporders");
+                            List<com.alibaba.fastjson.JSONObject> orderResultList = null;
                             for (int i = 0; i < o.length(); i++) {
                                 JSONObject p = o.getJSONObject(i);
                                 String orderid = p.getString("orderId");
@@ -609,8 +627,23 @@ public class Main implements IXposedHookLoadPackage {
                                 mlog("判断金额： " + (amount.equals(money) && p.getString("title").contains(user)));
                                 if (amount.equals(money) && p.getString("title").contains(user)) {
                                     mlog("找到订单，开始获取订单详情： " + orderid);
-                                    return DoOrderInfoGet(orderid);
+                                    return "getpayresult:" +DoOrderInfoGet(orderid);
                                 }
+                            }
+                            orderResultList = new ArrayList<>();
+                            mlog("未找到订单，直接获取最近订单列表.........");
+                            for (int i = 0; i < o.length(); i++) {
+                                JSONObject p = o.getJSONObject(i);
+                                String orderid = p.getString("orderId");
+                                String singleOrder = DoOrderInfoGet(orderid);
+                                mlog("singleOrder: " + singleOrder);
+                                orderResultList.add(JSON.parseObject(singleOrder));
+                                //Thread.sleep(300L);
+                            }
+                            if(!orderResultList.isEmpty()){
+                                String payOrderResult = JSON.toJSONString(orderResultList);
+                                mlog("检查支付新订单==>向平台发达结果： " + payOrderResult);
+                                return "getpayresultlist:" + payOrderResult;
                             }
                         }
                     }catch (Exception e){
@@ -650,11 +683,15 @@ public class Main implements IXposedHookLoadPackage {
             try {
                 Callable<String> callable = new Callable<String>() {
                     public String call() {
-                        try{
-                            String args = "{\"orderType\":\"21\",\"transTp\":\"simple\",\"orderId\":\"" + orderid + "\"}";
-                            String str2 = "https://wallet.95516.com/app/inApp/order/detail";
+                        try {
+                            Map<String,Object> dataMap = new HashMap<>();
+                            dataMap.put("orderType",21);
+                            dataMap.put("transTp","simple");
+                            dataMap.put("orderId",orderid);
+                            String args = JSON.toJSONString(dataMap);//"{\"orderType\":\"21\",\"transTp\":\"simple\",\"orderId\":\"" + orderid + "\"}";
+                            String url = "https://wallet.95516.com/app/inApp/order/detail";
                             OkHttpClient client = new OkHttpClient();
-                            Request request = new Request.Builder().url(str2).header("X-Tingyun-Id", getXTid())
+                            Request request = new Request.Builder().url(url).header("X-Tingyun-Id", getXTid())
                                     .header("X-Tingyun-Lib-Type-N-ST", "0;" + System.currentTimeMillis())
                                     .header("sid", getSid()).header("urid", geturid())
                                     .header("cityCd", getcityCd()).header("locale", "zh-CN")
@@ -666,38 +703,38 @@ public class Main implements IXposedHookLoadPackage {
                             Response response = client.newCall(request).execute();
                             if (response != null && response.body() != null) {
                                 String RSP = response.body().string();
-                                mlog("获取订单详情=>" + str2 + " RSP=>" + RSP);
+                                mlog("获取订单详情=>" + url + " RSP=>" + RSP);
                                 String DecRsp = Dec(RSP);
-                                mlog("获取订单详情（解密）=>" + str2 + " DecRSP=>" + DecRsp);
+                                mlog("获取订单详情（解密）=>" + url + " DecRSP=>" + DecRsp);
                                 JSONObject params = new JSONObject(DecRsp).getJSONObject("params");
-                                String orderDetail = params.getString("orderDetail");
-                                mlog("获取订单详情=>" + str2 + " orderDetail=>" + orderDetail);
-                                JSONObject o = new JSONObject(orderDetail);
-                                String u = o.getString("payUserName");
-                                String mark = o.getString("postScript");
-                                String totalAmount = params.getString("totalAmount");
-                                mlog("获取订单详情（数据）=>" + str2 + " u:" + u + " mark:" + mark + " totalAmount:" + totalAmount);
+//                                String orderDetail = params.getString("orderDetail");
+//                                mlog("获取订单详情=>" + url + " orderDetail=>" + orderDetail);
+//                                JSONObject o = new JSONObject(orderDetail);
+//                                String u = o.getString("payUserName");
+//                                String mark = o.getString("postScript");
+//                                String totalAmount = params.getString("totalAmount");
+//                                mlog("获取订单详情（数据）=>" + url + " u:" + u + " mark:" + mark + " totalAmount:" + totalAmount);
 //                                Message message = new Message();
 //                                message.what = 1;
 //                                message.obj = "getpayresult:" + params.toString();
 //                                handler.sendMessage(message);
-                                mlog("获取订单详情（数据）发送成功=>: "+params.toString());
+                                mlog("获取订单详情（数据）发送成功=>: " + params.toString());
                                 return params.toString();
                             }
-                        }catch (Exception e){
-                            mlog("获取订单详情异常，信息为： "+e.getMessage());
+                        } catch (Exception e) {
+                            mlog("获取订单详情异常，信息为： " + e.getMessage());
                         }
                         return "";
                     }
                 };
                 Future<String> future = fixedThread.submit(callable);
                 String result = future.get();
-                mlog("获取订单详情（数据）: "+result);
-                if(StringUtils.isNotBlank(result)){
+                mlog("获取订单详情（数据）: " + result);
+                if (StringUtils.isNotBlank(result)) {
                     return result;
                 }
             } catch (Exception e) {
-                android.os.Message message = new android.os.Message();
+                Message message = new Message();
                 message.what = 3;
                 message.obj = orderid;
                 handler.sendMessageDelayed(message, 3000);

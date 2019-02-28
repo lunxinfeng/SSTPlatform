@@ -283,6 +283,15 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 view.showToast("云闪付通道账号退出登录")
                                 exitLogin(METHOD_YUN)
                             }
+                            t.type == 15 -> {
+                                view.showToast("长连接断开")
+                                playWarning()
+                            }
+                            t.type == 16 -> {
+                                view.showToast("长连接连接成功")
+                                stopWarning()
+                                aisleStatus(true,METHOD_YUN)
+                            }
                             else -> {
                                 debug("重复通知last：", noticeLast.toString())
                                 debug("重复通知curr：", t.toString())

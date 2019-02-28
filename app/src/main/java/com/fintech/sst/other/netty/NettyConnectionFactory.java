@@ -3,12 +3,15 @@ package com.fintech.sst.other.netty;
 import android.content.Context;
 import android.util.Log;
 
+import com.fintech.sst.data.db.Notice;
+import com.fintech.sst.helper.RxBus;
 import com.fintech.sst.other.netty.handler.ClientHeartBeatHandler;
 import com.fintech.sst.other.netty.handler.MessageChannelHandler;
 import com.fintech.sst.other.netty.handler.MessageConvert;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +46,7 @@ public class NettyConnectionFactory implements ChannelFutureListener {
         this.init();
     }
 
-    private void createChannel() {
+    public void createChannel() {
         if (this.channel != null && this.channel.isOpen()) {
             this.channel.close();
             this.channel.disconnect();
@@ -55,7 +58,7 @@ public class NettyConnectionFactory implements ChannelFutureListener {
         }
     }
 
-    private void init() {
+    public void init() {
         this.bootstrap = new Bootstrap();
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000);
         this.eventLoopGroup = new NioEventLoopGroup();
@@ -75,7 +78,7 @@ public class NettyConnectionFactory implements ChannelFutureListener {
                         .addLast(new StringDecoder(Charset.forName("UTF-8")))
                         .addLast(new IdleStateHandler(0L, 5L, 0L, TimeUnit.SECONDS))
                         .addLast(clientHeartBeatHandler)
-                        .addLast(new MessageChannelHandler(NettyConnectionFactory.this.serverMessageHandler,context));
+                        .addLast(new MessageChannelHandler(NettyConnectionFactory.this.serverMessageHandler,context,NettyConnectionFactory.this));
             }
         });
         this.createChannel();
@@ -122,20 +125,31 @@ public class NettyConnectionFactory implements ChannelFutureListener {
         return this.channel.isActive();
     }
 
-    public void operationComplete(ChannelFuture var1) throws Exception {
+    public void operationComplete(ChannelFuture var1) {
+        System.out.println("云闪付netty：operationComplete");
         if (var1.isSuccess()) {
+            Notice notice = new Notice();
+            notice.type = 16;
+            RxBus.getDefault().send(notice);
+
             this.channel = var1.channel();
-            System.out.println("云闪付:11");
-            this.channel.writeAndFlush(Unpooled.copiedBuffer(MessageConvert.convertAuthMsg(this.connection.getAuthToken())));
+            System.out.println("云闪付netty:11");
+            try {
+                this.channel.writeAndFlush(Unpooled.copiedBuffer(MessageConvert.convertAuthMsg(this.connection.getAuthToken())));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             this.alreadyRetry = 0;
             this.serverMessageHandler.afterConnectionEstablished(ConnectionStatus.CONNECTION_SUCCESS);
         } else if (this.alreadyRetry < this.retryConnect) {
+            System.out.println("云闪付netty：重连");
             var1.channel().eventLoop().schedule(new Runnable() {
                 public void run() {
                     NettyConnectionFactory.this.createChannel();
                 }
             }, (long) this.retryTime, TimeUnit.SECONDS);
         } else {
+            System.out.println("云闪付netty：重连失败");
             this.serverMessageHandler.afterConnectionEstablished(ConnectionStatus.CONNECTION_ERROR);
         }
     }
