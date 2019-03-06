@@ -15,6 +15,8 @@ import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
 import com.fintech.sst.R
+import com.fintech.sst.R.id.et_aisle_ali
+import com.fintech.sst.R.id.tvLoginAli
 import com.fintech.sst.base.BaseActivity
 import com.fintech.sst.data.db.DB
 import com.fintech.sst.data.db.Notice

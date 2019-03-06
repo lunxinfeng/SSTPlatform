@@ -134,6 +134,8 @@ public class ReceiveCrowdTask extends AsyncTask {
             broadCastIntent.setAction(BILLRECEIVED_ACTION);
             context.sendBroadcast(broadCastIntent);
 
+            Tools.delectContact(classLoader);
+
 
 
             Class fa = classLoader.loadClass("com.alipay.mobile.redenvelope.proguard.f.a");

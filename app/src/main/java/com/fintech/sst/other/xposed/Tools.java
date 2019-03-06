@@ -1,5 +1,7 @@
 package com.fintech.sst.other.xposed;
 
+import com.alibaba.fastjson.JSON;
+
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -117,4 +119,81 @@ public class Tools {
         return null;
     }
 
+    public static Object getContactAccount(ClassLoader classLoader,String userid) {
+
+        try {
+
+            Class AlipayApplication=classLoader.loadClass("com.alipay.mobile.framework.AlipayApplication");
+            Object AlipayApplicationInstance= XposedHelpers.callStaticMethod(AlipayApplication,"getInstance");
+            Object ApplicationContext=XposedHelpers.callMethod(AlipayApplicationInstance,"getMicroApplicationContext");
+
+
+            Object socialSdkContactService=XposedHelpers.callMethod(ApplicationContext,"getExtServiceByInterface","com.alipay.mobile.personalbase.service.SocialSdkContactService");
+            Object ContactAccount =XposedHelpers.callMethod(socialSdkContactService,"queryAccountById",userid);
+
+            XposedBridge.log("ContactAccount ="+JSON.toJSONString(ContactAccount));
+            return  ContactAccount;
+        }catch (Exception e)
+        {
+            com.fintech.sst.other.xposed.hongbao.Tools.printException(e);
+        }
+        return  null;
+
+    }
+
+
+    public static void  delectContact(ClassLoader mClassLoader){
+    /*    HandleRelationReq handleRelationReq = new HandleRelationReq();
+        handleRelationReq.targetUserId = profileSettingActivity.k.userId;
+        handleRelationReq.bizType = "2";
+        handleRelationReq.alipayAccount = profileSettingActivity.k.account;
+        BaseResult handleRelation = profileSettingActivity.u.handleRelation(handleRelationReq);*/
+        String userid = getUserId(mClassLoader);
+        Object contactAccount= Tools.getContactAccount(mClassLoader,userid);
+
+        Object handleRelationReq =XposedHelpers.newInstance(XposedHelpers.findClass("com.alipay.mobilerelation.biz.shared.req.HandleRelationReq",mClassLoader));
+        String userId =XposedHelpers.getObjectField(contactAccount,"userId")+"";
+        String account =XposedHelpers.getObjectField(contactAccount,"account")+"";
+        XposedHelpers.setObjectField(handleRelationReq,"targetUserId",userId);
+        XposedHelpers.setObjectField(handleRelationReq,"alipayAccount",account);
+        XposedHelpers.setObjectField(handleRelationReq,"bizType","2");
+        Object service =  Tools.getRpcService( Tools.getAlipayApplication(mClassLoader));
+        XposedBridge.log("service "+service);
+        Object alipayRelationManageService= XposedHelpers.callMethod(service,"getRpcProxy",XposedHelpers.findClass("com.alipay.mobilerelation.biz.shared.rpc.AlipayRelationManageService",mClassLoader));
+        Object re=XposedHelpers.callMethod(alipayRelationManageService,"handleRelation",handleRelationReq);
+        XposedBridge.log("删除好友结果"+JSON.toJSONString(re));
+    }
+//    public static Object mapp = null;
+//    public static String sendBillMsg( ClassLoader mClassLoader,String userid,String money, String remark ) {
+//        Class appclazz = XposedHelpers.findClass("com.alipay.mobile.framework.AlipayApplication", mClassLoader);
+//        Object mapp2 =   XposedHelpers.callStaticMethod(appclazz, "getInstance");
+//        Object bundleContext =XposedHelpers.callMethod(mapp2,"getBundleContext");
+//        ClassLoader classload = (ClassLoader) XposedHelpers.callMethod(bundleContext,"findClassLoaderByBundleName","android-phone-wallet-socialpayee");
+//        Object service =  Tools.getRpcService( Tools.getAlipayApplication(mClassLoader));
+//        XposedBridge.log("service "+service);
+//        Object SingleCollectRpc= XposedHelpers.callMethod(service,"getRpcProxy",XposedHelpers.findClass("com.alipay.android.phone.personalapp.socialpayee.rpc.SingleCollectRpc",classload));
+////        XposedBridge.log("SingleCollectRpc "+SingleCollectRpc);
+//        Object contactAccount= Tools.getContactAccount(classload,userid);
+//        String name =XposedHelpers.getObjectField(contactAccount,"name")+"";
+//        String userId =XposedHelpers.getObjectField(contactAccount,"userId")+"";
+//        String logonId =XposedHelpers.getObjectField(contactAccount,"account")+"";
+//        Object singleCreateReq =  XposedHelpers.newInstance(XposedHelpers.findClass("com.alipay.android.phone.personalapp.socialpayee.rpc.req.SingleCreateReq",classload));
+//        XposedBridge.log(" singleCreateReq "+JSON.toJSONString(singleCreateReq));
+//        Field[] fields = singleCreateReq.getClass().getDeclaredFields();
+//        for (Field field:fields){
+//            XposedBridge.log(" "+field.getName()+" "+field.getType());
+//
+//        }
+//        XposedHelpers.setObjectField(singleCreateReq,"userName",name);
+//        XposedHelpers.setObjectField(singleCreateReq,"userId",userId);
+//        XposedHelpers.setObjectField(singleCreateReq,"logonId",logonId);
+//        XposedHelpers.setObjectField(singleCreateReq,"desc",remark);
+//        XposedHelpers.setObjectField(singleCreateReq,"payAmount", money );
+//        XposedHelpers.setObjectField(singleCreateReq,"billName","个人收款" );
+//        XposedHelpers.setObjectField(singleCreateReq,"source","chat" );
+//        Object o =XposedHelpers.callMethod(SingleCollectRpc,"createBill",singleCreateReq);
+//        XposedBridge.log(" 结果 "+JSON.toJSONString(o));
+//
+//        return  JSON.toJSONString(o);
+//    }
 }

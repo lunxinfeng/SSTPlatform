@@ -105,8 +105,7 @@ class YunService : BaseService() {
 
     private fun connectNetty() {
         val tcpConnection = TcpConnection()
-//        tcpConnection.host = "47.96.69.207"
-        tcpConnection.host = "47.52.100.118"
+        tcpConnection.host = Constants.nettyAddress
         tcpConnection.authToken = Configuration.getUserInfoByKey(Constants.KEY_ACCOUNT_ID_YUN)
         tcpConnection.port = 2195
         simpleServerMessageHandler = SimpleServerMessageHandler(this)
