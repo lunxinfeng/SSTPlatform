@@ -47,10 +47,11 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-//        if (!PermissionUtil.isNotificationListenerEnabled()) {
-//            view.toNotifactionSetting()
-//            view.showToast("请打开随身听通知监听权限")
-//        }
+        if (!PermissionUtil.isNotificationListenerEnabled()) {
+            view.toNotifactionSetting()
+            view.showToast("请打开随身听通知监听权限")
+            return
+        }
         clickNum = 0
 
         if (Configuration.isLogin(METHOD_ALI)){

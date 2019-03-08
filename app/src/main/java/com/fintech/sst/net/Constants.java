@@ -53,6 +53,7 @@ public class Constants {
     public static final String KEY_END_NUM_WECHAT = "endNumWechat";
     public static final String KEY_MAX_NUM_WECHAT = "maxNumWechat";
     public static final String KEY_LOGIN_TOKEN_WECHAT = "loginTokenWechat";
+    public static final String KEY_WECHAT_REGEX = "wechatRegex";
 
 
     public static final String KEY_MCH_ID_BANK = "mchIdBANK";

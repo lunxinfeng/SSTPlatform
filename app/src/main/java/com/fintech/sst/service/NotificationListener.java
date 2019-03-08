@@ -53,7 +53,7 @@ public final class NotificationListener extends NotificationListenerService {
     static {
         HashSet<String> localHashSet = new HashSet<>();
         localHashSet.add("com.tencent.mm");
-        localHashSet.add("com.eg.android.AlipayGphone".toLowerCase());
+//        localHashSet.add("com.eg.android.AlipayGphone".toLowerCase());
         PACKAGES_LOWER_CASE = Collections.unmodifiableSet(localHashSet);
     }
 

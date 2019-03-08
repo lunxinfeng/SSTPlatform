@@ -108,6 +108,7 @@ class LoginModel: DataSource {
                 Configuration.putUserInfo(KEY_BEGIN_NUM_WECHAT, result[KEY_BEGIN_NUM])
                 Configuration.putUserInfo(KEY_END_NUM_WECHAT, result[KEY_END_NUM])
                 Configuration.putUserInfo(KEY_MAX_NUM_WECHAT, result[KEY_MAX_NUM])
+                Configuration.putUserInfo(KEY_WECHAT_REGEX, result[KEY_REGEX])
             }
             METHOD_BANK -> {
                 Configuration.putUserInfo(KEY_MCH_ID_BANK, result[KEY_MCH_ID])

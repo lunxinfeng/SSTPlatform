@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import com.fintech.sst.net.Configuration;
+import com.fintech.sst.net.Constants;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,8 +71,9 @@ public final class ParsedNotification {
     }
 
     public float parseAmountWeChat() {
-
-        String pattern = "收款([0-9]+.[0-9][0-9])元$";
+        String pattern = Configuration.getUserInfoByKey(Constants.KEY_WECHAT_REGEX);
+        if (pattern == null || pattern.trim().isEmpty())
+            pattern = "收款([0-9]+.[0-9][0-9])元(?:\\(朋友到店\\))?$";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(mTickerText.trim());
         if (m.find()) {
