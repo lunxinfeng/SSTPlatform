@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">太极</string>
+    <string name="app_name">太极快付</string>
     <string name="rationale_message">请将APP的各项权限开启</string>
     <string name="title_settings_perm">权限设置</string>
     <string name="setting">去设置</string>
