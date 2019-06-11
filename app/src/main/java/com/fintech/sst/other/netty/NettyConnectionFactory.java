@@ -34,7 +34,7 @@ public class NettyConnectionFactory implements ChannelFutureListener {
     private Channel channel;
     private TcpConnection connection;
     private NioEventLoopGroup eventLoopGroup;
-    private int retryConnect = 5;
+    private int retryConnect = Integer.MAX_VALUE;
     private int retryTime = 3;
     private ServerMessageHandler serverMessageHandler;
     private Context context;
@@ -143,6 +143,9 @@ public class NettyConnectionFactory implements ChannelFutureListener {
             this.serverMessageHandler.afterConnectionEstablished(ConnectionStatus.CONNECTION_SUCCESS);
         } else if (this.alreadyRetry < this.retryConnect) {
             System.out.println("云闪付netty：重连");
+            Notice notice = new Notice();
+            notice.type = 15;
+            RxBus.getDefault().send(notice);
             var1.channel().eventLoop().schedule(new Runnable() {
                 public void run() {
                     NettyConnectionFactory.this.createChannel();

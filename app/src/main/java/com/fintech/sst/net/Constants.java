@@ -11,11 +11,11 @@ public class Constants {
             = MediaType.parse("application/json; charset=utf-8");
 
 //    public static final String baseUrl = "https://api.pay.hccf8.com";
-//    public static String baseUrl = "http://api.3721sz.com";
-    public static String baseUrl = "http://api.96taichi.tk";
+    public static String baseUrl = "http://api.3721sz.com";
+//    public static String baseUrl = "http://api.96taichi.tk";
 //    public static String baseUrl = "http://api.trueinfo.cn";
-//    public static String nettyAddress = "47.52.100.118";//正式
-    public static String nettyAddress = "47.244.97.157";//正式
+    public static String nettyAddress = "47.52.100.118";//正式
+//    public static String nettyAddress = "47.244.97.157";//正式
 //    public static String nettyAddress = "47.96.69.207";//测试
 
     public static final int RC_PERMISSION = 110;

@@ -91,22 +91,22 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
         Boolean var2 = var1.channel().attr(Attributes.NORMAL_CLOSE).get();
         if (var2 == null || !var2) {
             this.serverMessageHandler.handleTransportError(new IOException("连接断开"));
+
+            if (Configuration.isLogin(ExpansionKt.METHOD_YUN)){
+                Notice notice = new Notice();
+                notice.type = 15;
+                RxBus.getDefault().send(notice);
+                var1.channel().eventLoop().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        nettyConnectionFactory.createChannel();
+                    }
+                },3000,TimeUnit.MILLISECONDS);
+            }
         }
         var1.close();
         var1.disconnect();
         isConnect = false;
-
-        if (Configuration.isLogin(ExpansionKt.METHOD_YUN)){
-            Notice notice = new Notice();
-            notice.type = 15;
-            RxBus.getDefault().send(notice);
-            var1.channel().eventLoop().schedule(new Runnable() {
-                @Override
-                public void run() {
-                    nettyConnectionFactory.createChannel();
-                }
-            },5000,TimeUnit.MILLISECONDS);
-        }
         super.channelUnregistered(var1);
     }
 
