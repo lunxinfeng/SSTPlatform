@@ -13,5 +13,7 @@ interface SettingContract {
     interface Presenter: BasePresenter {
         fun cleatLocalDB()
 //        fun exitAccount()
+
+        fun configAddress(web:String,netty:String)
     }
 }

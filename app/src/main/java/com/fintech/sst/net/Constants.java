@@ -84,4 +84,7 @@ public class Constants {
     public static final String KEY_LOGIN_TOKEN_YUN = "loginTokenYUN";
     public static final String KEY_ACCOUNT_ID_YUN = "accountIdYUN";
 
+
+    public static final String KEY_ADDRESS_WEB = "address_web";
+    public static final String KEY_ADDRESS_NETTY = "address_netty";
 }

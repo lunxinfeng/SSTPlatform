@@ -3,6 +3,8 @@ package com.fintech.sst.ui.activity.setting
 import android.arch.lifecycle.LifecycleObserver
 import com.fintech.sst.App
 import com.fintech.sst.data.db.DB
+import com.fintech.sst.net.Configuration
+import com.fintech.sst.net.Constants
 import com.fintech.sst.net.ProgressObserver
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,4 +37,11 @@ class SettingPresenter(val view: SettingContract.View) : SettingContract.Present
 //        Configuration.clearUserInfo()
 //        view.toLogin()
 //    }
+
+    override fun configAddress(web:String,netty:String){
+        Constants.baseUrl = web
+        Constants.nettyAddress = netty
+        Configuration.putUserInfo(Constants.KEY_ADDRESS_WEB,web)
+        Configuration.putUserInfo(Constants.KEY_ADDRESS_NETTY,netty)
+    }
 }

@@ -8,6 +8,7 @@ import com.alipay.sdk.app.AuthTask
 import com.fintech.sst.data.db.Notice
 import com.fintech.sst.helper.*
 import com.fintech.sst.net.Configuration
+import com.fintech.sst.net.Constants
 import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.ResultEntity
@@ -33,6 +34,16 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
+
+        val web = Configuration.getUserInfoByKey(Constants.KEY_ADDRESS_WEB)
+        val netty = Configuration.getUserInfoByKey(Constants.KEY_ADDRESS_NETTY)
+        if (web != ""){
+            Constants.baseUrl = web
+        }
+        if (netty != ""){
+            Constants.nettyAddress = netty
+        }
+
 //        if (Configuration.noLogin()) {
 //            view.exitLogin()
 //            return

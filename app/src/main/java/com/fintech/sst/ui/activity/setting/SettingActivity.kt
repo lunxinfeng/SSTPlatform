@@ -14,11 +14,12 @@ import com.fintech.sst.helper.closeOrderNum
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.KEY_CLOSE_ORDER_NUM
 import com.fintech.sst.ui.activity.aisle.AisleManagerActivity
+import com.fintech.sst.ui.dialog.AddressDialog
 import kotlinx.android.synthetic.main.activity_setting.*
 
-class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContract.View {
+class SettingActivity : BaseActivity<SettingContract.Presenter>(), SettingContract.View {
     override fun toNotifactionSetting() {
-        PermissionUtil.setNotificationListener(this,100)
+        PermissionUtil.setNotificationListener(this, 100)
     }
 
     override fun toAppDetailActivity() {
@@ -27,7 +28,7 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
 
     override fun toLogin() {
         val intent = Intent(this, AisleManagerActivity::class.java)
-        intent.putExtra("exit",true)
+        intent.putExtra("exit", true)
         startActivity(intent)
     }
 
@@ -43,7 +44,7 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
 
 //        val index = Configuration.getUserInfoByKey(KEY_CLOSE_TIME).toIntOrNull()?:1
 //        tv_time_setting.text = "通道自动关闭时间（${resources.getStringArray(R.array.close_time)[index]}）"
-        val order_num = Configuration.getUserInfoByKey(KEY_CLOSE_ORDER_NUM).toIntOrNull()?:15
+        val order_num = Configuration.getUserInfoByKey(KEY_CLOSE_ORDER_NUM).toIntOrNull() ?: 15
         tv_order_num_close.text = "自动关闭通道（$order_num 单不成功）"
 
         tv_notice_setting.setOnClickListener { toNotifactionSetting() }
@@ -71,7 +72,7 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
 //                    }
 //                    .show()
 //        }
-        tv_order_num_close.setOnClickListener {_ ->
+        tv_order_num_close.setOnClickListener { _ ->
             MaterialDialog(this)
                     .title(
                             text = "自动关闭通道的订单数"
@@ -83,8 +84,8 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
                             text = "确定",
                             click = {
                                 val num = it.getInputField()?.text.toString()
-                                Configuration.putUserInfo(KEY_CLOSE_ORDER_NUM,num)
-                                closeOrderNum = num.toIntOrNull()?:15
+                                Configuration.putUserInfo(KEY_CLOSE_ORDER_NUM, num)
+                                closeOrderNum = num.toIntOrNull() ?: 15
                                 tv_order_num_close.text = "自动关闭通道（$closeOrderNum 单不成功）"
                             }
                     )
@@ -93,26 +94,19 @@ class SettingActivity : BaseActivity<SettingContract.Presenter>(),SettingContrac
         tv_clear_data.setOnClickListener {
             AlertDialog.Builder(this)
                     .setMessage("是否清除本地数据库？")
-                    .setPositiveButton("确定"){dialog, _ ->
+                    .setPositiveButton("确定") { dialog, _ ->
                         dialog.dismiss()
                         presenter.cleatLocalDB()
                     }
-                    .setNegativeButton("取消"){dialog, _ ->
+                    .setNegativeButton("取消") { dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()
         }
-//        tv_exit_account.setOnClickListener {
-//            AlertDialog.Builder(this)
-//                    .setMessage("是否确定退出当前账号？")
-//                    .setPositiveButton("确定"){dialog, _ ->
-//                        dialog.dismiss()
-//                        presenter.exitAccount()
-//                    }
-//                    .setNegativeButton("取消"){dialog, _ ->
-//                        dialog.dismiss()
-//                    }
-//                    .show()
-//        }
+        tv_exit_account.setOnClickListener {
+            AddressDialog(this) { web, netty ->
+                presenter.configAddress(web, netty)
+            }.show()
+        }
     }
 }
