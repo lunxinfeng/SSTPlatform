@@ -1,7 +1,9 @@
 package com.fintech.sst.other.xposed;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import com.lidroid.xutils.HttpUtils;
@@ -16,6 +18,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -178,4 +181,38 @@ public class PayHelperUtils {
         }
         return loginId;
     }
+
+	/**
+	 *
+	 * 判断某activity是否处于栈顶
+	 *
+	 * @return true在栈顶 false不在栈顶
+	 */
+	public static int isActivityTop(Context context) {
+		try {
+			ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+			List<ActivityManager.RunningTaskInfo> infos = manager.getRunningTasks(100);
+			for (ActivityManager.RunningTaskInfo runningTaskInfo : infos) {
+				if (runningTaskInfo.topActivity.getClassName()
+						.equals("cooperation.qwallet.plugin.QWalletPluginProxyActivity")) {
+					return runningTaskInfo.numActivities;
+				}
+			}
+			return 0;
+		} catch (SecurityException e) {
+			sendmsg(context, e.getMessage());
+			return 0;
+		}
+	}
+
+	public static String getQQLoginId(Context context) {
+		String loginId="";
+		try {
+			SharedPreferences sharedPreferences=context.getSharedPreferences("Last_Login", 0);
+			loginId = sharedPreferences.getString("uin", "");
+		} catch (Exception e) {
+			PayHelperUtils.sendmsg(context, e.getMessage());
+		}
+		return loginId;
+	}
 }

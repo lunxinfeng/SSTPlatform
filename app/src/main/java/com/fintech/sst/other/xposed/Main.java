@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,12 +16,16 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.fintech.sst.other.xposed.qq.QQDBManager;
+import com.fintech.sst.other.xposed.qq.QQHook;
+import com.fintech.sst.other.xposed.qq.QQPlugHook;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,6 +39,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -121,43 +127,43 @@ public class Main implements IXposedHookLoadPackage {
                 XposedBridge.log(e);
             }
         }
-//        else if(QQ_PACKAGE.equals(packageName)){
-//        	try {
-//        		 XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
-//                    @Override
-//                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                        super.afterHookedMethod(param);
-//                        Context context = (Context) param.args[0];
-//                        ClassLoader appClassLoader = context.getClassLoader();
-//                        if(QQ_PACKAGE.equals(processName) && !QQ_PACKAGE_ISHOOK){
-//                        	QQ_PACKAGE_ISHOOK=true;
-//                        	//注册广播
-//                        	StartQQReceived startQQ=new StartQQReceived();
-//                    		IntentFilter intentFilter = new IntentFilter();
-//                            intentFilter.addAction("com.payhelper.qq.start");
-//                            context.registerReceiver(startQQ, intentFilter);
-//                        	XposedBridge.log("handleLoadPackage: " + packageName);
-//                        	PayHelperUtils.sendmsg(context, "QQHook成功，当前QQ版本:"+PayHelperUtils.getVerName(context));
-//    						new QQHook().hook(appClassLoader,context);
-//                        }
-//                    }
-//                });
-//
-//    		 XposedHelpers.findAndHookConstructor("dalvik.system.BaseDexClassLoader",
-//                     lpparam.classLoader, String.class, File.class, String.class, ClassLoader.class, new XC_MethodHook() {
-//                 @Override
-//                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//
-//                     if (param.args[0].toString().contains("qwallet_plugin.apk")) {
-//                         ClassLoader classLoader = (BaseDexClassLoader) param.thisObject;
-//                         new QQPlugHook().hook(classLoader);
-//                     }
-//                 }
-//             });
-//    		}catch (Exception e) {
-//                XposedBridge.log(e);
-//            }
-//        }
+        else if(QQ_PACKAGE.equals(packageName)){
+        	try {
+        		 XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        Context context = (Context) param.args[0];
+                        ClassLoader appClassLoader = context.getClassLoader();
+                        if(QQ_PACKAGE.equals(processName) && !QQ_PACKAGE_ISHOOK){
+                        	QQ_PACKAGE_ISHOOK=true;
+                        	//注册广播
+                        	StartQQReceived startQQ=new StartQQReceived();
+                    		IntentFilter intentFilter = new IntentFilter();
+                            intentFilter.addAction("com.payhelper.qq.start");
+                            context.registerReceiver(startQQ, intentFilter);
+                        	XposedBridge.log("handleLoadPackage: " + packageName);
+                        	PayHelperUtils.sendmsg(context, "QQHook成功，当前QQ版本:"+PayHelperUtils.getVerName(context));
+    						new QQHook().hook(appClassLoader,context);
+                        }
+                    }
+                });
+
+    		 XposedHelpers.findAndHookConstructor("dalvik.system.BaseDexClassLoader",
+                     lpparam.classLoader, String.class, File.class, String.class, ClassLoader.class, new XC_MethodHook() {
+                 @Override
+                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+
+                     if (param.args[0].toString().contains("qwallet_plugin.apk")) {
+                         ClassLoader classLoader = (BaseDexClassLoader) param.thisObject;
+                         new QQPlugHook().hook(classLoader);
+                     }
+                 }
+             });
+    		}catch (Exception e) {
+                XposedBridge.log(e);
+            }
+        }
         else if (UNIONPAY_PACKAGE.equals(packageName)){
             try {
                 if (!MIHOOK) {
@@ -228,32 +234,32 @@ public class Main implements IXposedHookLoadPackage {
 //    }
 
 
-//    //自定义启动QQ广播
-//    class StartQQReceived extends BroadcastReceiver {
-//    	@Override
-//    	public void onReceive(Context context, Intent intent) {
-//    		XposedBridge.log("启动QQActivity");
-//    		try {
-////    			PayHelperUtils.sendmsg(context, "启动QQActivity"+l);
-//
-//    			String money=intent.getStringExtra("money");
-//    			String mark=intent.getStringExtra("mark");
-//    			if(!TextUtils.isEmpty(money) && !TextUtils.isEmpty(mark)){
-//    				QQDBManager qqdbManager=new QQDBManager(context);
-//        			qqdbManager.addQQMark(intent.getStringExtra("money"),intent.getStringExtra("mark"));
-//    				long l=System.currentTimeMillis();
-//        			String url="mqqapi://wallet/open?src_type=web&viewtype=0&version=1&view=7&entry=1&seq=" + l;
-//        			Intent intent2=new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//        			intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        			context.startActivity(intent2);
-//    			}
-//
-////    			PayHelperUtils.sendmsg(context, "启动成功"+l);
-//    		} catch (Exception e) {
-//    			PayHelperUtils.sendmsg(context, "StartQQReceived异常"+e.getMessage());
-//			}
-//    	}
-//    }
+    //自定义启动QQ广播
+    class StartQQReceived extends BroadcastReceiver {
+    	@Override
+    	public void onReceive(Context context, Intent intent) {
+    		XposedBridge.log("启动QQActivity");
+    		try {
+//    			PayHelperUtils.sendmsg(context, "启动QQActivity"+l);
+
+    			String money=intent.getStringExtra("money");
+    			String mark=intent.getStringExtra("mark");
+    			if(!TextUtils.isEmpty(money) && !TextUtils.isEmpty(mark)){
+    				QQDBManager qqdbManager=new QQDBManager(context);
+        			qqdbManager.addQQMark(intent.getStringExtra("money"),intent.getStringExtra("mark"));
+    				long l=System.currentTimeMillis();
+        			String url="mqqapi://wallet/open?src_type=web&viewtype=0&version=1&view=7&entry=1&seq=" + l;
+        			Intent intent2=new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        			intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        			context.startActivity(intent2);
+    			}
+
+//    			PayHelperUtils.sendmsg(context, "启动成功"+l);
+    		} catch (Exception e) {
+    			PayHelperUtils.sendmsg(context, "StartQQReceived异常"+e.getMessage());
+			}
+    	}
+    }
 
 
 
