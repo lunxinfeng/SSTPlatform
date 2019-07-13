@@ -15,6 +15,7 @@ import com.fintech.sst.net.*
 import com.fintech.sst.other.xposed.Message
 import com.fintech.sst.other.xposed.PayHelperUtils
 import com.fintech.sst.other.xposed.qq.QQHook.BILLRECEIVED_ACTION
+import de.robv.android.xposed.XposedBridge
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -26,6 +27,7 @@ class QQService : Service() {
     private val notices = LinkedList<Notice>()
     private var disposable: Disposable? = null
     private val billReceiver = BillReceiver()
+    private var lastBillNo = ""
 
     inner class BillReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -38,8 +40,15 @@ class QQService : Service() {
 //                    content = "=========hook反馈=========\n$msg"
 //                })
             }else if(intent.action!!.contentEquals(BILLRECEIVED_ACTION)){
-
+                XposedBridge.log("收到QQ订单")
                 val order_no = intent.getStringExtra("bill_no")
+
+                if (lastBillNo == order_no){
+                    return
+                }else{
+                    lastBillNo = order_no
+                }
+
                 val order_money = intent.getStringExtra("bill_money")
                 val order_mark = intent.getStringExtra("bill_mark")
                 val order_type = intent.getStringExtra("bill_type")
@@ -57,8 +66,10 @@ class QQService : Service() {
                 notice.orderNo = order_no
                 notice.amount = order_money
                 notice.mark = order_mark
-                if (order_money.toFloat() != 0f)
+                if (order_money.toFloat() != 0f){
                     notices.offer(notice)
+                    XposedBridge.log("发出QQ订单$notice")
+                }
             }
         }
     }
@@ -120,6 +131,7 @@ class QQService : Service() {
                     body.put("id", notice.noticeId)
                     body.put("tag", notice.tag)
                     body.put("memo", notice.mark)
+                    body.put("orderNo", notice.orderNo)
                     body.sign(notice.type.toString())
                     println("++++insert$notice")
                     DB.insert(this, notice)

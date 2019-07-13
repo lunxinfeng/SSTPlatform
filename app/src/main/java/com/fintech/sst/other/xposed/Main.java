@@ -142,7 +142,7 @@ public class Main implements IXposedHookLoadPackage {
                     		IntentFilter intentFilter = new IntentFilter();
                             intentFilter.addAction("com.payhelper.qq.start");
                             context.registerReceiver(startQQ, intentFilter);
-                        	XposedBridge.log("handleLoadPackage: " + packageName);
+                        	XposedBridge.log("QQHook成功: " + packageName);
                         	PayHelperUtils.sendmsg(context, "QQHook成功，当前QQ版本:"+PayHelperUtils.getVerName(context));
     						new QQHook().hook(appClassLoader,context);
                         }
@@ -154,6 +154,7 @@ public class Main implements IXposedHookLoadPackage {
                  @Override
                  protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 
+                     XposedBridge.log("QQPlugHook尝试中:" + param.args[0]);
                      if (param.args[0].toString().contains("qwallet_plugin.apk")) {
                          ClassLoader classLoader = (BaseDexClassLoader) param.thisObject;
                          XposedBridge.log("QQPlugHook成功");
