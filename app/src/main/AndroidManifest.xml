@@ -94,7 +94,11 @@
         <service
             android:name=".service.YunService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
+        <service
+            android:name=".service.QQService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

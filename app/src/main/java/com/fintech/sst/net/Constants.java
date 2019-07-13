@@ -84,6 +84,17 @@ public class Constants {
     public static final String KEY_LOGIN_TOKEN_YUN = "loginTokenYUN";
     public static final String KEY_ACCOUNT_ID_YUN = "accountIdYUN";
 
+    public static final String KEY_MCH_ID_QQ = "mchIdQQ";
+    public static final String KEY_USER_NAME_QQ = "userNameQQ";
+    public static final String KEY_PASSWORD_QQ = "passwordQQ";
+    public static final String KEY_ACCOUNT_QQ = "accountQQ";
+    public static final String KEY_ALLOW_LOAD_QQ = "allowLoadQQ";
+    public static final String KEY_BEGIN_NUM_QQ = "beginNumQQ";
+    public static final String KEY_END_NUM_QQ = "endNumQQ";
+    public static final String KEY_MAX_NUM_QQ = "maxNumQQ";
+    public static final String KEY_LOGIN_TOKEN_QQ = "loginTokenQQ";
+    public static final String KEY_ACCOUNT_ID_QQ = "accountIdQQ";
+
 
     public static final String KEY_ADDRESS_WEB = "address_web";
     public static final String KEY_ADDRESS_NETTY = "address_netty";

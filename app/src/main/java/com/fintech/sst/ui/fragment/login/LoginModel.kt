@@ -2,10 +2,7 @@ package com.fintech.sst.ui.fragment.login
 
 import com.fintech.sst.App
 import com.fintech.sst.data.DataSource
-import com.fintech.sst.helper.METHOD_ALI
-import com.fintech.sst.helper.METHOD_BANK
-import com.fintech.sst.helper.METHOD_WECHAT
-import com.fintech.sst.helper.METHOD_YUN
+import com.fintech.sst.helper.*
 import com.fintech.sst.net.Configuration
 import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ResultEntity
@@ -145,6 +142,21 @@ class LoginModel: DataSource {
                 Configuration.putUserInfo(KEY_BANK_CODE, result[KEY_CODE])
                 Configuration.putUserInfo(KEY_BANK_REGEX, result[KEY_REGEX])
                 Configuration.putUserInfo(KEY_BANK_TYPE, result[KEY_TYPE])
+            }
+
+            METHOD_QQ -> {
+                Configuration.putUserInfo(KEY_MCH_ID_QQ, result[KEY_MCH_ID])
+                Configuration.putUserInfo(KEY_USER_NAME_QQ, result[KEY_USER_NAME])
+                if (password != "")
+                    Configuration.putUserInfo(KEY_PASSWORD_QQ, password)
+                Configuration.putUserInfo(KEY_LOGIN_TOKEN_QQ, result[KEY_LOGIN_TOKEN])
+
+                Configuration.putUserInfo(KEY_ACCOUNT_QQ, result[KEY_ACCOUNT])
+                Configuration.putUserInfo(KEY_ALLOW_LOAD_QQ, result[KEY_ALLOW_LOAD])
+                Configuration.putUserInfo(KEY_BEGIN_NUM_QQ, result[KEY_BEGIN_NUM])
+                Configuration.putUserInfo(KEY_END_NUM_QQ, result[KEY_END_NUM])
+                Configuration.putUserInfo(KEY_MAX_NUM_QQ, result[KEY_MAX_NUM])
+                Configuration.putUserInfo(KEY_ACCOUNT_ID_QQ, result[KEY_ACCOUNT_ID])
             }
         }
     }

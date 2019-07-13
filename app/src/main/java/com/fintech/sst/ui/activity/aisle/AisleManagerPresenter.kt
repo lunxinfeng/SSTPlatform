@@ -84,6 +84,11 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
             userInfo(METHOD_YUN)
             view.loginSuccess(METHOD_YUN)
         }
+
+        if (Configuration.isLogin(METHOD_QQ)){
+            userInfo(METHOD_QQ)
+            view.loginSuccess(METHOD_QQ)
+        }
     }
 
     override fun userInfo(type: String) {
@@ -153,6 +158,10 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                 (Configuration.isLogin(METHOD_ALI) && Configuration.isLogin(METHOD_YUN)) ||
                 (Configuration.isLogin(METHOD_WECHAT) && Configuration.isLogin(METHOD_YUN)) ||
                 (Configuration.isLogin(METHOD_BANK) && Configuration.isLogin(METHOD_YUN)) ||
+                (Configuration.isLogin(METHOD_QQ) && Configuration.isLogin(METHOD_ALI)) ||
+                (Configuration.isLogin(METHOD_QQ) && Configuration.isLogin(METHOD_WECHAT)) ||
+                (Configuration.isLogin(METHOD_QQ) && Configuration.isLogin(METHOD_YUN)) ||
+                (Configuration.isLogin(METHOD_QQ) && Configuration.isLogin(METHOD_BANK)) ||
                 (Configuration.isLogin(METHOD_WECHAT) && Configuration.isLogin(METHOD_BANK))){
             view.checkOrderType()
         }else if (Configuration.isLogin(METHOD_ALI)){
@@ -163,6 +172,8 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
             view.toOrderList(METHOD_BANK)
         }else if (Configuration.isLogin(METHOD_YUN)){
             view.toOrderList(METHOD_YUN)
+        }else if (Configuration.isLogin(METHOD_QQ)){
+            view.toOrderList(METHOD_QQ)
         }else{
             view.showToast("请先登录")
         }
@@ -274,6 +285,11 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 playWarning()
                                 view.showHintDialog("云闪付连续10单不成功")
                             }
+                            t.type == 5 -> {//QQ连续10单不成功
+                                userInfo(METHOD_QQ)
+                                playWarning()
+                                view.showHintDialog("QQ连续10单不成功")
+                            }
                             t.type == 111 -> {//支付宝风控
                                 userInfo(METHOD_ALI)
                                 playWarning()
@@ -296,10 +312,14 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                 exitLogin(METHOD_YUN)
                             }
                             t.type == 15 -> {
+                                view.showToast("云闪付通道账号退出登录")
+                                exitLogin(METHOD_QQ)
+                            }
+                            t.type == 20 -> {
                                 view.showToast("长连接断开")
                                 playWarning()
                             }
-                            t.type == 16 -> {
+                            t.type == 21 -> {
                                 view.showToast("长连接连接成功")
                                 stopWarning()
                                 aisleStatus(true,METHOD_YUN)
@@ -311,7 +331,7 @@ class AisleManagerPresenter(val view: AisleManagerContract.View, private val mod
                                     val type = t.type.toString()
                                     aisleStatus(false,type)
                                     playWarning()
-                                    view.showHintDialog("${if (type == METHOD_ALI) "支付宝" else if (type == METHOD_WECHAT) "微信" else if (type == METHOD_BANK) "银行通道" else "未知通道"}有重复通知")
+                                    view.showHintDialog("${if (type == METHOD_ALI) "支付宝" else if (type == METHOD_WECHAT) "微信" else if (type == METHOD_BANK) "银行通道" else if (type == METHOD_YUN) "云闪付通道" else if (type == METHOD_QQ) "QQ通道" else "未知通道"}有重复通知")
                                 }
 
                                 view.updateNoticeList(t)

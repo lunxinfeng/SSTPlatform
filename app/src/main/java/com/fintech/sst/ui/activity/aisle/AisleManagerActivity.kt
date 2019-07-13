@@ -26,10 +26,7 @@ import com.fintech.sst.net.Constants
 import com.fintech.sst.net.Constants.*
 import com.fintech.sst.net.ProgressObserver
 import com.fintech.sst.net.bean.AisleInfo
-import com.fintech.sst.service.AliService
-import com.fintech.sst.service.BankService
-import com.fintech.sst.service.HeartService
-import com.fintech.sst.service.YunService
+import com.fintech.sst.service.*
 import com.fintech.sst.ui.activity.config.ConfigActivity
 import com.fintech.sst.ui.activity.login.LoginActivity
 import com.fintech.sst.ui.activity.notice.NoticeListActivity
@@ -105,6 +102,20 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                     if (!isServiceRunning(this@AisleManagerActivity,YunService::class.java.name)){
                         debug(TAG,"云闪付监听服务没有启动，开始启动")
                         startYunService()
+                    }
+                }
+            }
+            METHOD_QQ -> {
+                et_aisle_QQ.setText(info?.account ?: "")
+                et_money_QQ.setText(info?.realAmount.toString())
+                et_money_notice_QQ.setText(info?.tradeNoticeLogAmount.toString())
+                et_successRate_QQ.setText("${(info?.ok?.toString()?.toFloatOrNull()
+                        ?: 0f) * 100}%")
+                switch_aisle_QQ.isChecked = info?.enable == "1"
+                if (switch_aisle_QQ.isChecked){
+                    if (!isServiceRunning(this@AisleManagerActivity,QQService::class.java.name)){
+                        debug(TAG,"QQ监听服务没有启动，开始启动")
+                        startQQService()
                     }
                 }
             }
@@ -195,19 +206,27 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 cardViewYun.setStatus(MenuCardView.Status.CLOSE)
                 stopYunService()
             }
+            METHOD_QQ -> {
+                tvLoginQQ.visibility = View.VISIBLE
+                hideQQ.visibility = View.VISIBLE
+                exitQQ.visibility = View.GONE
+                cardViewQQ.setStatus(MenuCardView.Status.CLOSE)
+                stopQQService()
+            }
         }
     }
 
     override fun checkOrderType() {
         MaterialDialog(this)
                 .listItems(
-                        items = listOf("支付宝通道", "微信通道", "银行通道", "云闪付通道"),
+                        items = listOf("支付宝通道", "微信通道", "银行通道", "云闪付通道","QQ通道"),
                         selection = { dialog, index, _ ->
                             when (index) {
                                 0 -> toOrderList(METHOD_ALI)
                                 1 -> toOrderList(METHOD_WECHAT)
                                 2 -> toOrderList(METHOD_BANK)
                                 3 -> toOrderList(METHOD_YUN)
+                                4 -> toOrderList(METHOD_QQ)
                             }
                             dialog.dismiss()
                         }
@@ -409,11 +428,13 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         tvLoginWeChat.setOnLongClickListener { accountLogin(METHOD_WECHAT) }
         tvLoginBank.setOnClickListener { accountLogin(METHOD_BANK) }
         tvLoginYun.setOnClickListener { accountLogin(METHOD_YUN) }
+        tvLoginQQ.setOnClickListener { accountLogin(METHOD_QQ) }
 
         hideAli.setOnClickListener { viewHideOrShow(cardViewAli, false) }
         hideWechat.setOnClickListener { viewHideOrShow(cardViewWechat, false) }
         hideBank.setOnClickListener { viewHideOrShow(cardViewBank, false) }
         hideYun.setOnClickListener { viewHideOrShow(cardViewYun, false) }
+        hideQQ.setOnClickListener { viewHideOrShow(cardViewQQ, false) }
 
         exitAli.setOnClickListener {
             Configuration.removeUserInfoByKey(KEY_USER_NAME_ALI)
@@ -435,11 +456,17 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
             Configuration.removeUserInfoByKey(KEY_PASSWORD_YUN)
             presenter.exitLogin(METHOD_YUN)
         }
+        exitQQ.setOnClickListener {
+            Configuration.removeUserInfoByKey(KEY_USER_NAME_QQ)
+            Configuration.removeUserInfoByKey(KEY_PASSWORD_QQ)
+            presenter.exitLogin(METHOD_QQ)
+        }
 
         tv_refresh_ali.setOnClickListener { presenter.userInfo(METHOD_ALI) }
         tv_refresh_wechat.setOnClickListener { presenter.userInfo(METHOD_WECHAT) }
         tv_refresh_Bank.setOnClickListener { presenter.userInfo(METHOD_BANK) }
         tv_refresh_Yun.setOnClickListener { presenter.userInfo(METHOD_YUN) }
+        tv_refresh_QQ.setOnClickListener { presenter.userInfo(METHOD_QQ) }
 
         switch_aisle_ali.apply {
             setOnCheckedChangeListener { view, isChecked ->
@@ -465,6 +492,12 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                     presenter.aisleStatus(isChecked, METHOD_YUN)
             }
         }
+        switch_aisle_QQ.apply {
+            setOnCheckedChangeListener { view, isChecked ->
+                if (view.isPressed)
+                    presenter.aisleStatus(isChecked, METHOD_QQ)
+            }
+        }
 
         textView22.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_ali.isChecked)
@@ -484,6 +517,11 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         textView2222.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_Yun.isChecked)
                 presenter.toAisleManager(METHOD_YUN)
+            false
+        }
+        textView22222.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && !switch_aisle_QQ.isChecked)
+                presenter.toAisleManager(METHOD_QQ)
             false
         }
 
@@ -525,6 +563,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         menuShowAll?.isVisible = false
         viewHideOrShow(cardViewWechat, false)
         viewHideOrShow(cardViewBank, false)
+        viewHideOrShow(cardViewAli, false)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -535,6 +574,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 viewHideOrShow(cardViewWechat, true)
                 viewHideOrShow(cardViewBank, true)
                 viewHideOrShow(cardViewYun, true)
+                viewHideOrShow(cardViewQQ, true)
             }
             R.id.action_order_manager -> {
                 presenter.toOrder()
@@ -646,6 +686,13 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
     private fun startYunService() {
         startService(Intent(this, YunService::class.java))
     }
+    private fun stopQQService() {
+        stopService(Intent(this, QQService::class.java))
+    }
+
+    private fun startQQService() {
+        startService(Intent(this, QQService::class.java))
+    }
 
     @AfterPermissionGranted(Constants.ALL_PERMISSION)
     fun requestAllPermission() {
@@ -703,6 +750,11 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 tvLoginYun.visibility = View.GONE
                 hideYun.visibility = View.GONE
                 exitYun.visibility = View.VISIBLE
+            }
+            METHOD_QQ -> {
+                tvLoginQQ.visibility = View.GONE
+                hideQQ.visibility = View.GONE
+                exitQQ.visibility = View.VISIBLE
             }
         }
         startHeartService()

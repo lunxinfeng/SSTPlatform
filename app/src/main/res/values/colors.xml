@@ -24,5 +24,6 @@
     <color name="wechat_bg">#00bc0c</color>
     <color name="bank_bg">#eed501</color>
     <color name="yun_bg">#ee0d01</color>
+    <color name="qq_bg">#219CB4</color>
     <color name="red">#ff0000</color>
 </resources>

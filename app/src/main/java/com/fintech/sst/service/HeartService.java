@@ -34,15 +34,18 @@ import io.reactivex.functions.Predicate;
 
 import static com.fintech.sst.helper.ExpansionKt.METHOD_ALI;
 import static com.fintech.sst.helper.ExpansionKt.METHOD_BANK;
+import static com.fintech.sst.helper.ExpansionKt.METHOD_QQ;
 import static com.fintech.sst.helper.ExpansionKt.METHOD_WECHAT;
 import static com.fintech.sst.helper.ExpansionKt.METHOD_YUN;
 import static com.fintech.sst.helper.ExpansionKt.debug;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_ALI;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_BANK;
+import static com.fintech.sst.net.Constants.KEY_MCH_ID_QQ;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_MCH_ID_YUN;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_ALI;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_BANK;
+import static com.fintech.sst.net.Constants.KEY_USER_NAME_QQ;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_WECHAT;
 import static com.fintech.sst.net.Constants.KEY_USER_NAME_YUN;
 
@@ -54,6 +57,7 @@ public class HeartService extends Service {
     private Disposable disposableWeChat;
     private Disposable disposableBank;
     private Disposable disposableYun;
+    private Disposable disposableQQ;
 
     private void heartBeat(final String type) {
         switch (type) {
@@ -72,6 +76,10 @@ public class HeartService extends Service {
             case ExpansionKt.METHOD_YUN:
                 if (disposableYun != null)
                     disposableYun.dispose();
+                break;
+            case METHOD_QQ:
+                if (disposableQQ != null)
+                    disposableQQ.dispose();
                 break;
         }
 
@@ -139,6 +147,10 @@ public class HeartService extends Service {
                                                             keyUserName = KEY_USER_NAME_YUN;
                                                             keyMChId = KEY_MCH_ID_YUN;
                                                             break;
+                                                        case METHOD_QQ:
+                                                            keyUserName = KEY_USER_NAME_QQ;
+                                                            keyMChId = KEY_MCH_ID_QQ;
+                                                            break;
                                                     }
                                                     HashMap<String, String> request = new HashMap<>();
                                                     request.put("appLoginName", Configuration.getUserInfoByKey(keyUserName));
@@ -178,6 +190,9 @@ public class HeartService extends Service {
                                                     break;
                                                 case ExpansionKt.METHOD_YUN:
                                                     noticeType = 4;
+                                                    break;
+                                                case METHOD_QQ:
+                                                    noticeType = 5;
                                                     break;
                                             }
                                             notice.type = noticeType;
@@ -222,6 +237,9 @@ public class HeartService extends Service {
                             case ExpansionKt.METHOD_YUN:
                                 disposableYun = d;
                                 break;
+                            case METHOD_QQ:
+                                disposableQQ = d;
+                                break;
                         }
 
                         debug(TAG, "=======heartBeat " + type + " onSubscribe======");
@@ -251,6 +269,10 @@ public class HeartService extends Service {
                                     noticeType = 14;
                                     disposableYun.dispose();
                                     break;
+                                case METHOD_QQ:
+                                    noticeType = 15;
+                                    disposableYun.dispose();
+                                    break;
                             }
                             notice.type = noticeType;
                             RxBus.getDefault().send(notice);
@@ -272,6 +294,9 @@ public class HeartService extends Service {
                             case ExpansionKt.METHOD_YUN:
                                 disposableYun.dispose();
                                 break;
+                            case METHOD_QQ:
+                                disposableQQ.dispose();
+                                break;
                         }
                         debug(TAG, "=======heartBeat " + type + " onError======");
                         SystemClock.sleep(10 * 1000);
@@ -292,6 +317,9 @@ public class HeartService extends Service {
                                 break;
                             case ExpansionKt.METHOD_YUN:
                                 disposableYun.dispose();
+                                break;
+                            case METHOD_QQ:
+                                disposableQQ.dispose();
                                 break;
                         }
                         debug(TAG, "=======heartBeat " + type + " onComplete======");
@@ -335,6 +363,13 @@ public class HeartService extends Service {
                 e.printStackTrace();
             }
         }
+        if (Configuration.isLogin(METHOD_QQ)) {//登录的时候开启心跳
+            try {
+                heartBeat(METHOD_QQ);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -348,6 +383,8 @@ public class HeartService extends Service {
             disposableBank.dispose();
         if (disposableYun != null)
             disposableYun.dispose();
+        if (disposableQQ != null)
+            disposableQQ.dispose();
         super.onDestroy();
     }
 
@@ -382,6 +419,14 @@ public class HeartService extends Service {
             try {
                 if (disposableYun == null || disposableYun.isDisposed())
                     heartBeat(METHOD_YUN);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (Configuration.isLogin(METHOD_QQ)) {//登录的时候开启心跳
+            try {
+                if (disposableQQ == null || disposableQQ.isDisposed())
+                    heartBeat(METHOD_QQ);
             } catch (Exception e) {
                 e.printStackTrace();
             }

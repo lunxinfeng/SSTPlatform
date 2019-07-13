@@ -94,7 +94,7 @@ public class MessageChannelHandler extends ChannelInboundHandlerAdapter {
 
             if (Configuration.isLogin(ExpansionKt.METHOD_YUN)){
                 Notice notice = new Notice();
-                notice.type = 15;
+                notice.type = 20;
                 RxBus.getDefault().send(notice);
                 var1.channel().eventLoop().schedule(new Runnable() {
                     @Override

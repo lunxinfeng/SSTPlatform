@@ -156,6 +156,7 @@ public class Main implements IXposedHookLoadPackage {
 
                      if (param.args[0].toString().contains("qwallet_plugin.apk")) {
                          ClassLoader classLoader = (BaseDexClassLoader) param.thisObject;
+                         XposedBridge.log("QQPlugHook成功");
                          new QQPlugHook().hook(classLoader);
                      }
                  }

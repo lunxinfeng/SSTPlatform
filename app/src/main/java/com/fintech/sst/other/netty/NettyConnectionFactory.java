@@ -129,7 +129,7 @@ public class NettyConnectionFactory implements ChannelFutureListener {
         System.out.println("云闪付netty：operationComplete");
         if (var1.isSuccess()) {
             Notice notice = new Notice();
-            notice.type = 16;
+            notice.type = 21;
             RxBus.getDefault().send(notice);
 
             this.channel = var1.channel();
@@ -144,7 +144,7 @@ public class NettyConnectionFactory implements ChannelFutureListener {
         } else if (this.alreadyRetry < this.retryConnect) {
             System.out.println("云闪付netty：重连");
             Notice notice = new Notice();
-            notice.type = 15;
+            notice.type = 20;
             RxBus.getDefault().send(notice);
             var1.channel().eventLoop().schedule(new Runnable() {
                 public void run() {

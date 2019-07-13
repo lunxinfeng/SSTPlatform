@@ -53,7 +53,7 @@ public class QQHook {
 				    			broadCastIntent.putExtra("bill_no", tradeno);
 				                broadCastIntent.putExtra("bill_money", money);
 				                broadCastIntent.putExtra("bill_mark", mark);
-				                broadCastIntent.putExtra("bill_type", "qq");
+				                broadCastIntent.putExtra("bill_type", "5001");
 				                broadCastIntent.setAction(BILLRECEIVED_ACTION);
 				                context.sendBroadcast(broadCastIntent);
 				                XposedBridge.log("=========qq钱包收到订单start========");

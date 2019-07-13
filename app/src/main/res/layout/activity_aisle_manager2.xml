@@ -845,6 +845,211 @@
                 </FrameLayout>
             </com.fintech.sst.ui.widget.MenuCardView>
 
+            <com.fintech.sst.ui.widget.MenuCardView
+                android:id="@+id/cardViewQQ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:elevation="5dp"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardViewYun"
+                app:layout_goneMarginEnd="24dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:background="#ff0000"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/hideQQ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="#fb8155"
+                        android:gravity="center"
+                        android:padding="16dp"
+                        android:text="@string/hide"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/exitQQ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="#00bc0c"
+                        android:gravity="center"
+                        android:padding="16dp"
+                        android:text="@string/exit"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white">
+
+
+                        <EditText
+                            android:id="@+id/et_aisle_QQ"
+                            android:layout_width="0dp"
+                            android:layout_height="46dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:ems="10"
+                            android:enabled="false"
+                            android:focusable="false"
+                            android:inputType="textPersonName"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/textView22222"
+                            app:layout_constraintEnd_toStartOf="@+id/switch_aisle_QQ"
+                            app:layout_constraintStart_toEndOf="@+id/textView22222" />
+
+                        <TextView
+                            android:id="@+id/textView66666"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:drawableLeft="@mipmap/icon_success_rate"
+                            android:drawablePadding="10dp"
+                            android:text="@string/success_rate"
+                            android:textColor="#515151"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="@+id/textView33333"
+                            app:layout_constraintTop_toBottomOf="@+id/textView100000" />
+
+                        <TextView
+                            android:id="@+id/textView22222"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:drawableLeft="@mipmap/icon_aisle_manger"
+                            android:drawablePadding="10dp"
+                            android:text="@string/aisle"
+                            android:textColor="#515151"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/textView33333"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:drawableLeft="@mipmap/icon_amount"
+                            android:drawablePadding="10dp"
+                            android:text="@string/money_pay"
+                            android:textColor="#515151"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="@+id/textView22222"
+                            app:layout_constraintTop_toBottomOf="@+id/textView22222" />
+
+                        <EditText
+                            android:id="@+id/et_successRate_QQ"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:ems="10"
+                            android:enabled="false"
+                            android:focusable="false"
+                            android:inputType="textPersonName"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/textView66666"
+                            app:layout_constraintEnd_toEndOf="@+id/et_aisle_QQ"
+                            app:layout_constraintStart_toEndOf="@+id/textView66666" />
+
+                        <TextView
+                            android:id="@+id/tv_refresh_QQ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@mipmap/refresh"
+                            android:textColor="@color/colorPrimaryDark"
+                            app:layout_constraintEnd_toEndOf="@+id/switch_aisle_QQ"
+                            app:layout_constraintTop_toTopOf="@+id/textView66666" />
+
+                        <Switch
+                            android:id="@+id/switch_aisle_QQ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:background="@drawable/toggle_aisle_manager_wechat"
+                            android:checked="false"
+                            android:thumb="@null"
+                            android:track="@null"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/textView22222" />
+
+                        <EditText
+                            android:id="@+id/et_money_QQ"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:ems="10"
+                            android:enabled="false"
+                            android:focusable="false"
+                            android:inputType="textPersonName"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/textView33333"
+                            app:layout_constraintEnd_toEndOf="@+id/et_aisle_QQ"
+                            app:layout_constraintStart_toEndOf="@+id/textView33333" />
+
+                        <TextView
+                            android:id="@+id/textView100000"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:drawableStart="@mipmap/icon_amount"
+                            android:drawablePadding="10dp"
+                            android:text="@string/money_notice"
+                            android:textColor="#515151"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="@+id/textView33333"
+                            app:layout_constraintTop_toBottomOf="@+id/textView33333" />
+
+                        <EditText
+                            android:id="@+id/et_money_notice_QQ"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:ems="10"
+                            android:enabled="false"
+                            android:focusable="false"
+                            android:inputType="number"
+                            android:text="0.0"
+                            android:textColor="@color/red"
+                            android:textStyle="bold"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/textView100000"
+                            app:layout_constraintEnd_toEndOf="@+id/et_money_QQ"
+                            app:layout_constraintStart_toEndOf="@+id/textView100000" />
+                    </android.support.constraint.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/tvLoginQQ"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/qq_bg"
+                        android:drawableStart="@mipmap/logo_bank"
+                        android:drawablePadding="32dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="50dp"
+                        android:text="@string/qq_login"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                </FrameLayout>
+            </com.fintech.sst.ui.widget.MenuCardView>
+
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="0dp"
