@@ -167,7 +167,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                         calendar.set(Calendar.MILLISECOND, 0);
 
                         long time;
-                        if (calendar.getTimeInMillis() > System.currentTimeMillis()){
+                        if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000){
                             time = calendar.getTimeInMillis() - 24 * 60 * 60 * 1000;
                         }else{
                             time = calendar.getTimeInMillis();
@@ -186,7 +186,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hour, min, 59);
                         calendar.set(Calendar.MILLISECOND, 0);
 
-                        if (calendar.getTimeInMillis() > System.currentTimeMillis()){
+                        if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000){
                             time = calendar.getTimeInMillis() - 24 * 60 * 60 * 1000;
                         }else{
                             time = calendar.getTimeInMillis();
