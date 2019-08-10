@@ -64,7 +64,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                     null, null, SORT_FIELD_STRING);
             if (cursor == null) return;
             final int count = cursor.getCount();
-            System.out.println("--------------短信count-----" +count +"\t" + mMessageCount+"---------");
+            System.out.println("--------------短信count-----" + count + "\t" + mMessageCount + "---------");
             if (count <= mMessageCount) {
                 mMessageCount = count;
                 return;
@@ -93,7 +93,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                 // 得到短信号码和内容之后进行相关处理
                 if (bankCode == null)
                     bankCode = Configuration.getUserInfoByKey(Constants.KEY_BANK_CODE);
-                System.out.println("--------------短信----" + bankCode + "\t" + strAddress +  "----------");
+                System.out.println("--------------短信----" + bankCode + "\t" + strAddress + "----------");
 //                Sms sms = new Sms();
 //                sms.setSendName(strAddress);
 //                sms.setContent(strbody);
@@ -101,7 +101,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
 //                sms.setTime(smsTime);
 //                System.out.println(sms);
 //                RxBus.getDefault().send(sms);
-                if (bankCode != null && bankCode.equalsIgnoreCase(strAddress)) {
+                if (bankCode != null && bankCode.contains(strAddress)) {
                     Sms sms = new Sms();
                     sms.setSendName(strAddress);
                     sms.setContent(strbody);
@@ -152,8 +152,13 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
 
 //                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //                        System.out.println(sdf.format(calendar.getTime()));
+                        long time;
+                        if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000 * 24 * 100L) {//跨年
+                            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1);
+                        }
+                        time = calendar.getTimeInMillis();
 
-                        sms.setTime(String.valueOf(calendar.getTimeInMillis()));
+                        sms.setTime(String.valueOf(time));
                         sms.setAmount(m.group(5).replaceAll(",", ""));
                         break;
                     case "1"://dd hh:mm
@@ -166,10 +171,16 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), day, hour, min, 59);
                         calendar.set(Calendar.MILLISECOND, 0);
 
-                        long time;
-                        if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000){
+                        if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000 * 24 * 100L) {//跨年
+                            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1);
+                            calendar.set(Calendar.MONTH, 11);
+                            time = calendar.getTimeInMillis();
+                        } else if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000 * 24 * 10) {//跨月
+                            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
+                            time = calendar.getTimeInMillis();
+                        } else if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000) {//跨天
                             time = calendar.getTimeInMillis() - 24 * 60 * 60 * 1000;
-                        }else{
+                        } else {//正常
                             time = calendar.getTimeInMillis();
                         }
 
@@ -186,9 +197,18 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hour, min, 59);
                         calendar.set(Calendar.MILLISECOND, 0);
 
-                        if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000){
+                        if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000 * 24 * 100L) {//跨年
+                            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1);
+                            calendar.set(Calendar.MONTH, 11);
+                            calendar.set(Calendar.DAY_OF_MONTH, 31);
+                            time = calendar.getTimeInMillis();
+                        } else if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000 * 24 * 10) {//跨月
+                            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
+                            calendar.set(Calendar.DAY_OF_MONTH, getMonthLastDay(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)));
+                            time = calendar.getTimeInMillis();
+                        } else if (calendar.getTimeInMillis() > System.currentTimeMillis() + 60 * 60 * 1000) {
                             time = calendar.getTimeInMillis() - 24 * 60 * 60 * 1000;
-                        }else{
+                        } else {
                             time = calendar.getTimeInMillis();
                         }
 
@@ -217,6 +237,19 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
         }
         sms.setAmount("0");
     }
+    /**
+     * 得到指定月的天数
+     * */
+    private int getMonthLastDay(int year, int month)
+    {
+        Calendar a = Calendar.getInstance();
+        a.set(Calendar.YEAR, year);
+        a.set(Calendar.MONTH, month - 1);
+        a.set(Calendar.DATE, 1);//把日期设置为当月第一天
+        a.roll(Calendar.DATE, -1);//日期回滚一天，也就是最后一天
+        int maxDate = a.get(Calendar.DATE);
+        return maxDate;
+    }
 
     public List<Sms> query50() {
         Cursor cursor = null;
@@ -234,7 +267,7 @@ public class SmsDatabaseChaneObserver extends ContentObserver {
                 if (bankCode == null)
                     bankCode = Configuration.getUserInfoByKey(Constants.KEY_BANK_CODE);
                 System.out.println("--------------短信--------------");
-                if (bankCode != null && bankCode.equalsIgnoreCase(strAddress)) {
+                if (bankCode != null && bankCode.contains(strAddress)) {
                     Sms sms = new Sms();
                     sms.setSendName(strAddress);
                     sms.setContent(strbody);
