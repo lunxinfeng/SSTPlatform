@@ -76,6 +76,12 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 et_successRate_wechat.setText("${(info?.ok?.toString()?.toFloatOrNull()
                         ?: 0f) * 100}%")
                 switch_aisle_wechat.isChecked = info?.enable == "1"
+                if (switch_aisle_wechat.isChecked){
+                    if (!isServiceRunning(this@AisleManagerActivity,WechatService::class.java.name)){
+                        debug(TAG,"微信监听服务没有启动，开始启动")
+                        startWechatService()
+                    }
+                }
             }
             METHOD_BANK -> {
                 et_aisle_Bank.setText(info?.account ?: "")
@@ -191,6 +197,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
                 hideWechat.visibility = View.VISIBLE
                 exitWechat.visibility = View.GONE
                 cardViewWechat.setStatus(MenuCardView.Status.CLOSE)
+                stopWechatService()
             }
             METHOD_BANK -> {
                 tvLoginBank.visibility = View.VISIBLE
@@ -561,7 +568,7 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
         menuInflater.inflate(R.menu.menu_asile, menu)
         menuShowAll = menu?.findItem(R.id.action_show_all)
         menuShowAll?.isVisible = false
-        viewHideOrShow(cardViewWechat, false)
+//        viewHideOrShow(cardViewWechat, false)
         viewHideOrShow(cardViewBank, false)
         viewHideOrShow(cardViewAli, false)
         return super.onCreateOptionsMenu(menu)
@@ -669,6 +676,14 @@ class AisleManagerActivity : BaseActivity<AisleManagerContract.Presenter>()
 
     private fun startAliService() {
         startService(Intent(this, AliService::class.java))
+    }
+
+    private fun stopWechatService() {
+        stopService(Intent(this, WechatService::class.java))
+    }
+
+    private fun startWechatService() {
+        startService(Intent(this, WechatService::class.java))
     }
 
     private fun stopBankService() {

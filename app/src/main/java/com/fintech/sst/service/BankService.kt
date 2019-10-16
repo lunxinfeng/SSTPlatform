@@ -77,7 +77,7 @@ class BankService : BaseService() {
         notice.type = METHOD_BANK.toInt()
         notice.orderNo = ""
         notice.amount = t.amount
-        notice.mark = if (reSend) "补单" else "正常"
+        notice.mark = if (reSend) "补单：${t.amount}, ${t.time}" else "正常"
         if (notice.amount.toFloatOrNull() != 0f)
             notices.offer(notice)
     }

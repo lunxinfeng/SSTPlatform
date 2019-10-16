@@ -205,6 +205,17 @@ public class PayHelperUtils {
 		}
 	}
 
+	public static String getWechatLoginId(Context context) {
+		String loginId="";
+		try {
+			SharedPreferences sharedPreferences=context.getSharedPreferences("com.tencent.mm_preferences", 0);
+			loginId = sharedPreferences.getString("login_user_name", "");
+		} catch (Exception e) {
+			PayHelperUtils.sendmsg(context, e.getMessage());
+		}
+		return loginId;
+	}
+
 	public static String getQQLoginId(Context context) {
 		String loginId="";
 		try {

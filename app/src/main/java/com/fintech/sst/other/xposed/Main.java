@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
@@ -74,31 +75,31 @@ public class Main implements IXposedHookLoadPackage {
         }
         final String packageName = lpparam.packageName;
         final String processName = lpparam.processName;
-//        if (WECHAT_PACKAGE.equals(packageName)) {
-//    		try {
-//                XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
-//                    @Override
-//                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                        super.afterHookedMethod(param);
-//                        Context context = (Context) param.args[0];
-//                        ClassLoader appClassLoader = context.getClassLoader();
-//                        if(WECHAT_PACKAGE.equals(processName) && !WECHAT_PACKAGE_ISHOOK){
-//                        	WECHAT_PACKAGE_ISHOOK=true;
-//                        	//注册广播
-//                        	StartWechatReceived stratWechat=new StartWechatReceived();
-//                    		IntentFilter intentFilter = new IntentFilter();
-//                            intentFilter.addAction("com.payhelper.wechat.start");
-//                            context.registerReceiver(stratWechat, intentFilter);
-//                        	XposedBridge.log("handleLoadPackage: " + packageName);
-//                        	PayHelperUtils.sendmsg(context, "微信Hook成功，当前微信版本:"+PayHelperUtils.getVerName(context));
-//                        	new WechatHook().hook(appClassLoader,context);
-//                        }
-//                    }
-//                });
-//            } catch (Throwable e) {
-//                XposedBridge.log(e);
-//            }
-//        }else
+        if (WECHAT_PACKAGE.equals(packageName)) {
+    		try {
+                XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        Context context = (Context) param.args[0];
+                        ClassLoader appClassLoader = context.getClassLoader();
+                        if(WECHAT_PACKAGE.equals(processName) && !WECHAT_PACKAGE_ISHOOK){
+                        	WECHAT_PACKAGE_ISHOOK=true;
+                        	//注册广播
+                        	StartWechatReceived stratWechat=new StartWechatReceived();
+                    		IntentFilter intentFilter = new IntentFilter();
+                            intentFilter.addAction("com.payhelper.wechat.start");
+                            context.registerReceiver(stratWechat, intentFilter);
+                        	XposedBridge.log("handleLoadPackage: " + packageName);
+                        	PayHelperUtils.sendmsg(context, "微信Hook成功，当前微信版本:"+PayHelperUtils.getVerName(context));
+                        	new WechatHook().hook(appClassLoader,context);
+                        }
+                    }
+                });
+            } catch (Throwable e) {
+                XposedBridge.log(e);
+            }
+        }else
         if (ALIPAY_PACKAGE.equals(packageName)) {
             try {
                 XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
@@ -217,23 +218,23 @@ public class Main implements IXposedHookLoadPackage {
         }
     }
 
-//	 //自定义启动微信广播
-//    class StartWechatReceived extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//        	XposedBridge.log("启动微信Activity");
-//        	try {
-//				Intent intent2=new Intent(context, XposedHelpers.findClass("com.tencent.mm.plugin.collect.ui.CollectCreateQRCodeUI", context.getClassLoader()));
-//				intent2.putExtra("mark", intent.getStringExtra("mark"));
-//				intent2.putExtra("money", intent.getStringExtra("money"));
-//				intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//				context.startActivity(intent2);
-//				XposedBridge.log("启动微信成功");
-//			} catch (Exception e) {
-//				XposedBridge.log("启动微信失败："+e.getMessage());
-//			}
-//        }
-//    }
+	 //自定义启动微信广播
+    class StartWechatReceived extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        	XposedBridge.log("启动微信Activity");
+        	try {
+				Intent intent2=new Intent(context, XposedHelpers.findClass("com.tencent.mm.plugin.collect.ui.CollectCreateQRCodeUI", context.getClassLoader()));
+				intent2.putExtra("mark", intent.getStringExtra("mark"));
+				intent2.putExtra("money", intent.getStringExtra("money"));
+				intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(intent2);
+				XposedBridge.log("启动微信成功");
+			} catch (Exception e) {
+				XposedBridge.log("启动微信失败："+e.getMessage());
+			}
+        }
+    }
 
 
     //自定义启动QQ广播

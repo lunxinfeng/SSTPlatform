@@ -84,17 +84,16 @@ public class HeartService extends Service {
         }
 
         Observable.interval(0, 10 * 1000, TimeUnit.MILLISECONDS)
-                .filter(new Predicate<Long>() {
-                    @Override
-                    public boolean test(Long aLong) {
-//                        boolean alive = PermissionUtil.isNotificationListenerEnabled();
-                        boolean alive = NotificationListener.isActive();
-                        if (!alive) {
-                            PermissionUtil.toggleNotificationListenerService(NotificationListener.class);
-                        }
-                        return true;
-                    }
-                })
+//                .filter(new Predicate<Long>() {
+//                    @Override
+//                    public boolean test(Long aLong) {
+//                        boolean alive = NotificationListener.isActive();
+//                        if (!alive) {
+//                            PermissionUtil.toggleNotificationListenerService(NotificationListener.class);
+//                        }
+//                        return true;
+//                    }
+//                })
                 .flatMap(new Function<Long, ObservableSource<ResultEntity<Boolean>>>() {
                     @SuppressLint("CheckResult")
                     @Override

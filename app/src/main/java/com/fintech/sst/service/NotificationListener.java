@@ -58,60 +58,6 @@ public final class NotificationListener extends NotificationListenerService {
     }
 
     @Override
-    public void onListenerConnected() {
-        super.onListenerConnected();
-        Log.d(TAG, "onListenerConnected:");
-    }
-
-    @Override
-    public void onListenerDisconnected() {
-        super.onListenerDisconnected();
-        Log.d(TAG, "onListenerDisconnected:");
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind:");
-        return super.onBind(intent);
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.d(TAG, "onUnbind:");
-        return super.onUnbind(intent);
-    }
-
-    @Override
-    public void onListenerHintsChanged(int hints) {
-        super.onListenerHintsChanged(hints);
-        Log.d(TAG, "onListenerHintsChanged:");
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-        Log.d(TAG, "onRebind:");
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        Log.d(TAG, "onLowMemory:");
-    }
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-        Log.d(TAG, "onTrimMemory:");
-    }
-
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        super.onTaskRemoved(rootIntent);
-        Log.d(TAG, "onTaskRemoved:");
-    }
-
-    @Override
     public final void onNotificationPosted(StatusBarNotification statusBarNotification) {
         Log.d(TAG, "onNotificationPosted: " + statusBarNotification + "\t" + this);
 
@@ -302,6 +248,61 @@ public final class NotificationListener extends NotificationListenerService {
 
     public static boolean isActive() {
         return disposable != null && !disposable.isDisposed();
+    }
+
+
+    @Override
+    public void onListenerConnected() {
+        super.onListenerConnected();
+        Log.d(TAG, "onListenerConnected:");
+    }
+
+    @Override
+    public void onListenerDisconnected() {
+        super.onListenerDisconnected();
+        Log.d(TAG, "onListenerDisconnected:");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind:");
+        return super.onBind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "onUnbind:");
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onListenerHintsChanged(int hints) {
+        super.onListenerHintsChanged(hints);
+        Log.d(TAG, "onListenerHintsChanged:");
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+        Log.d(TAG, "onRebind:");
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Log.d(TAG, "onLowMemory:");
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Log.d(TAG, "onTrimMemory:");
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        Log.d(TAG, "onTaskRemoved:");
     }
 }
 

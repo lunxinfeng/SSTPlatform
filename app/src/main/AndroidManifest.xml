@@ -88,6 +88,10 @@
             android:enabled="true"
             android:exported="false" />
         <service
+            android:name=".service.WechatService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
             android:name=".service.BankService"
             android:enabled="true"
             android:exported="true" />
