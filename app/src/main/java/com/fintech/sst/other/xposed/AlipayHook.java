@@ -156,7 +156,7 @@ public class AlipayHook {
                             broadCastIntent.putExtra("bill_money", money);
                             broadCastIntent.putExtra("bill_mark", "");
                             broadCastIntent.putExtra("bill_time", time);
-                            broadCastIntent.putExtra("bill_type", "alipay_dy");
+                            broadCastIntent.putExtra("bill_type", "2001");
                             broadCastIntent.setAction(BILLRECEIVED_ACTION);
                             context.sendBroadcast(broadCastIntent);
 						}else if(content.contains("收钱到账") || content.contains("收款到账")){
@@ -235,7 +235,7 @@ public class AlipayHook {
 						Intent broadCastIntent = new Intent();
 	                    broadCastIntent.putExtra("money", money);
 	                    broadCastIntent.putExtra("mark", mark);
-	                    broadCastIntent.putExtra("type", "alipay");
+	                    broadCastIntent.putExtra("type", "2001");
 	                    broadCastIntent.putExtra("payurl", payurl);
 	                    broadCastIntent.setAction(QRCODERECEIVED_ACTION);
 	                    context.sendBroadcast(broadCastIntent);

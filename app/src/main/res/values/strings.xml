@@ -50,7 +50,7 @@
     <string name="showAll">全部显示</string>
     <string name="hide">隐藏</string>
     <string name="exit">退出</string>
-    <string name="version">2019.8.10</string>
+    <string name="version">2019.10.15</string>
     <string name="check">校对重复通知</string>
     <string name="yun_login">云闪付登陆</string>
     <string name="qq_login">QQ登录</string>
