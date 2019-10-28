@@ -71,5 +71,6 @@ dependencies {
     implementation files('libs/xUtils-2.6.14.jar')
     implementation 'com.alibaba:fastjson:1.2.54'
     implementation 'org.apache.commons:commons-lang3:3.8.1'
-    implementation ('io.netty:netty-all:4.1.32.Final')
+    implementation 'io.netty:netty-all:4.1.32.Final'
+    implementation files('libs/jsoup-1.7.2.jar')
 }

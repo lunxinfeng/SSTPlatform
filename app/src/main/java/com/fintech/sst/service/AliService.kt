@@ -16,9 +16,17 @@ import com.fintech.sst.other.xposed.AlipayHook
 import com.fintech.sst.other.xposed.AlipayHook.BILLRECEIVED_ACTION
 import com.fintech.sst.other.xposed.Message
 import com.fintech.sst.other.xposed.PayHelperUtils
+import com.fintech.sst.other.xposed.PayHelperUtils.TRADENORECEIVED_ACTION
+import com.lidroid.xutils.HttpUtils
+import com.lidroid.xutils.exception.HttpException
+import com.lidroid.xutils.http.RequestParams
+import com.lidroid.xutils.http.ResponseInfo
+import com.lidroid.xutils.http.callback.RequestCallBack
+import com.lidroid.xutils.http.client.HttpRequest
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import org.jsoup.Jsoup
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -60,6 +68,67 @@ class AliService : Service() {
                 notice.mark = order_mark
                 if (order_money.toFloat() != 0f)
                     notices.offer(notice)
+            } else if (intent.action!!.contentEquals(TRADENORECEIVED_ACTION)) {
+                //商家服务
+                val tradeno = intent.getStringExtra("tradeno")
+                val cookie = intent.getStringExtra("cookie")
+//                val dbManager = DBManager(CustomApplcation.getInstance().getApplicationContext())
+//                if (!dbManager.isExistTradeNo(tradeno)) {
+//                    dbManager.addTradeNo(tradeno, "0")
+                    val url = "https://tradeeportlet.alipay.com/wireless/tradeDetail.htm?tradeNo=$tradeno&source=channel&_from_url=https%3A%2F%2Frender.alipay.com%2Fp%2Fz%2Fmerchant-mgnt%2Fsimple-order._h_t_m_l_%3Fsource%3Dmdb_card"
+                    try {
+                        val httpUtils = HttpUtils(15000)
+                        httpUtils.configResponseTextCharset("GBK")
+                        val params = RequestParams()
+                        params.addHeader("Cookie", cookie)
+
+                        httpUtils.send(HttpRequest.HttpMethod.GET, url, params, object : RequestCallBack<String>() {
+
+                            override fun onFailure(arg0: HttpException, arg1: String) {
+                                PayHelperUtils.sendmsg(context, "服务器异常$arg1")
+                            }
+
+                            override fun onSuccess(arg0: ResponseInfo<String>) {
+                                try {
+                                    val result = arg0.result
+                                    val document = Jsoup.parse(result)
+                                    val elements = document.getElementsByClass("trade-info-value")
+                                    if (elements.size >= 5) {
+//                                        dbManager.updateTradeNo(tradeno, "1")
+                                        val money = document.getElementsByClass("amount").get(0).ownText().replace("+", "").replace("-", "")
+                                        val mark = elements[3].ownText()
+                                        val dt = System.currentTimeMillis().toString() + ""
+//                                        dbManager.addOrder(OrderBean(money, mark, "alipay", tradeno, dt, "", 0))
+//                                        sendmsg("收到支付宝订单,订单号：" + tradeno + "金额：" + money + "备注：" + mark)
+//                                        notifyapi("alipay", tradeno, money, mark, dt)
+
+                                        val notice = Notice()
+                                        notice.content = "支付宝到账$money"
+//                notice.saveTime = notification.`when`
+                                        notice.status = 2
+                                        notice.tag = ""
+                                        notice.noticeId = 0
+                                        notice.title = "支付宝通知"
+
+                                        notice.packageName = "com.eg.android.AlipayGphone"
+                                        notice.type = 2001
+                                        notice.orderNo = tradeno
+                                        notice.amount = money
+                                        notice.mark = mark
+                                        if (money.toFloat() != 0f)
+                                            notices.offer(notice)
+                                    }
+                                } catch (e: Exception) {
+                                    PayHelperUtils.sendmsg(context, "TRADENORECEIVED_ACTION-->>onSuccess异常" + e.message)
+                                }
+
+                            }
+                        })
+                    } catch (e: Exception) {
+                        PayHelperUtils.sendmsg(context, "TRADENORECEIVED_ACTION异常" + e.message)
+                    }
+
+//                }
             }
         }
     }
